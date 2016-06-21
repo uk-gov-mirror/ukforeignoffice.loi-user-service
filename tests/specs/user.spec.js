@@ -16,7 +16,7 @@ describe('Work with Users', function () {
 
         request(baseUrl).post('/register')
             .send(newUser)
-            .expect(302)
+            .expect(200)
             .end(function (err, res) {
                 if (err) return done(err);
                 expect(res.text).to.have.string('Redirecting to /api/user/emailconfirm');
