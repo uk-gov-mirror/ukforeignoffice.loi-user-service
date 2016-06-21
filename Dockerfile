@@ -8,6 +8,5 @@ RUN cd /tmp && npm install && \
 WORKDIR /opt/app
 ADD . /opt/app
 
-EXPOSE 3005
-
-CMD [ "node", "server/bin/www","3005" ]
+EXPOSE 3001
+CMD [ "node", "server","3001" ]
