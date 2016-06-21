@@ -1,0 +1,521 @@
+/**
+ * FCO LOI User Management
+ * Registration Controller
+ *
+ *
+ */
+
+var bcrypt = require('bcryptjs'),
+    async = require('async'),
+    crypto = require('crypto'),
+    Model = require('../model/models.js'),
+    ValidationService = require('../services/ValidationService.js'),  common = require('../../config/common.js'),
+    envVariables = common.config(),
+    dbConnection = require('../sequelize.js');
+
+
+var phonePattern = /([0-9]|[\-+#() ]){6,}/;
+
+module.exports.usercheck = function(req, res) {
+    if(typeof req.body['has-account'] == 'undefined'){
+        return res.render('usercheck.ejs', {queryString:req.query, applicationServiceURL: envVariables.applicationServiceURL, error:{'error':'Please select an option.'},error_description: false});
+    }
+    //copy any querystring
+    var queryString = '';
+    if (req.body.next){
+        queryString = '?next=' + req.body.next;
+    }
+    if(req.body['has-account'] === "true"){
+        return res.redirect('/api/user/sign-in' + queryString);
+    }
+    else {
+        return res.redirect('/api/user/register' + queryString);
+    }
+};
+
+module.exports.show = function(req, res) {
+    if(req.query.from){
+
+        req.session.back_link = req.query.from == 'home' ? ' ' : req.query.from;
+
+
+    }
+    return res.render('register.ejs', {
+        form_values: false,
+        erroneousFields:false,
+        error_report: false,
+        error:false,
+        error_description: false,
+        email: req.session.email,
+        back_link: req.session.back_link ? envVariables.applicationServiceURL + req.session.back_link : '/api/user/usercheck',
+        applicationServiceURL: envVariables.applicationServiceURL });
+};
+
+module.exports.register = function(req, res) {
+
+    var patt = new RegExp(envVariables.password_settings.passwordPattern);
+    var emailPattern = /\S+@\S+\.\S+/;
+
+    var messages=[];
+    var errorDescription =[];
+    var erroneousFields=[{email:false,confirm_email:false, password:false, confirm_password:false, business_yes_no: false, company_name:false,all_info_correct: false }];
+
+    if (emailPattern.test(req.body.email) === false){
+        errorDescription.push("You have not provided a valid email address \n");
+        messages.push({email:"Enter a valid email address \n"});
+        erroneousFields[0].email=true;
+    }
+    if (req.body.email !== req.body.confirm_email ){
+        errorDescription.push("Confirm your email address \n");
+        messages.push({confirm_email:"Email addresses must match \n"});
+        erroneousFields[0].confirm_email=true;
+    }
+
+    if (req.body.password === '') {
+        errorDescription.push("You have not provided a valid password \n");
+        messages.push({password:"Enter a password \n"});
+        errorDescription.push("You must confirm the password \n");
+        messages.push({confirm_password:"Confirm your password \n"});
+        erroneousFields[0].password=true;
+    } else {
+        if (req.body.password === '' && req.body.confirm_password === '') {
+            messages.push({confirm_password:"Confirm your password \n"});
+        } else if(req.body.password != req.body.confirm_password) {
+            errorDescription.push("You must confirm the password \n");
+            messages.push({password:"Enter a password \n"});
+            messages.push({confirm_password:"Passwords did not match \n"});
+            erroneousFields[0].confirm_password=true;
+        } else {
+            if(req.body.password.length < 8) {
+                messages.push({password:"Enter a password ensuring it is at least 8 characters long and contains at least 1 lowercase letter, 1 capital letter and 1 number \n"});
+                messages.push({confirm_password:"Confirm your password \n"});
+            } else if(req.body.password.length > 16) {
+                messages.push({password:"Enter a password ensuring it is at most 16 characters long and contains at least 1 lowercase letter, 1 capital letter and 1 number \n"});
+                messages.push({confirm_password:"Confirm your password \n"});
+            } else if(!patt.test(req.body.password)) {
+                messages.push({password:"Your password must be at least 8 characters long and must contain at least 1 lowercase letter, 1 capital letter and 1 number\n"});
+                messages.push({confirm_password:"Confirm your password \n"});
+            }
+        }
+        erroneousFields[0].password=true;
+    }
+
+    if (typeof req.body.business_yes_no == 'undefined') {
+        errorDescription.push("You have not stated if you are registering on behalf of a business \n");
+        messages.push({business:"Confirm whether you are registering on behalf of a business \n"});
+        erroneousFields[0].business_yes_no=true;
+    } else {
+        if(req.body.business_yes_no=='Yes'){
+            if(req.body.company_name.length < 1){
+            errorDescription.push("You have not provided a valid company name \n");
+                messages.push({company_name:"Enter a valid company name \n"});
+                erroneousFields[0].company_name=true;
+            }
+        }
+    }
+
+
+    var allInfoCorrectArr = req.body.all_info_correct;
+    var allInfoCorrect = false;
+    if (allInfoCorrectArr.indexOf('on') > -1) {
+        allInfoCorrect = true;
+    } else {
+        allInfoCorrect = false;
+    }
+
+    req.body.all_info_correct = allInfoCorrect;
+
+    if(req.body.all_info_correct !== true){
+        errorDescription.push("You have not agreed to the terms and conditions \n");
+        messages.push({agree:"Agree to the terms and conditions \n"});
+        erroneousFields[0].all_info_correct=true;
+    }
+
+    if(messages.length>0){
+        return res.render('register.ejs', {
+            error:  messages,
+            error_description: errorDescription,
+            erroneousFields:erroneousFields,
+            email: req.session.email,
+            all_info_correct: allInfoCorrect,
+            form_values: req.body,
+            back_link: req.session.back_link ? envVariables.applicationServiceURL + req.session.back_link : '/api/user/usercheck',
+            applicationServiceURL: envVariables.applicationServiceURL
+        });
+    }
+
+
+    //check to see if the email address has already been used
+    Model.User.findOne({
+        where: {
+            email: req.body.email
+        }
+    })
+        .then(function (user) {
+            if (user) {
+                //user already exists
+                messages.push({user_exists: 'Check or amend your details and try again.\n'});
+                return res.render('register.ejs', {
+                    errorHeader: 'There was a problem creating your account.',
+                    error:  messages,
+                    error_description: errorDescription,
+                    error_report:false,
+                    email: req.body.email,
+                    form_values: req.body,
+                    back_link: req.session.back_link ? envVariables.applicationServiceURL + req.session.back_link : '/api/user/usercheck',
+                    applicationServiceURL: envVariables.applicationServiceURL,
+                    erroneousFields:false
+
+                });
+            }
+            else {
+                //console.log('Pass');
+                req.session.email = req.body.email;
+
+                var email = req.body.email;
+                var password = req.body.password;
+                var confirm_password = req.body.confirm_password;
+
+                var salt = bcrypt.genSaltSync(10);
+
+                /**
+                 * If no password/confirmpassword is provided, the hashed instances are set to empty strings
+                 * to force validation failure
+                 */
+                var hashedPassword = password !== null && password !== '' ? bcrypt.hashSync(password, salt) : '';
+                var hashedConfirmPassword = confirm_password !== null && confirm_password !== '' ? bcrypt.hashSync(confirm_password, salt) : '';
+
+                // get payment reference for this user account
+                dbConnection.query('SELECT * FROM get_next_payment_reference()')
+                    .then(function (results) {
+
+                        var paymentReference;
+
+                        if(results[0])
+                        {
+                            paymentReference = results[0][0].get_next_payment_reference;
+                        }
+                        else
+                        {
+                            return next(new Error('failed to retrieve next available payment reference'));
+                        }
+
+                        //generate registration token
+                        async.waterfall([
+                            function(done) {
+                                //Create random reset token
+                                crypto.randomBytes(20, function(error, buf) {
+                                    var token = buf.toString('hex');
+                                    //Pass token on to the next function
+                                    done(error, token);
+                                });
+                            },
+                            function(token, done) {
+                                /**
+                                 * Pass in password and hashed password to test if they pass validation
+                                 * @type {{email: (*|.where.email|email|.session.user.email|attributes.email|.session.email), first_name: (*|attributes.first_name), last_name: (*|attributes.last_name), address_line1: (*|attributes.address_line1), address_line2: (*|attributes.address_line2), address_line3: (*|attributes.address_line3), town: (*|attributes.town), county: (*|attributes.county), country: (*|attributes.country), postcode: (*|attributes.postcode), telephone: (*|attributes.telephone), salt: *, password: *, confirm_password: *}}
+                                 */
+                                var expire = new Date();
+                                var expiryTime = (60*60*1000*24); //24 hours
+                                expire.setTime(expire.getTime()+expiryTime);// now +24 hours
+
+                                var newUser = {
+                                    email: email,
+                                    password: hashedPassword,
+                                    confirm_password: hashedConfirmPassword,
+                                    salt:salt,
+                                    failedLoginAttemptCount: 0,
+                                    accountLocked:false,
+                                    passwordExpiry: password_expiry(new Date(),envVariables.password_settings.passwordExpiryInDays),
+                                    payment_reference: paymentReference,
+                                    activationToken: token,
+                                    activated: false,
+                                    activationTokenExpires:expire,
+                                    premiumEnabled: req.body.business_yes_no == 'Yes' ? true : false,
+                                    allInfoCorrect:allInfoCorrect
+                                };
+
+
+
+                                Model.User.create(newUser)
+                                    .then(function (created) {
+                                        var accountDetails = {
+                                            user_id:created.id,
+                                            complete: false,
+                                            company_name:'N/A',
+                                            company_number:0,
+                                            feedback_consent: false
+                                        };
+                                        if(req.body.business_yes_no == 'Yes'){
+                                            accountDetails.company_name= req.body.company_name;
+                                            //  accountDetails.company_number= req.body.company_number
+                                        }
+                                        Model.AccountDetails.findOne({where:{user_id:created.id}}).then(function(data){
+                                            if(data){
+                                                Model.AccountDetails.update(accountDetails,{where:{user_id:created.id}})
+                                                    .then(function(){
+                                                        done(null, token);
+                                                    })
+                                                    .catch(function (error) {
+                                                        return res.render('register.ejs', {
+                                                            error_report: ValidationService.buildErrorsArray(error),
+                                                            email: req.session.email,
+                                                            form_values: req.body,
+                                                            error:false,
+                                                            error_description: false,
+                                                            applicationServiceURL: envVariables.applicationServiceURL,
+                                                            back_link: req.session.back_link ? envVariables.applicationServiceURL + req.session.back_link : '/api/user/usercheck',
+                                                            erroneousFields: false
+                                                        });
+                                                    });
+                                            }else{
+                                                Model.AccountDetails.create(accountDetails)
+                                                    .then(function(){
+                                                        done(null, token);
+                                                    })
+                                                    .catch(function (error) {
+                                                        return res.render('register.ejs', {
+                                                            error_report: ValidationService.buildErrorsArray(error),
+                                                            email: req.session.email,
+                                                            form_values: req.body,
+                                                            error:false,
+                                                            error_description: false,
+                                                            back_link: req.session.back_link ? envVariables.applicationServiceURL + req.session.back_link : '/api/user/usercheck',
+                                                            applicationServiceURL: envVariables.applicationServiceURL,
+                                                            erroneousFields: false
+                                                        });
+                                                    });
+                                            }
+                                        });
+                                    })
+                                    .catch(function(error){
+                                        console.log(error);
+                                    });
+                            },
+                            function(token, done){
+                                //send the email
+                                emailService.emailConfirmation(req.body.email,token);
+                                return done(null);
+
+                            }
+                        ], function() {
+                            req.flash('info', "We've sent you a confirmation email. Click the link in the email to confirm your address.");
+                            return res.redirect('/api/user/emailconfirm');
+
+                        });
+
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+
+            }
+        });
+};
+module.exports.showAddressSkip =function(req,res){
+    return  res.render('initial/address-skip.ejs');
+};
+module.exports.completeRegistration =function(req,res){
+
+    Model.User.findOne({where:{email:req.session.email}}).then(function(user) {
+        Model.AccountDetails.findOne({where:{user_id: user.id}}).then(function(data) {
+            if(data) {
+                Model.AccountDetails.update({
+                    first_name: req.body.first_name,
+                    last_name: req.body.last_name,
+                    telephone: phonePattern.test(req.body.telephone) ? req.body.telephone : '',
+                    feedback_consent: req.body.feedback_consent || '',
+                    complete: true
+                }, {where: {user_id: user.id}})
+                    .then(function () {
+                        req.session.initial = true;
+                        // return res.redirect('/api/user/dashboard?complete=true');
+                        return  res.render('initial/address-skip.ejs');
+
+                    })
+                    .catch(function (error) {
+
+                        // Custom error array builder for email match confirmation
+                        var erroneousFields = [];
+
+                        if (req.param('first_name') === '') {
+                            erroneousFields.push('first_name');
+                        }
+                        if (req.param('last_name') === '') {
+                            erroneousFields.push('last_name');
+                        }
+
+                        if(typeof (req.param('feedback_consent'))=='undefined') {
+                            erroneousFields.push('feedback_consent');
+                        }
+                        if (req.param('telephone') === ''|| req.param('telephone').length<6 || req.param('telephone').length>25  || !phonePattern.test(req.param('telephone'))) {
+                            erroneousFields.push('telephone'); }
+
+                        dataValues = [];
+                        dataValues.push({
+                            first_name: req.param('first_name') !== '' ? req.param('first_name') : "",
+                            last_name: req.param('last_name') !== '' ? req.param('last_name') : "",
+                            telephone: req.param('telephone') !== '' ? req.param('telephone') : "",
+                            feedback_consent: typeof (req.param('feedback_consent')) !== 'undefined' ? req.param('feedback_consent') : ""
+                        });
+                        res.render('initial/complete-details', {
+                            error_report: ValidationService.validateForm({
+                                error: error,
+                                erroneousFields: erroneousFields
+                            }), form_values: req.body,error:false
+                        });
+                    });
+
+            }else{
+                Model.AccountDetails.create({
+                    user_id: user.id,
+                    company_name:'N/A',
+                    company_number:0,
+                    first_name: req.body.first_name,
+                    last_name: req.body.last_name,
+                    telephone: req.body.telephone,
+                    feedback_consent: req.body.feedback_consent,
+                    complete: true
+                })
+                    .then(function () {
+                        req.session.initial = true;
+                        return res.redirect('/api/user/account');
+
+                    })
+                    .catch(function (error) {
+
+                        // Custom error array builder for email match confirmation
+                        var erroneousFields = [];
+
+                        if (req.param('first_name') === '') {
+                            erroneousFields.push('first_name');
+                        }
+                        if (req.param('last_name') === '') {
+                            erroneousFields.push('last_name');
+                        }
+                        if (req.param('telephone') === '') {
+                            erroneousFields.push('telephone');
+                        }
+                        dataValues = [];
+                        dataValues.push({
+                            first_name: req.param('first_name') !== '' ? req.param('first_name') : "",
+                            last_name: req.param('last_name') !== '' ? req.param('last_name') : "",
+                            telephone: req.param('telephone') !== '' ? req.param('telephone') : ""
+                        });
+                        res.render('initial/complete-details', {
+                            error_report: ValidationService.validateForm({
+                                error: error,
+                                erroneousFields: erroneousFields
+                            }), form_values: req.body,
+                            error:false,
+                            error_description: false
+                        });
+                    });
+            }
+
+        });
+    });
+
+};
+
+module.exports.resendActivationEmail = function(req, res) {
+    //generate new registration token
+    async.waterfall([
+        function(done) {
+            //Create new random activation token
+            crypto.randomBytes(20, function(error, buf) {
+                var token = buf.toString('hex');
+                //Pass token on to the next function
+                done(error, token);
+            });
+        },
+        function(token, done) {
+            //Find User with the password token which has not expired
+            Model.User.findOne({
+                where: {
+                    email: req.body.email,
+                    activated: false
+                }
+            })
+                .then(function (user, error) {
+                    if (!user) {
+                        req.flash('error', 'Invalid email');
+                        return res.redirect('/api/user/sign-in');
+                    }
+                    //Update the user with the new token and expiry
+                    var expire = new Date();
+                    var expiryTime = (60*60*1000*24); //24 hours
+                    expire.setTime(expire.getTime()+expiryTime);// now +24 hours
+
+                    Model.User.update({
+                        activationToken: token,
+                        activated: false,
+                        activationTokenExpires: expire
+                    }, {
+                        where: {email: req.body.email}
+                    })
+                        .then(function () {
+                            done(null, token);
+                        }).catch( function(error) {
+                            req.flash('error', 'An error has occurred.');
+                            return res.redirect('/api/user/sign-in');
+                        });
+                });
+        },
+        function(token, done){
+            //send the email
+            emailService.emailConfirmation(req.body.email,token);
+            return done(null);
+        }
+    ], function() {
+
+        req.flash('info', "We've sent you another confirmation email");
+        return res.redirect('/api/user/emailconfirm');
+    });
+};
+
+module.exports.activate = function(req, res) {
+    async.waterfall([
+        function (done) {
+            //Find User with the password token which has not expired
+            Model.User.findOne({
+                where: {
+                    activationToken: req.params.token,
+                    activationTokenExpires: {$gt: new Date()}
+                }
+            })
+                .then(function (user, error) {
+                    if (!user) {
+                        req.flash('error', 'Activation reset token is invalid.  Sign in to send a new one.');
+                        return res.redirect('/api/user/sign-in');
+                    }
+                    //Update the user with the activated flag
+                    Model.User.update({
+                        activationToken: null,
+                        activationTokenExpires: null,
+                        activated: true
+                    }, {
+                        where: {email: user.email}
+                    })
+                        .then(function () {
+                            done(null, user);
+
+                        }).catch( function(error) {
+                            done(error, null);
+                        });
+                });
+
+        }
+    ], function () {
+        req.flash('info', "You've successfully confirmed your email address. Now you can sign in to your account");
+        return res.redirect('/api/user/sign-in');
+    });
+};
+
+function password_expiry (date, days) {
+    var result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+}

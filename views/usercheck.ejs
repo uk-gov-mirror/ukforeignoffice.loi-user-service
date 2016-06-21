@@ -1,0 +1,58 @@
+<% var title='User check'; %>
+<% include partials/header %>
+<a href="<%= applicationServiceURL%>start" class="back_to_previous_button">Back</a>
+<% pageTitle = "Account check - Get a document legalised – GOV.UK" %>
+<h1 class="heading-xlarge" style="margin-bottom: .75em;">Have you already got an online account for legalisation?</h1>
+
+<%if(error){%>
+<div class="error-summary" style="width: 60%">
+    <h2 class="heading-medium error-summary-heading">Please check the form</h2>
+    <ul class="error-summary-list nopadding">
+        <li><a href="#has-account-options">Confirm whether you already have an account</a></li>
+    </ul>
+</div>
+<%}%>
+
+<div class="form-group ">
+    <form id="has-account" method="post" action="/api/user/usercheck">
+        <input type="hidden" name="next" value="<%= queryString.next %>" />
+
+        <div class="form-group <%if(error){%>error<%}%>">
+            <fieldset class="inline" id="has-account-options" aria-required="true" role="radiogroup">
+                <legend class="visuallyhidden" style="margin-top: 0px">Have you already got an online account for legalisation?</legend>
+
+                <%if(error){%>
+                <legend>
+                    <span class="error-message">
+                        Confirm whether you already have an account
+                    </span>
+                </legend>
+                <%}%>
+
+                <label class="block-label " for="radio-yes">
+                    <input id="radio-yes" type="radio" name="has-account" value="true"  <%if(typeof(form_value)!='undefined' && form_value){%>selected<%}%>>
+                    Yes
+                </label>
+                <label class="block-label " for="radio-no">
+                    <input id="radio-no" type="radio" name="has-account" value="false"  <%if(typeof(form_value)!='undefined' && !form_value){%>selected<%}%>>
+                    No
+                </label>
+            </fieldset>
+        </div>
+
+        <div class="column-two-thirds">
+            <p>Online accounts are required for our premium business service. For the standard postal service they're optional.
+                You'll get most benefit if you're a regular customer.</p>
+            <p>With an online account you can:</p>
+            <ul class="tick-list">
+                <li><i aria-hidden="true" class="flaticon-checked21 no-margin"></i>make applications more quickly by saving your details eg addresses, payment details</li>
+                <li><i aria-hidden="true" class="flaticon-checked21 no-margin"></i>check the status of an application</li>
+                <li><i aria-hidden="true" class="flaticon-checked21 no-margin"></i>see your recent application history</li>
+            </ul>
+            <button class="button" id="continue-button" type="submit">Continue</button>
+        </div>
+
+    </form>
+</div>
+
+<% include partials/footer %>

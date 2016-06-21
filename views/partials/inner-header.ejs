@@ -1,0 +1,16 @@
+<div class="inner_header">
+    <div class="inner-header-content">
+
+    <span class="email-logout-text">
+        <%if(typeof(account)!='undefined' && account!=null && account.first_name.length>0){%><%= account.first_name+' '+account.last_name%><%}else{%><%= user.email%><%}%>
+    </span>
+        <span class="email-logout-text">
+        <a id="Applications-Link" href="<%= url.applicationServiceURL%>dashboard" class="btn btn-success btn-sm">Applications</a>
+        <a id="Account-Link" href="/api/user/account" class="btn btn-success btn-sm">Account</a>
+        <a id="Addresses-Link" href="/api/user/addresses" class="btn btn-success btn-sm">Addresses</a>
+        <a href="<%= url.applicationServiceURL%>sign-out" id="sign-out-link" class="btn btn-success btn-sm">Sign out</a>
+    </span>
+
+    </div>
+
+</div>

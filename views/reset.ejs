@@ -1,0 +1,42 @@
+<% pageTitle = "Reset password - Get a document legalised – GOV.UK" %>
+
+<% include partials/header %>
+
+<a href="/api/user/sign-in" class="back_to_previous_button">Back</a>
+
+<h1 class="heading-xlarge">Reset password </h1>
+
+<div class="error-summary <% if (error) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-summary-heading" tabindex="-1">
+    <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
+        Please check the form
+    </h2>
+    <ul class="error-summary-list">
+        <%if (error) {error.forEach(function(msg){%>
+        <li><a href="#legend_password"><%= msg %></a></li>
+        <%})
+        }%>
+    </ul>
+
+</div>
+
+<!-- LOGIN FORM -->
+<form action="/api/user/reset/<%= resetPasswordToken%>" method="post" id="password-reset" class="column-two-thirds">
+    <div class="form-group" id="legend_password">
+        <label for="password" class="form-label-bold">New password</label>
+
+        <span class="form-hint">Minimum 8 characters long with at least 1 capital letter and 1 number</span>
+        <input class="form-control" id="password" name="password" aria-required="true" type="password"  >
+
+    </div>
+    <div class="form-group">
+        <label for="confirm_password" class="form-label-bold">Confirm password</label>
+        <input class="form-control" id="confirm_password" name="confirm_password" aria-required="true" type="password" >
+    </div>
+    <input type="submit" class="button" value="Update password">
+    <hr>
+</form>
+
+
+
+
+<% include partials/footer %>

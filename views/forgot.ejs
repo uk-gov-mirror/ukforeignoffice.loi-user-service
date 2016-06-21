@@ -1,0 +1,37 @@
+<% pageTitle = "Forgot password - Get a document legalised – GOV.UK" %>
+<% include partials/header.ejs %>
+
+<a href="/api/user/sign-in" class="back_to_previous_button">Back</a>
+
+<h1 class="heading-xlarge">Forgot password </h1>
+
+<% if (message.length > 0) { %>
+<div class="error-summary" style="width: 60%"><h1 class="heading-medium error-summary-heading"><%= message %></h1></div>
+<% } %>
+<script>var _paq = _paq || [];</script>
+<%if(typeof(locked)!='undefined' && locked==true){%>
+<script>
+    //Event category: Account 10 - account locked
+    _paq.push(['trackEvent', 'Account 10 - account locked', 'clicked reset link in account lock email']);
+</script>
+<%}%>
+<script>
+    _paq.push(['trackEvent', 'Account 11 - reset password', 'user clicked link in email to reset password']);
+</script>
+
+<form action="/api/user/forgot" method="post" class="column-two-thirds">
+
+    <div class="form-group">
+        <label for="email" class="form-label-bold">Email</label>
+        <input class="form-control" aria-required="true"  id="email" name="email" autocomplete="off" type="text"  <% if(typeof(email) !='undefined'){%>value = "<%= email%>"<%}%>>
+    </div>
+
+    <input type="submit" class="button" value="Reset password">
+
+    <hr>
+</form>
+
+<p>Need an account? <a href="/api/user/register">Register</a></p>
+
+
+<% include partials/footer.ejs %>

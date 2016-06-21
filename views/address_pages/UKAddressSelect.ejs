@@ -1,0 +1,51 @@
+<% pageTitle ="Add a return address - Get a document legalised – GOV.UK" %>
+<%include ../partials/header.ejs %>
+
+
+<a href="/api/user/add-address" class="back_to_previous_button">Back</a>
+
+
+<h1 class="heading-xlarge">Add a return address</h1>
+
+<%if (error_report && error_report.length>0) {%>
+<div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" style="clear:left; width:66.6%">
+
+    <p class="heading-medium error-summary-heading" id="error-summary-heading">
+        Please check the form
+    </p>
+    <ul class="error-summary-list nopadding">
+        <li class="error-no-link"><%= error_report%></li>
+    </ul>
+</div>
+<%}%>
+<div class="form-group <%if (error_report && error_report.length>0) {%>error<%}%>">
+    <form id="find-address-form"  method="post" action="<%= '/api/user/find-your-address'%>">
+        <label class="form-label-bold" for="find-postcode">Enter postcode</label>
+        <% if(typeof(error_report)!='undefined'){%><span class="error-message"><%= error_report%></span><%}%>
+
+        <input class="form-control form-control-1-4 postcode" id="find-postcode" aria-required="true" type="text" value="<%= postcode%>" name="find-postcode">
+        <button class="button find-address button-secondary" type="submit" id="find-address">Find UK address</button>
+    </form>
+    <a class="link address-manual" id="address-manual" href="<%= '/api/user/your-address-manual'%>" >Enter address manually</a>
+
+    <form id="select-address-form" class="column-two-thirds"  method="post" action="<%= '/api/user/select-your-address'%>">
+        <input type="hidden" name="full_name" value="<%if(account.full_name != null){%><%= account.full_name %><%}%>">
+        <input type="hidden" name="postcode" value="<%= postcode%>">
+        <div class="<%if(addresses.length==0 || addresses==false){%>hide<%}%>" id="address-list-group">
+            <label class="form-label visuallyhidden" for="form-select">Pick an address</label>
+            <select class="form-control" id="address-list-box" name="address" form="select-address-form" aria-required="true"
+                    onchange="document.getElementById('select-address-form').submit();">
+                <option disabled selected>Pick an address</option>
+                <%for(var a=0; a<addresses.length; a++){%>
+                <option value=<%= a%> ><%= addresses[a].option %></option>
+                <%}%>
+            </select>
+            <button class="button button-secondary js-hidden <%if(addresses.length==0){%>hide<%}%>" type="submit" id="select-address">Select Address</button>
+
+        </div>
+
+    </form>
+</div>
+
+
+<% include ../partials/footer.ejs %>

@@ -1,0 +1,27 @@
+<% var title='Email Confirmation'; %>
+<% include partials/header %>
+
+<a href="/api/user/sign-in" class="back_to_previous_button">Back</a>
+
+
+<% pageTitle = "Activate your account - Get a document legalised – GOV.UK" %>
+
+<!-- EMAIL CONFIRMATION FORM -->
+
+<h1 class="heading-xlarge">Activate your account</h1>
+<div class="column-two-thirds" >
+    <form action="/api/user/resend-confirmation" method="post" id="resend-confirm">
+        <p>We've sent a confirmation email to <span class="bold-small"><%= email%></span>. Check your email and click the link in the message to activate your account. The link will expire in 24 hours.</p>
+        <p>If you can't find the email in your inbox try the following:</p>
+        <ul>
+            <li>check your junk or spam folder</li>
+            <li>search for an email from the Legalisation Office</li>
+            <li><input type="submit" class="linkButton"  value="resend the confirmation email"></li>
+        </ul>
+        <input type="hidden" name="email" value="<%= email%>">
+    </form>
+</div>
+
+
+
+<% include partials/footer %>

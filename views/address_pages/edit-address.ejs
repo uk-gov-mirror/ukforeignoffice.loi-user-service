@@ -1,0 +1,189 @@
+<% pageTitle = "Edit address - Get a document legalised – GOV.UK" %>
+
+<% include ../partials/header.ejs %>
+
+<a href="/api/user/addresses" class="back_to_previous_button">Back</a>
+<h1 class="heading-xlarge">Edit return address</h1>
+
+
+<%
+var primaryAddressErrors = [];
+if (error_report) {
+    if (error_report[0][0].errMsgs) {
+        error_report[0][0].errMsgs.forEach(
+                function(error){
+                    if (error.fieldName == "full_name") {
+                        primaryAddressErrors.push(error);
+                    }
+                    if (error.fieldName == "house_name") {
+                        primaryAddressErrors.push(error);
+                    }
+                    if (error.fieldName == "street") {
+                        primaryAddressErrors.push(error);
+                    }
+                    if (error.fieldName == "town") {
+                        primaryAddressErrors.push(error);
+                    }
+                    if (error.fieldName == "county") {
+                        primaryAddressErrors.push(error);
+                    }
+                    if (error.fieldName == "postcode") {
+                        primaryAddressErrors.push(error);
+                    }
+
+                }
+        )
+    }
+
+}
+%>
+
+<div class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
+
+    <p class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
+        Please check the form
+    </p>
+
+    <div id="all-errors">
+        <ul class="error-summary-list nopadding">
+            <% if (error_report) {  %>
+            <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
+            <li>
+                <a href="#legend_<%= errorMsgs.questionId %>">
+                    <%= errorMsgs.fieldSolution %>
+                </a>
+            </li>
+            <% }) %>
+            <% } %>
+        </ul>
+    </div>
+</div>
+<form id="edit_address_form" class="column-two-thirds" method="post" action="/api/user/edit-address">
+    <div class=" form-group" id="address-details-group">
+
+        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('full_name')>-1) { %>error<% } %>">
+            <label class="form-label-bold" for="full-name">Full name</label>
+            <span class="form-hint">Name of the person you would like the documents returned to</span>
+            <fieldset>
+                <legend id="legend_full_name"
+                        class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('full_name')>-1) { %>show<% } else { %>hide<% } %>">
+                    <span class="error-message">
+                        <% if (error_report && primaryAddressErrors.length>0) { %>
+                        <% primaryAddressErrors.forEach( function(errorItem) { %>
+                        <% if (errorItem.questionId == "full_name") { %>
+                        <%= errorItem.fieldError %>
+                        <% } %>
+                        <% }) %>
+                        <% } %>
+                    </span>
+                </legend>
+
+                <input class="form-control" id="full-name" type="text" aria-required="true" name="full_name" value="<%if(form_values){%><%= form_values.full_name%><%}%>">
+            </fieldset>
+        </div>
+
+
+        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('house_name')>-1) { %>error<% } %>">
+            <label class="form-label-bold" for="house_name">House name or number</label>
+            <fieldset>
+                <legend id="legend_house_name"
+                        class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('house_name')>-1) { %>show<% } else { %>hide<% } %>">
+                    <span class="error-message">
+                        <% if (error_report && primaryAddressErrors.length>0) { %>
+                        <% primaryAddressErrors.forEach( function(errorItem) { %>
+                        <% if (errorItem.questionId == "house_name") { %>
+                        <%= errorItem.fieldError %>
+                        <% } %>
+                        <% }) %>
+                        <% } %>
+                    </span>
+                </legend>
+
+                <input class="form-control" id="house_name" type="text" aria-required="true" name="house_name" value="<%if(form_values){%><%= form_values.house_name%><%}%>" >
+            </fieldset>
+        </div>
+
+        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('street')>-1) { %>error<% } %>">
+            <label class="form-label-bold" for="street">Street</label>
+            <fieldset>
+                <legend id="legend_street"
+                        class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('street')>-1) { %>show<% } else { %>hide<% } %>">
+                    <span class="error-message">
+                        <% if (error_report && primaryAddressErrors.length>0) { %>
+                        <% primaryAddressErrors.forEach( function(errorItem) { %>
+                        <% if (errorItem.questionId == "street") { %>
+                        <%= errorItem.fieldError %>
+                        <% } %>
+                        <% }) %>
+                        <% } %>
+                    </span>
+                </legend>
+
+                <input class="form-control" type="text" id="street" aria-required="true" name="street" value="<%if(form_values){%><%= form_values.street%><%}%>" >
+            </fieldset>
+        </div>
+
+        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('town')>-1) { %>error<% } %>">
+            <label class="form-label-bold" for="town">Town</label>
+            <fieldset>
+                <legend id="legend_town"
+                        class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('town')>-1) { %>show<% } else { %>hide<% } %>">
+
+                    <span class="error-message">
+                        <% if (error_report && primaryAddressErrors.length>0) { %>
+                        <% primaryAddressErrors.forEach( function(errorItem) { %>
+                        <% if (errorItem.questionId == "town") { %>
+                        <%= errorItem.fieldError %>
+                        <% } %>
+                        <% }) %>
+                        <% } %>
+                    </span>
+                </legend>
+
+                <input class="form-control" type="text" id="town" aria-required="true" name="town" value="<%if(form_values){%><%= form_values.town%><%}%>" >
+            </fieldset>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label-bold" for="county"><%if(uk){%>County<%}else{%>Region <span>(optional)</span><%}%></label>
+            <input class="form-control" type="text" id="county" name="county" value="<%if(form_values){%><%= form_values.county%><%}%>">
+        </div>
+
+        <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('postcode')>-1) { %>error<% } %>">
+            <label class="form-label-bold" for="postcode"><%if(uk){%>Postcode<%}else{%>Zip Code <span>(optional)</span><%}%></label>
+            <fieldset>
+                <legend id="legend_postcode"
+                        class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('postcode')>-1) { %>show<% } else { %>hide<% } %>">
+
+                    <span class="error-message">
+                        <% if (error_report && primaryAddressErrors.length>0) { %>
+                        <% primaryAddressErrors.forEach( function(errorItem) { %>
+                        <% if (errorItem.questionId == "postcode") { %>
+                        <%= errorItem.fieldError %>
+                        <% } %>
+                        <% }) %>
+                        <% } %>
+                    </span>
+                </legend>
+                <input class="form-control form-control-1-4 postcode" id="postcode"  aria-required="true" name="postcode" type="text" value="<%if(form_values){%><%= form_values.postcode%><%}%>" >
+            </fieldset>
+        </div>
+
+        <label class="form-label-bold" for="country">Country</label>
+        <select class="form-control" aria-required="true" id="country" form="edit_address_form" name="country">
+            <%for(var c=0; c<countries.length;c++){%>
+            <option value="<%= countries[c].name%>" <%if ((form_values[0] && countries[c].name==form_values[0].country) || (form_values && countries[c].name==form_values.country)) { %>selected<%}%> >
+                <%= countries[c].name%></option>
+
+            <% } %>
+
+        </select>
+    </div>
+
+    <input type="hidden" name="address_id" value='<%= address_id%>'>
+    <div class="form-group">
+        <button class="button">Save</button>
+    </div>
+</form>
+
+<% include ../partials/footer.ejs %>

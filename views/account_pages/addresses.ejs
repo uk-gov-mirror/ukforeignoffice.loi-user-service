@@ -1,0 +1,32 @@
+<% pageTitle = "Saved addresses - Get a document legalised – GOV.UK" %>
+<% include ../partials/header.ejs %>
+<% include ../partials/inner-header.ejs %>
+
+
+<div class="column-two-thirds">
+    <h1 class="heading-xlarge">Saved addresses</h1>
+    <p>Speed up your postal applications by saving return addresses you use regularly.</p>
+    <% if (info.length > 0) { %>
+    <div class="alert alert--success" role="alert"><p class="alert__message"><%= info %></p></div>
+    <% } %>
+    <div class="form-group">
+        <table class="review-personal-details summary-table">
+            <tbody>
+            <% addresses.forEach(function (address){%>
+            <tr><td>
+                    <%= address.full_name%>, <%= address.house_name%>, <%= address.street%>, <%= address.town%>, <%if(address.county.length>0){%><%= address.county%>, <%}%>
+                    <%if(address.postcode.length>1){%><%= address.postcode%>, <%}%>
+                    <%= address.country%>
+                    <br/><br/>
+                    <a class="button-secondary button address-button" href="/api/user/edit-address?id=<%= address.id%>">Edit</a>
+                    <a class="delete-address button-delete button address-button" href="/api/user/delete-address?id=<%= address.id%>">Delete</a>
+                </td>
+            </tr>
+            <% });%>
+            </tbody></table>
+    </div>
+    <a class="button-secondary button" href="/api/user/add-address">Add an address</a>
+</div>
+
+
+<% include ../partials/footer.ejs %>

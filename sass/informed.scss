@@ -1,0 +1,817 @@
+//INFORMED CUSTOM CSS
+html {
+  background-color: #dee0e2; //Footer fill
+}
+ul {
+  list-style-type: disc;
+  padding-left: 40px;
+  padding-bottom: 20px; }
+
+.hide {
+  display:none;
+}
+// Activate class of noJs for when js is disabled (mainly for doc selector)
+.noJs{display:none;width:0;height:0;text-indent:-99999}
+// fix styles
+.nomargin {margin:0!important}
+.nopadding {padding:0!important}
+.nopaddingtop {padding-top: 0!important}
+.nomargintop {margin-top: 0!important}
+.nopaddingbottom {padding-bottom: 0!important}
+.nomarginbottom {margin-bottom: 0!important}
+.nomarginright {margin-right: 0!important}
+.nopaddingright  {padding-right: 0!important}
+.floatright {float: right}
+.floatleft {float: left}
+.nonboldlabel {font-weight: 100;font-size: 19px;}
+.bold-text {font-weight: bold}
+.text-block {display: block}
+.marginlr15 {margin-left: 15px!important;margin-right: 15px;}
+.textindent { display: block; text-indent: -100000em; height: 0; width: 0; max-width: 0; max-height: 0; position: absolute;}
+.column-two-thirds {padding: 0!important}
+.full-width {  width:100%}
+// Hide, only when JavaScript is enabled
+.js-enabled .js-hidden {  display: none;}
+
+
+//ERRORS
+div.error-summary ul.error-summary-list {
+  padding-bottom: 0;
+  list-style-type: none;
+}
+.error_div{
+  border-left: 5px solid $error-colour;
+  padding-left: 15px;
+}
+
+.error_message {
+  color: $error-colour;
+  font-weight: bold;
+}
+.error-message {
+  color: $error-colour;
+  font-weight: bold;
+}
+
+
+//Existing User CSS
+
+i.flaticon-checked21 {
+  padding-right: 22px;
+  color: white;
+  font-weight: bold; }
+i {
+  padding-right: 15px; }
+.no-margin:before {
+  margin-left: 0 !important;
+  color: #008000; }
+.nopadding {padding:0!important}
+
+.tick-list{
+  list-style-type: none;
+}
+.tick-list li{
+  padding-bottom: 5px;
+}
+.tick-list i{
+  float: left;
+}
+
+
+.inner_header{
+  width: 100%;
+  display: block;
+  margin-bottom: 30px;
+  height: 1em;
+
+  #mobile-inner-header{
+    float: right;
+    width: 100%!important;
+  }
+
+  .inner-header-content {
+    float: right;
+    padding-top: 8px;
+  }
+
+  @media (max-width:640px) {
+    margin-bottom: 0;
+    float: none;
+    border: none;
+    .inner-header-content{
+      float: none;
+      padding: 0;
+    }
+
+    span.email-logout-text {
+      float: right;
+      width: auto;
+    }
+
+    a.back-to-previous {
+      float: left;
+    }
+  }
+  @include media(mobile){
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    display: block;
+    border-bottom: 1px solid #bfc1c3;
+    height: 4em;
+
+  }
+}
+.email-logout-text{
+  margin-top: .75em;
+  font-size: 16px;
+  line-height: 1.1;
+}
+
+.email-logout-text a {
+  margin-left: 10px;
+}
+
+#address-list-group {
+  height: 33px;
+  margin-bottom: 15px;
+  margin-top: 5px;
+}
+
+/*Post code lookup updates*/
+
+
+
+
+#find-postcode {
+  padding: 4px;
+  float: left;
+  height: 35px; }
+@media (max-width: 640px) {
+  #find-postcode {
+    width: 97%;
+    height: 22px;
+    padding: 1%; } }
+@media (min-width: 641px) {
+  #find-postcode {
+    padding: 0 15px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 4px; } }
+@media (min-width: 641px) and (min-width: 641px) {
+  #find-postcode {
+    float: left;
+    width: 33.3333333333%; } }
+@media (min-width: 769px) {
+  #find-postcode {
+    padding: 0 15px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 4px; } }
+@media (min-width: 769px) and (min-width: 641px) {
+  #find-postcode {
+    float: left;
+    width: 33.3333333333%; } }
+
+.find-address {
+  height: 34px;
+  float: left; }
+@media (max-width: 640px) {
+  .find-address {
+    margin: 10px 0 0 0;
+    width: 100%; } }
+@media (min-width: 641px) {
+  .find-address {
+    margin: 0 0px 0 10px; } }
+@media (min-width: 769px) {
+  .find-address {
+    margin: 0 0px 0 10px; } }
+
+a#address-manual {
+  float: left;
+  clear: left;
+  margin-top: 7px; }
+
+
+#address-list-group,
+#address-list-group-alt {
+  height: 33px;
+  margin-bottom: 15px;
+  margin-top: 5px;
+  clear: both; }
+
+#address-list-group-alt {
+  width: 60%; }
+
+/* country ddl */
+select.country {
+  max-width: 100%;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  border-radius: 0;
+}
+
+#mobile-inner-header {
+  float: right;
+  margin-top: .5em;
+}
+
+@media (max-width: 640px) {
+  a.back-to-previous {
+    font-size: 14px;
+  }
+
+  #Applications-Link {
+    margin-left: 0px;
+    padding-left: 0px;
+  }
+  #mobile-inner-header {
+    float: left;
+    display: block;
+    width: 100%;
+    border-bottom: 1px solid #bfc1c3;
+    height: auto;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
+}
+
+.help-content-div {
+  margin: 0 15px 45px 0;
+}
+
+.help-content-body {
+  display: none;
+  margin-top: 5px;
+}
+.help-content-div a:visited{
+  color:#005ea5
+
+}
+.icon-toggle-right{
+  background: url("/api/user/images/icon-caret-right.png") left 0.3em no-repeat;
+  padding-left: 0.75em;
+
+}
+
+.icon-toggle-down  {
+  background: url("/api/user/images/icon-caret-down.png") left 0.3em no-repeat;
+  padding-left: 0.75em;
+
+
+}
+
+.review-personal-details {
+  margin-bottom: 30px;
+}
+
+.no-js-show{
+  display: block;
+}
+
+
+.sr-only{
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}
+
+
+
+
+.linkButton {
+  background: none;
+  border: none;
+  color: #005ea5;
+  text-decoration: underline;
+  cursor: pointer;
+  padding-left: 0; }
+
+.summary_change_links {
+  background: none;
+  border: none;
+  text-align: right;
+  text-decoration: underline; }
+
+.back-to-previous {
+  font-family: "nta",Arial,sans-serif;
+  font-size: 16px;
+  line-height: 1.25;
+  font-weight: 300;
+  text-transform: none;
+  display: block;
+  text-decoration: none;
+  border-bottom: #0b0c0c 1px solid;
+  width: 2.25em;
+  background: url("images/icon-caret-left.png") left 0.2em no-repeat;
+  padding-left: 0.75em;
+  margin-top: 0.75em;
+  text-align: right;
+  overflow: hidden;
+  color: #0b0c0c !important; }
+
+.back_to_previous_button {
+  font-family: "nta",Arial,sans-serif;
+  font-size: 16px;
+  line-height: 1.1;
+  font-weight: 300;
+  text-transform: none;
+  display: block;
+  text-decoration: none;
+  padding-left: 0.75em;
+  margin-top: 0.75em;
+  overflow: hidden;
+  color: #0b0c0c !important;
+  border: none;
+  width: 36px;
+  border-bottom: #0b0c0c 1px solid;
+  text-align: right;
+  background: url("images/icon-caret-left.png") left 48% no-repeat;
+
+}
+.left{
+  float:left
+}
+
+.back_to_previous_button:focus {
+  background-color: #ffbf47;
+  outline: 3px solid #ffbf47; }
+
+@media (min-width: 641px) {
+  .heading-xlarge, .heading-medium, .heading-large {
+    width: 66.3%; }
+  .confirmed {
+    width: 95% !important; } }
+
+a {
+  color: #005ea5; }
+
+a:hover {
+  color: #2e8aca; }
+
+a:visited {
+  color: #4c2c92; }
+
+
+.nopadding {padding:0!important}
+
+.tick-list{
+  list-style-type: none;
+}
+.tick-list li{
+  padding-bottom: 5px;
+}
+.tick-list i{
+  float: left;
+}
+
+
+#address-list-group {
+  height: 33px;
+  margin-bottom: 15px;
+  margin-top: 5px;
+}
+
+/*Post code lookup updates*/
+#find-postcode {
+  padding: 4px;
+  float: left;
+  height: 35px; }
+@media (max-width: 640px) {
+  #find-postcode {
+    width: 97%;
+    height: 22px;
+    padding: 1%; } }
+@media (min-width: 641px) {
+  #find-postcode {
+    padding: 0 15px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 4px; } }
+@media (min-width: 641px) and (min-width: 641px) {
+  #find-postcode {
+    float: left;
+    width: 33.3333333333%; } }
+@media (min-width: 769px) {
+  #find-postcode {
+    padding: 0 15px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 4px; } }
+@media (min-width: 769px) and (min-width: 641px) {
+  #find-postcode {
+    float: left;
+    width: 33.3333333333%; } }
+
+.find-address {
+  height: 34px;
+  float: left; }
+@media (max-width: 640px) {
+  .find-address {
+    margin: 10px 0 0 0;
+    width: 100%; } }
+@media (min-width: 641px) {
+  .find-address {
+    margin: 0 0px 0 10px; } }
+@media (min-width: 769px) {
+  .find-address {
+    margin: 0 0px 0 10px; } }
+
+a#address-manual {
+  float: left;
+  clear: left;
+  margin-top: 7px; }
+
+#address-list-group,
+#address-list-group-alt {
+  height: 33px;
+  margin-bottom: 15px;
+  margin-top: 5px;
+  clear: both; }
+
+#address-list-group-alt {
+  width: 60%; }
+
+/* country ddl */
+select.country {
+  max-width: 100%;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  border-radius: 0;
+}
+
+
+
+.help-content-div {
+  margin: 0 15px 45px 0;
+}
+
+.help-content-body {
+  display: none;
+  margin-top: 5px;
+}
+.help-content-div a:visited{
+  color:#005ea5
+
+}
+.icon-toggle-right{
+  background: url("/api/user/images/icon-caret-right.png") left 0.3em no-repeat;
+  padding-left: 0.75em;
+
+}
+
+.icon-toggle-down  {
+  background: url("/api/user/images/icon-caret-down.png") left 0.3em no-repeat;
+  padding-left: 0.75em;
+
+
+}
+
+.review-personal-details {
+  margin-bottom: 30px;
+}
+
+.no-js-show{
+  display: block;
+}
+
+
+.sr-only{
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}
+
+
+
+//FOOTER CSS
+
+//FOOTER CSS
+#footer {
+  border-top: 10px solid #005ea5;
+}
+.footer-categories{
+  padding: 0 15px 20px;
+}
+.footer-explore{
+  float: left;
+  width: 66.66%;
+  padding-bottom: 40px;
+}
+.footer-categories ul {
+  float: left;
+  margin: 10px 0 0 0;
+  width: 50%;
+  font-size: 16px;
+  line-height: 1.25;
+  padding-left: 0;
+  list-style-type: none;
+}
+#footer .footer-categories .footer-inside-government h2 {
+  margin: 0 15px;}
+.footer-categories ul li {
+  padding: 20px 0 0;
+  margin: 0 15px;
+}
+.footer-categories .footer-inside-government {
+  float: left;
+  width: 33.33%;
+}
+.footer-categories .footer-explore h2, #footer .footer-categories .footer-inside-government h2 {
+  padding: 0 0 20px;
+  border-bottom: 1px solid #bfc1c3;
+}
+
+.footer-categories hr {
+  clear: both;
+  margin: 0 15px 0px;
+  border: 1px solid #bfc1c3;
+  border-width: 1px 0 0 0;
+}
+#footer .footer-meta .footer-meta-inner {
+  padding-top: 30px;
+}
+
+
+.button {
+  background-color: #00823b;
+  position: relative;
+  display: -moz-inline-stack;
+  display: inline-block;
+  padding: 0.3em 0.6em 0.2em 0.6em;
+  border: none;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  -webkit-appearance: none;
+  -webkit-box-shadow: 0 2px 0 #003618;
+  -moz-box-shadow: 0 2px 0 #003618;
+  box-shadow: 0 2px 0 #003618;
+  font-size: 1em;
+  line-height: 1.25;
+  text-decoration: none;
+  -webkit-font-smoothing: antialiased;
+  cursor: pointer;
+  color: #fff;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0 15px 15px 0;
+  padding: 0.5263157895em 0.7894736842em 0.2631578947em 0.7894736842em;
+  vertical-align: top; }
+.button:visited {
+  background-color: #00823b; }
+.button:hover, .button:focus {
+  background-color: #00692f; }
+.button:active {
+  top: 2px;
+  -webkit-box-shadow: 0 0 0 #00823b;
+  -moz-box-shadow: 0 0 0 #00823b;
+  box-shadow: 0 0 0 #00823b; }
+.button.disabled, .button[disabled="disabled"], .button[disabled] {
+  zoom: 1;
+  filter: alpha(opacity=50);
+  opacity: 0.5; }
+.button.disabled:hover, .button[disabled="disabled"]:hover, .button[disabled]:hover {
+  cursor: default;
+  background-color: #00823b; }
+.button.disabled:active, .button[disabled="disabled"]:active, .button[disabled]:active {
+  top: 0;
+  -webkit-box-shadow: 0 2px 0 #003618;
+  -moz-box-shadow: 0 2px 0 #003618;
+  box-shadow: 0 2px 0 #003618; }
+.button:link, .button:hover, .button:focus, .button:visited {
+  color: #fff; }
+.button:before {
+  content: "";
+  height: 110%;
+  width: 100%;
+  display: block;
+  background: transparent;
+  position: absolute;
+  top: 0;
+  left: 0; }
+.button:active:before {
+  top: -10%;
+  height: 120%; }
+.button[rel="external"]:after {
+  display: none;
+  content: none;
+  margin-left: 0;
+  margin-right: 0; }
+@media (max-width: 640px) {
+  .button {
+    width: 100%; } }
+
+.button::-moz-focus-inner {
+  border: 0;
+  padding: 0; }
+
+.button:focus {
+  outline: 3px solid #ffbf47; }
+
+.button[disabled="disabled"] {
+  background: #00823b; }
+
+.button[disabled="disabled"]:focus {
+  outline: none; }
+
+.button-get-started {
+  font-family: "nta", Arial, sans-serif;
+  font-size: 24px;
+  line-height: 1.25;
+  font-weight: 700;
+  text-transform: none;
+  background-image: image-url("icons/icon-pointer.png");
+  background-repeat: no-repeat;
+  background-position: 100% 50%;
+  padding: 0.3684210526em 2.1578947368em 0.2105263158em 0.8421052632em; }
+@media (max-width: 640px) {
+  .button-get-started {
+    font-size: 18px;
+    line-height: 1.2; } }
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  .button-get-started {
+    background-image: image-url("icons/icon-pointer-2x.png");
+    background-size: 30px 19px; } }
+
+
+.confirmation-summary {
+  color: white;
+  background-color: #28a197;
+  padding: 10px;
+  margin-bottom: 20px;
+  margin-top: -35px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%; }
+
+table th,
+table td {
+  font-family: "nta", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.25;
+  font-weight: 400;
+  text-transform: none;
+  padding: 0.75em 1.25em 0.5625em 0;
+  text-align: left;
+  color: #0b0c0c;
+  border-bottom: 1px solid #bfc1c3; }
+@media (max-width: 640px) {
+  table th,
+  table td {
+    font-size: 14px;
+    line-height: 1.1428571429; } }
+
+table th {
+  font-weight: 700; }
+
+table th.numeric {
+  text-align: right; }
+
+table td.numeric {
+  font-family: "ntatabularnumbers", "nta", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.25;
+  font-weight: 400;
+  text-transform: none;
+  text-align: right; }
+@media (max-width: 640px) {
+  table td.numeric {
+    font-size: 14px;
+    line-height: 1.1428571429; } }
+
+
+table.summary-table {
+  width: 100%; }
+
+table.printable-summary table.summary-table {
+  width: 100%; }
+
+td.summary-table-cell-label {
+  width: 33%;
+  vertical-align: top;
+  border-top: 1px solid #bfc1c3;
+  font-size: 0.9em;
+  font-weight: bold; }
+
+td.summary-table-cell-content {
+  width: 33%;
+  vertical-align: top;
+  border-top: 1px solid #bfc1c3;
+}
+
+td.summary-table-cell-link {
+  width: 33%;
+  vertical-align: top;
+  border-top: 1px solid #bfc1c3;
+  text-align: right;
+  padding-right: 0em; }
+
+.button-secondary {
+  background-color: #dee0e2;
+  color: #0b0c0c!important;
+  box-shadow: 0 2px 0 #b5babe; }
+
+.button-secondary:visited{
+  background-color: #dee0e2;
+  color: #0b0c0c;
+  box-shadow: 0 2px 0 #b5babe;
+}
+.button-secondary:hover, .button-secondary:focus {
+  background-color: #d0d3d6;
+  color: #0b0c0c;
+  box-shadow: 0 2px 0 #b5babe;
+}
+
+.button-delete {
+  background-color: #b10e1e;
+  color: white!important;
+  box-shadow: 0 2px 0 #000; }
+
+.button-delete:visited{
+  background-color: #b10e1e;
+  color: white!important;
+  box-shadow: 0 2px 0 #000;
+}
+.button-delete:hover, .button-delete:focus {
+  background-color: #6a0812;
+  color: #0b0c0c;
+  box-shadow: 0 2px 0 #000;
+}
+.address-button{
+  width:80px;text-align: center
+}
+
+.find-address {
+  height: 34px;
+  float: left; }
+@media (max-width: 640px) {
+  .find-address {
+    margin: 10px 0 0 0;
+    width: 100%; } }
+@media (min-width: 641px) {
+  .find-address {
+    margin: 0 0px 0 10px; } }
+@media (min-width: 769px) {
+  .find-address {
+    margin: 0 0px 0 10px; } }
+.find-address, .address-manual {
+  float: left; }
+
+#select-address-form {
+  clear:left;
+}
+#select-address-form input,#select-address-form select {
+
+  float: left;
+  margin-right: 10px;
+}
+
+.review-personal-details {
+  margin-bottom: 30px;
+}
+
+.help-content-div {
+  margin: 0 15px 45px 0;
+}
+
+.help-content-body {
+  display: none;
+  margin-top: 5px;
+}
+.help-content-div a:visited{
+  color:#005ea5
+
+}
+.no-js-show{
+  display: block;
+}
+
+#postcode-error{
+  margin-top: 0!important;
+}
+.column-two-thirds{
+  float: none;
+}
+.column-two-thirds .error-summary {
+  margin-top: 0;
+}

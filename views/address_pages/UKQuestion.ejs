@@ -1,0 +1,51 @@
+<% pageTitle ="Add a return address - Get a document legalised – GOV.UK" %>
+<%include ../partials/header.ejs %>
+
+
+<a href="<%= initial ? '/api/user/complete-registration' : '/api/user/addresses'%>" class="back_to_previous_button">Back</a>
+
+
+<h1 class="heading-xlarge">Add a return address</h1>
+
+<%if (error_report && error_report.length>0 ) {%>
+<div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" style="clear:left; width:66.6%">
+
+    <p class="heading-medium error-summary-heading" id="error-summary-heading">
+        Please check the form
+    </p>
+    <ul class="error-summary-list nopadding">
+       <li><a href="#is-uk">Confirm whether the return address is in the UK</a></li>
+    </ul>
+</div>
+<%}%>
+
+<div class="form-group">
+    <form id="is-uk" method="post" action="<%= '/api/user/add-address-uk' %>">
+
+        <div class="form-group <%if (error_report && error_report.length>0 ) {%>error<%}%>">
+            <h2 class="form-label-bold">Is the return address in the UK?</h2>
+            <%if (error_report && error_report.length>0 ) {%><span class="error-message">Confirm whether the return address is in the UK</span><%}%>
+            <fieldset class="inline" aria-required="true" role="radiogroup">
+                <legend class="visually-hidden">Confirm whether the return address is in the UK</legend>
+                <label class="block-label <%if(typeof(uk)!='undefined' && uk){%>selected<%} %>" for="radio-yes">
+                    <input id="radio-yes"  type="radio" name="is_uk" value="true" <%if(typeof(uk)!='undefined' && uk){%>checked="checked"<%}%>>
+                    Yes
+                </label>
+                <label class="block-label <%if(typeof(uk)!='undefined' && !uk && uk!=null){%>selected<%}%>" for="radio-no">
+                    <input id="radio-no" type="radio" name="is_uk" value="false" <%if(typeof(uk)!='undefined'&& !uk && uk!=null ){%>checked="checked"<%}%>>
+                    No
+                </label>
+            </fieldset>
+        </div>
+
+
+
+        <div class="form-group">
+            <button class="button" type="submit">Continue</button>
+        </div>
+
+
+    </form>
+</div>
+
+<% include ../partials/footer.ejs %>
