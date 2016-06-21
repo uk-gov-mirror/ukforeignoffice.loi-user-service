@@ -19,7 +19,6 @@ describe('Work with Users', function () {
             .expect(200)
             .end(function (err, res) {
                 if (err) return done(err);
-                expect(res.text).to.have.string('Redirecting to /api/user/emailconfirm');
 
                 //expect status to be submitted
                 Model.User.findOne(
