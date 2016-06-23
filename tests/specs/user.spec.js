@@ -7,6 +7,7 @@ describe('Work with Users', function () {
     it('registers a new user', function (done) {
         var newUser = {
             "email":"bob@example.com",
+            "confirm_email":"bob@example.com",
             "password" : "P@ssw0rd16",
             "confirm_password" : "P@ssw0rd16",
             "all_info_correct" : "on",
@@ -16,10 +17,9 @@ describe('Work with Users', function () {
 
         request(baseUrl).post('/register')
             .send(newUser)
-            .expect(200)
+            .expect(302)
             .end(function (err, res) {
                 if (err) return done(err);
-                expect(res.text).to.have.string('Redirecting to /api/user/emailconfirm');
 
                 //expect status to be submitted
                 Model.User.findOne(
@@ -51,7 +51,6 @@ describe('Work with Users', function () {
             .end(function (err, res) {
                 if (err) return done(err);
                 expect(res.text).to.have.string('Redirecting to /api/user/sign-in');
-                console.log(res.headers['set-cookie']);
                 done();
             });
     });
@@ -78,7 +77,7 @@ describe('Work with Users', function () {
                     .expect(302)
                     .end(function (err, res) {
                         if (err) return done(err);
-                        expect(res.text).to.have.string('Redirecting to /api/user/sign-in');
+                        expect(res.text).to.have.string('Found. Redirecting to /api/user/dashboard');
                         done();
                     });
             }).catch( function(error) {
