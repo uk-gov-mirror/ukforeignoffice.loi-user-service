@@ -7,6 +7,7 @@ describe('Work with Users', function () {
     it('registers a new user', function (done) {
         var newUser = {
             "email":"bob@example.com",
+            "confirm_email":"bob@example.com",
             "password" : "P@ssw0rd16",
             "confirm_password" : "P@ssw0rd16",
             "all_info_correct" : "on",
