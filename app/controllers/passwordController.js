@@ -22,6 +22,7 @@ module.exports.forgotPassword =  function(req, res) {
         },
         function(token, done) {
             //Find User
+            req.body.email = req.body.email.toLowerCase();
             Model.User.findOne({
                 where: {
                     'email': req.body.email
