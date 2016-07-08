@@ -148,6 +148,7 @@ console.log(req.body.postcode === '' || req.body.postcode.length >20);
             {
                 full_name: req.body.full_name !== '' && req.body.full_name !== undefined && req.body.full_name != 'undefined'  ? req.body.full_name : "",
                 postcode:  postcode,
+                organisation: req.body.organisation !== '' && req.body.organisation !== undefined && req.body.organisation != 'undefined' ? req.body.organisation : "",
                 house_name: req.body.house_name !== '' && req.body.house_name !== undefined && req.body.house_name != 'undefined' ? req.body.house_name : "",
                 street: req.body.street !== '' && req.body.street !== undefined && req.body.street != 'undefined'  ? req.body.street : "",
                 town: req.body.town !== '' && req.body.town !== undefined && req.body.town != 'undefined'  ? req.body.town : "",
