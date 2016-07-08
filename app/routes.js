@@ -62,6 +62,9 @@ module.exports = function(express,envVariables) {
         else if (error == 'There was a problem signing in') {
             error_subitem = 'Check your email and password and try again';
         }
+        if (error){
+            console.info('Failed Sign In Attempt: '+ error);
+        }
         //render page and pass in flash data if any exists
         return res.render('sign-in.ejs', {
             error: error,

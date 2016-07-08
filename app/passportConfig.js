@@ -37,6 +37,7 @@ module.exports = function(app,passport) {
                                 'email': email
                             }
                         }).then(function () {
+                            console.info('Successful Login');
                             return done(null, user);
 
                         });
