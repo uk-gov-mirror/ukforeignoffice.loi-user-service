@@ -32,9 +32,9 @@ module.exports = function(express,envVariables) {
         res.redirect(envVariables.applicationServiceURL);
     });
 
-    // healtchech
+    // healtcheck
     router.get('/healthcheck', function(req, res) {
-        res.json({ message: 'is-user-account-management-service running'});
+        res.json({message: 'User Service is running'});
     });
 
     router.get('/usercheck' , function(req,res) {
