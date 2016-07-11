@@ -313,6 +313,12 @@ module.exports.saveAddress= function(req,res) {
                 postcode =  postcodeObject.valid() ? postcodeObject.normalise() :'';
             }
 
+            if(!req.body.house_name ||  req.body.house_name.length==0){
+                if(req.body.organisation && req.body.organisation.length>0 && req.body.organisation != 'N/A'){
+                    req.body.house_name = 'N/A'
+                }
+            }
+
             Model.SavedAddress.create({
                 user_id: user.id,
                 full_name: req.body.full_name,
@@ -379,6 +385,14 @@ module.exports.editAddress= function(req,res) {
     else{
         postcode =  postcodeObject.valid() ? postcodeObject.normalise() :'';
     }
+
+
+    if(!req.body.house_name ||  req.body.house_name.length==0){
+        if(req.body.organisation && req.body.organisation.length>0 && req.body.organisation != 'N/A'){
+            req.body.house_name = 'N/A'
+        }
+    }
+
     Model.User.findOne({where:{email:req.session.email}}).then(function(user) {
         Model.AccountDetails.findOne({where:{user_id:user.id}}).then(function(account){
             Model.SavedAddress.update({

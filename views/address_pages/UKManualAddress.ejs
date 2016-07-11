@@ -112,7 +112,7 @@ if (error_report) {
                         <% } %>
                     </span>
                 </legend>
-                <input class="form-control" id="house_name" type="text" aria-required="true" name="house_name" value="<%if(form_values[0]){%><%= form_values[0].house_name%><%} else if (form_values) { %><%= form_values.house_name %><% } %>" >
+                <input class="form-control" id="house_name" type="text" aria-required="true" name="house_name" value="<%if(form_values && form_values.house_name && form_values.house_name != 'N/A') { %><%= form_values.house_name %><% } %>" >
             </fieldset>
         </div>
 
