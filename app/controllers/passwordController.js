@@ -29,7 +29,10 @@ module.exports.forgotPassword =  function(req, res) {
             }).then(function (user) {
                 var emailPattern = /\S+@\S+\.\S+/;
 
+                console.info('Password reset requested.');
+
                 if (!emailPattern.test(req.body.email)) {
+                    console.info('Invalid email pattern on password reset.');
                     return res.render('forgot', {message: "Please enter a valid email address."});
                 }
                 else  {
@@ -38,6 +41,7 @@ module.exports.forgotPassword =  function(req, res) {
                 }
 
                 if (!user) {
+                    console.info('Email not found for password reset request.');
                     return res.redirect('/api/user/sign-in');
                 }
                 //Create expiry variable for token expiration
