@@ -149,6 +149,7 @@ module.exports.resetPassword = function(req, res) {
                             where: {email: user.email}
                         })
                             .then(function () {
+                                console.info('Password reset requested. Change successful.');
                                 done(user);
 
                             });
