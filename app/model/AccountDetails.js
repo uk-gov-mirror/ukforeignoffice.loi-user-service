@@ -60,7 +60,17 @@ var attributes = {
     },
     company_name: {
         type: Sequelize.STRING,
-        allowNull: true
+        allowNull: true,
+        validate: {
+            len:{
+                args: [1,50], //
+                msg: JSON.stringify([{
+                    "errInfo": 'You have not provided a valid company name.',
+                    "errSoltn": 'Enter between 1 and 50 characters.',
+                    "questionId" : 'company_name'
+                }])
+            }
+        }
 
 
     },
