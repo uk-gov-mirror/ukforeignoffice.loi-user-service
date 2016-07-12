@@ -144,6 +144,7 @@ $('#address-list-box').change(function(){
             $("#sr-notification-container").empty().text("The address you've selected has been added to the form. Submit to continue.");
             $('#uk-address-form').removeClass('hide');
             $('input[name="full_name"]').val(data.full_name);
+            $('input[name="organisation"]').val(data.address.organisation || '');
             $('input[name="house_name"]').val(data.address.house_name);
             $('input[name="street"]').val(data.address.street);
             $('input[name="town"]').val(data.address.town);

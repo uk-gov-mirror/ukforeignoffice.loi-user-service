@@ -120,7 +120,7 @@
 
             <div class="form-group <% if (erroneousFields && (erroneousFields[0].password == true || erroneousFields[0].confirm_password == true) && JSON.stringify(error).indexOf('confirm_password') > -1)  { %>error<% } %>"
                  id="legend_confirm_password">
-                <label for="confirm_password" class="form-label-bold">Confirm Password</label>
+                <label for="confirm_password" class="form-label-bold">Confirm password</label>
                 <fieldset>
                     <legend class="<% if (erroneousFields && (erroneousFields[0].password == true || erroneousFields[0].confirm_password == true) && JSON.stringify(error).indexOf('confirm_password') > -1) { %>show<% } else { %>hide<% } %>">
                             <span class="error-message">

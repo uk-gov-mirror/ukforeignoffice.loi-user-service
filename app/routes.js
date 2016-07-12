@@ -32,9 +32,9 @@ module.exports = function(express,envVariables) {
         res.redirect(envVariables.applicationServiceURL);
     });
 
-    // healtchech
+    // healtcheck
     router.get('/healthcheck', function(req, res) {
-        res.json({ message: 'is-user-account-management-service running'});
+        res.json({message: 'User Service is running'});
     });
 
     router.get('/usercheck' , function(req,res) {
@@ -61,6 +61,9 @@ module.exports = function(express,envVariables) {
         }
         else if (error == 'There was a problem signing in') {
             error_subitem = 'Check your email and password and try again';
+        }
+        if (error.length>0){
+            console.info('Failed Sign In Attempt: '+ error);
         }
         //render page and pass in flash data if any exists
         return res.render('sign-in.ejs', {
