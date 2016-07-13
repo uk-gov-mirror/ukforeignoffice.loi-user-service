@@ -48,10 +48,6 @@ var attributes = {
             }
         }
     },
-    organisation: {
-        type: Sequelize.STRING,
-        allowNull: true
-    },
     house_name: {
         type: Sequelize.STRING,
         allowNull: false,

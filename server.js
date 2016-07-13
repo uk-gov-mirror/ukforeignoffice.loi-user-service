@@ -38,19 +38,10 @@ var store = new MongoDBStore(
         collection: 'sessions'
     });
 app.set('view engine', 'ejs');
-
 var cookie_domain = null;
 if(environmentVariables.cookieDomain && environmentVariables.cookieDomain.cookieDomain ){
     cookie_domain = environmentVariables.cookieDomain.cookieDomain;
 }
-
-app.use(function (req, res, next) {
-    res.locals = {
-        piwikID: cookie_domain == "www.legalistiaonbeta.co.uk" ? 19 : 18
-    };
-    next();
-});
-
 
 app.use(session({
     secret: '6542356733921bb813d3ca61002410fe',

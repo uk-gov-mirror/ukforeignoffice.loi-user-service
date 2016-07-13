@@ -2,7 +2,7 @@
     <div class="inner-header-content">
 
     <span class="email-logout-text">
-        <%if(typeof(account)!='undefined' && account!=null && account.first_name.length>0){%><%= (account.first_name+' '+account.last_name).substr(0,50)%><%}else{%><%= user.email%><%}%>
+        <%if(typeof(account)!='undefined' && account!=null && account.first_name.length>0){%><%= account.first_name+' '+account.last_name%><%}else{%><%= user.email%><%}%>
     </span>
         <span class="email-logout-text">
         <a id="Applications-Link" href="<%= url.applicationServiceURL%>dashboard" class="btn btn-success btn-sm">Applications</a>

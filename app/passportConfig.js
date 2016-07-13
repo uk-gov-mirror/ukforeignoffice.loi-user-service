@@ -37,7 +37,6 @@ module.exports = function(app,passport) {
                                 'email': email
                             }
                         }).then(function () {
-                            console.info('Successful Login');
                             return done(null, user);
 
                         });
@@ -58,7 +57,6 @@ module.exports = function(app,passport) {
                                 }
                             }).then(function () {
                                 emailService.lockedOut(user.first_name, email);
-                                console.info('ACCOUNT LOCKED - UserID:'+user.id);
                                 return done(null, false, {message: 'There was a problem signing in'});
                             });
                         }

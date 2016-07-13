@@ -113,39 +113,44 @@ module.exports.findAddress= function(req,res) {
                 });
             }else {
                 postcodeLookup(postcode.normalise()).then(function (results) {
+
                     var addresses = [];
                     if (JSON.parse(results).message == 'No matching address found: no response') {
                         req.flash('error', 'No addresses found');
                         addresses = false;
+
                     } else {
                         var jsonResults = JSON.parse(results);
                         addresses = [];
                         jsonResults.forEach(function (address) {
 
+                            var streetNumber = "";
+                            if (address.house_name.indexOf('undefined') === -1) {
+                                streetNumber = address.full.replace(address.house_name, '').match(/\d+/);
+                                address.full = address.house_name + ', ' + address.full.replace(address.house_name, '');
+                            } else {
+                                streetNumber = address.full.replace(address.house_name.replace('undefined', ''), '').match(/\d+/);
+                                // flat and number                                  // house number                                                         // street and rest of address
+                                address.full = address.house_name.replace('undefined', '') + streetNumber + ', ' + address.full.replace(address.house_name.replace('undefined', ''), '').replace(address.full.replace(address.house_name.replace('undefined', ''), '').match(/\d+/), '');
+                            }
 
-                            var fullAddress = '';
-                            fullAddress += address.organisation ? address.organisation + ', ' : '';
-                            fullAddress += address.house_name   ? address.house_name + ', ' : '';
-                            fullAddress += address.street       ? address.street + ', ' : '';
-                            fullAddress += address.town         ? toTitleCase(address.town)  : '';
-                            fullAddress += address.county       ?  ', '+address.county : '';
+
+                            var fullAddress = address.full.split(',')[0] + ", " + address.full.split(',')[1] + ", " + address.full.split(',')[2] + (address.full.split(',')[4] === '' ? ' , ' + address.postcode : ', ' + address.full.split(',')[4]);
 
 
+                            addresses.push({
+                                option: address.house_name.replace(' undefined', ', ') + fullAddress.replace(',  , ', ', ').replace(address.house_name.replace('undefined', ''), ''),
+                                house_name: address.house_name.replace('undefined', '').trim() + (streetNumber.index < 2 ? ', ' + streetNumber : ''),
+                                street: address.street !== null && address.street != 'undefined' && address.street !== undefined ? address.street : '',
+                                town: address.town !== null && address.town != 'undefined' && address.town !== undefined ? toTitleCase(address.town) : '',
+                                county: address.county !== null && address.county != 'undefined' && address.county !== undefined ? address.county : '',
+                                postcode: postcode.normalise()
+                            });
                             function toTitleCase(str) {
                                 return str.replace(/\w\S*/g, function (txt) {
                                     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
                                 });
                             }
-
-                            addresses.push({
-                                option: fullAddress,
-                                organisation: address.organisation,
-                                house_name: address.house_name,
-                                street: address.street !== null && address.street !== 'undefined' && address.street !== undefined ? address.street : '',
-                                town: address.town !== null && address.town !== 'undefined' && address.town !== undefined ? toTitleCase(address.town) : '',
-                                county: address.county !== null && address.county !== 'undefined' && address.county !== undefined ? address.county : '',
-                                postcode:  postcode.normalise()
-                            });
                         });
                     }
                     //todo: remove this from session, better to write it to the page as a hidden block than to risk polluting the session with a massive block of json
@@ -193,36 +198,41 @@ module.exports.ajaxFindPostcode = function(req,res) {
             var addresses = [];
             if (JSON.parse(results).message == 'No matching address found: no response') {
                 req.flash('error', 'No addresses found');
+                return_error = 'Enter a valid postcode';
                 addresses = false;
+
             } else {
                 var jsonResults = JSON.parse(results);
                 addresses = [];
                 jsonResults.forEach(function (address) {
 
+                    var streetNumber = "";
+                    if (address.house_name.indexOf('undefined') === -1) {
+                        streetNumber = address.full.replace(address.house_name, '').match(/\d+/);
+                        address.full = address.house_name + ', ' + address.full.replace(address.house_name, '');
+                    } else {
+                        streetNumber = address.full.replace(address.house_name.replace('undefined', ''), '').match(/\d+/);
+                        // flat and number                                  // house number                                                         // street and rest of address
+                        address.full = address.house_name.replace('undefined', '') + streetNumber + ', ' + address.full.replace(address.house_name.replace('undefined', ''), '').replace(address.full.replace(address.house_name.replace('undefined', ''), '').match(/\d+/), '');
+                    }
 
-                    var fullAddress = '';
-                    fullAddress += address.organisation ? address.organisation + ', ' : '';
-                    fullAddress += address.house_name   ? address.house_name + ', ' : '';
-                    fullAddress += address.street       ? address.street + ', ' : '';
-                    fullAddress += address.town         ? toTitleCase(address.town)  : '';
-                    fullAddress += address.county       ?  ', '+address.county : '';
+
+                    var fullAddress = address.full.split(',')[0] + ", " + address.full.split(',')[1] + ", " + address.full.split(',')[2] + (address.full.split(',')[3] === '' ? ' , ' + address.postcode : ', ' + address.full.split(',')[3]);
 
 
+                    addresses.push({
+                        option: address.house_name.replace(' undefined', ', ') + fullAddress.replace(',  , ', ', ').replace(address.house_name.replace('undefined', ''), ''),
+                        house_name: address.house_name.replace('undefined', '').trim() + (streetNumber.index < 2 ? ', ' + streetNumber : ''),
+                        street: address.street !== null && address.street != 'undefined' && address.street !== undefined ? address.street : '',
+                        town: address.town !== null && address.town != 'undefined' && address.town !== undefined ? toTitleCase(address.town) : '',
+                        county: address.county !== null && address.county != 'undefined' && address.county !== undefined ? address.county : '',
+                        postcode: postcode.normalise()
+                    });
                     function toTitleCase(str) {
                         return str.replace(/\w\S*/g, function (txt) {
                             return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
                         });
                     }
-
-                    addresses.push({
-                        option: fullAddress,
-                        organisation: address.organisation,
-                        house_name: address.house_name,
-                        street: address.street !== null && address.street !== 'undefined' && address.street !== undefined ? address.street : '',
-                        town: address.town !== null && address.town !== 'undefined' && address.town !== undefined ? toTitleCase(address.town) : '',
-                        county: address.county !== null && address.county !== 'undefined' && address.county !== undefined ? address.county : '',
-                        postcode:  postcode.normalise()
-                    });
                 });
             }
             //todo: remove this from session, better to write it to the page as a hidden block than to risk polluting the session with a massive block of json
@@ -255,7 +265,6 @@ module.exports.selectAddress= function(req,res) {
         Model.AccountDetails.findOne({where:{user_id:user.id}}).then(function(account){
             formValues = {
                 full_name: account.first_name + " " + account.last_name,
-                organisation: req.session.addresses[req.body.address].organisation,
                 house_name: req.session.addresses[req.body.address].house_name,
                 street: req.session.addresses[req.body.address].street,
                 town: req.session.addresses[req.body.address].town,
@@ -313,16 +322,9 @@ module.exports.saveAddress= function(req,res) {
                 postcode =  postcodeObject.valid() ? postcodeObject.normalise() :'';
             }
 
-            if(!req.body.house_name ||  req.body.house_name.length==0){
-                if(req.body.organisation && req.body.organisation.length>0 && req.body.organisation != 'N/A'){
-                    req.body.house_name = 'N/A'
-                }
-            }
-
             Model.SavedAddress.create({
                 user_id: user.id,
                 full_name: req.body.full_name,
-                organisation: req.body.organisation,
                 house_name: req.body.house_name,
                 street: req.body.street,
                 town:req.body.town,
@@ -385,19 +387,11 @@ module.exports.editAddress= function(req,res) {
     else{
         postcode =  postcodeObject.valid() ? postcodeObject.normalise() :'';
     }
-
-
-    if(!req.body.house_name ||  req.body.house_name.length==0){
-        if(req.body.organisation && req.body.organisation.length>0 && req.body.organisation != 'N/A'){
-            req.body.house_name = 'N/A'
-        }
-    }
-
     Model.User.findOne({where:{email:req.session.email}}).then(function(user) {
         Model.AccountDetails.findOne({where:{user_id:user.id}}).then(function(account){
+            console.log(req.body.postcode, req.body.country);
             Model.SavedAddress.update({
                 full_name: req.body.full_name,
-                organisation: req.body.organisation,
                 house_name: req.body.house_name,
                 street: req.body.street,
                 town:req.body.town,
