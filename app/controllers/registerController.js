@@ -145,6 +145,8 @@ module.exports.register = function(req, res) {
     }
 
 
+    req.body.email = req.body.email.toLowerCase();
+
     //check to see if the email address has already been used
     Model.User.findOne({
         where: {
