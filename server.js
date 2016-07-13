@@ -46,7 +46,10 @@ if(environmentVariables.cookieDomain && environmentVariables.cookieDomain.cookie
 
 app.use(function (req, res, next) {
     res.locals = {
-        piwikID: cookie_domain == "www.legalistiaonbeta.co.uk" ? 19 : 18
+        piwikID:cookie_domain == ("www.legalisationbeta.co.uk" ||"www.get-document-legalised.service.gov.uk") ? 19 :18,
+        service_public: environmentVariables.live_variables.Public,
+        start_url: environmentVariables.live_variables.startPageURL,
+        govuk_url: environmentVariables.live_variables.GOVUKURL
     };
     next();
 });

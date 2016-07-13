@@ -52,6 +52,9 @@ module.exports.show = function(req, res) {
 };
 
 module.exports.register = function(req, res) {
+    req.body.email = req.body.email.toLowerCase();
+    req.body.confirm_email = req.body.confirm_email.toLowerCase();
+
 
     var patt = new RegExp(envVariables.password_settings.passwordPattern);
     var emailPattern = /\S+@\S+\.\S+/;
@@ -143,6 +146,8 @@ module.exports.register = function(req, res) {
             applicationServiceURL: envVariables.applicationServiceURL
         });
     }
+
+
 
 
     //check to see if the email address has already been used

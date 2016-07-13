@@ -79,6 +79,8 @@ module.exports = function(express,envVariables) {
     });
 
     router.post('/sign-in', function(req,res,next){
+            req.body.email = req.body.email.toLowerCase();
+
             req.session.email = req.body.email;
             if(!req.body.email){
                 if(!req.body.password) {
@@ -172,6 +174,7 @@ module.exports = function(express,envVariables) {
             .then( function(user) {
                 if (!user) {
                     req.flash('info', 'The link for resetting your password has expired. Enter your email to get sent a new link.');
+                    console.info('Password reset requested. Reset link expired.');
                     return res.render('forgot',{message: req.flash('info'),locked:false});
                 }
                 return res.render('reset', {resetPasswordToken : req.params.token, error:false});
