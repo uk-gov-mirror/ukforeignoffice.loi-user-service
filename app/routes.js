@@ -69,7 +69,7 @@ module.exports = function(express,envVariables) {
             signed_out: req.query.expired,
             info: req.flash('info'),
             email: req.session.email,
-            back_link: req.query.from ? envVariables.applicationServiceURL + req.query.from : '/api/user/usercheck',
+            back_link: req.query.from ? envVariables.applicationServiceURL + req.query.from == "home" ? '' :   req.query.from : '/api/user/usercheck',
             applicationServiceURL: envVariables.applicationServiceURL,
             qs: req.query
         });
