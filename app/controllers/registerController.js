@@ -34,12 +34,20 @@ module.exports.usercheck = function(req, res) {
 };
 
 module.exports.show = function(req, res) {
+
     if(req.query.from){
-
-        req.session.back_link = req.query.from == 'home' ? ' ' : req.query.from;
-
-
+        if(req.query.from == 'home'){
+            req.session.back_link = envVariables.applicationServiceURL;
+        }
+        else if (req.query.from == 'start'){
+            req.session.back_link = envVariables.applicationServiceURL+'start'
+        }
+        else{
+            req.session.back_link = req.query.from;
+        }
     }
+
+
     return res.render('register.ejs', {
         form_values: false,
         erroneousFields:false,
@@ -47,7 +55,7 @@ module.exports.show = function(req, res) {
         error:false,
         error_description: false,
         email: req.session.email,
-        back_link: req.session.back_link ? envVariables.applicationServiceURL + req.session.back_link : '/api/user/usercheck',
+        back_link: req.session.back_link,
         applicationServiceURL: envVariables.applicationServiceURL });
 };
 
@@ -111,7 +119,7 @@ module.exports.register = function(req, res) {
     } else {
         if(req.body.business_yes_no=='Yes'){
             if(req.body.company_name.length < 1){
-            errorDescription.push("You have not provided a valid company name \n");
+                errorDescription.push("You have not provided a valid company name \n");
                 messages.push({company_name:"Enter a valid company name \n"});
                 erroneousFields[0].company_name=true;
             }
