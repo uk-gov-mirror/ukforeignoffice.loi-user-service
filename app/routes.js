@@ -66,13 +66,21 @@ module.exports = function(express,envVariables) {
             console.info('Failed Sign In Attempt: '+ error);
         }
         //render page and pass in flash data if any exists
+        var back_link = '/api/user/usercheck';
+        if(req.query.from == "home"){
+            back_link = envVariables.applicationServiceURL;
+        }
+        else{
+            back_link = req.query.from
+        }
+        console.log(back_link);
         return res.render('sign-in.ejs', {
             error: error,
             error_subitem: error_subitem,
             signed_out: req.query.expired,
             info: req.flash('info'),
             email: req.session.email,
-            back_link: req.query.from ? envVariables.applicationServiceURL + req.query.from : '/api/user/usercheck',
+            back_link: back_link,
             applicationServiceURL: envVariables.applicationServiceURL,
             qs: req.query
         });

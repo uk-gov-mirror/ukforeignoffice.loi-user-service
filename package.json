@@ -19,6 +19,7 @@
     "fs-extra": "^0.26.3",
     "govuk-elements-sass": "1.1.4",
     "govuk_frontend_toolkit": "4.10.0",
+    "isemail": "^2.2.0",
     "istanbul": "^0.4.2",
     "jshint": "^2.9.1",
     "mocha": "^2.4.5",

@@ -47,6 +47,7 @@ if(environmentVariables.cookieDomain && environmentVariables.cookieDomain.cookie
 app.use(function (req, res, next) {
     res.locals = {
         piwikID:cookie_domain == ("www.legalisationbeta.co.uk" ||"www.get-document-legalised.service.gov.uk") ? 19 :18,
+        feedbackURL:environmentVariables.live_variables.Public ? environmentVariables.live_variables.feedbackURL : "http://www.smartsurvey.co.uk/s/2264M/",
         service_public: environmentVariables.live_variables.Public,
         start_url: environmentVariables.live_variables.startPageURL,
         govuk_url: environmentVariables.live_variables.GOVUKURL
