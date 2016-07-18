@@ -75,7 +75,7 @@ module.exports = function(express,envVariables) {
                 back_link = envVariables.applicationServiceURL + 'start'
             }
             else {
-                back_link = req.query.from;
+                back_link =  req.query.from;
             }
         }
 

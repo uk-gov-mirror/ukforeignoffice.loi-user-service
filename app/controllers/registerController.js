@@ -40,7 +40,7 @@ module.exports.show = function(req, res) {
             req.session.back_link = envVariables.applicationServiceURL;
         }
         else if (req.query.from == 'start'){
-            req.session.back_link = envVariables.applicationServiceURL+'start'
+            req.session.back_link = envVariables.applicationServiceURL + 'start'
         }
         else{
             req.session.back_link = req.query.from;
