@@ -32,9 +32,9 @@ module.exports = function(express,envVariables) {
         res.redirect(envVariables.applicationServiceURL);
     });
 
-    // healtchech
+    // healtcheck
     router.get('/healthcheck', function(req, res) {
-        res.json({ message: 'is-user-account-management-service running'});
+        res.json({message: 'User Service is running'});
     });
 
     router.get('/usercheck' , function(req,res) {
@@ -62,20 +62,33 @@ module.exports = function(express,envVariables) {
         else if (error == 'There was a problem signing in') {
             error_subitem = 'Check your email and password and try again';
         }
+        if (error.length>0){
+            console.info('Failed Sign In Attempt: '+ error);
+        }
         //render page and pass in flash data if any exists
+        var back_link = '/api/user/usercheck';
+        if(req.query.from == "home"){
+            back_link = envVariables.applicationServiceURL;
+        }
+        else{
+            back_link = req.query.from
+        }
+        console.log(back_link);
         return res.render('sign-in.ejs', {
             error: error,
             error_subitem: error_subitem,
             signed_out: req.query.expired,
             info: req.flash('info'),
             email: req.session.email,
-            back_link: req.query.from ? envVariables.applicationServiceURL + req.query.from == "home" ? '' :   req.query.from : '/api/user/usercheck',
+            back_link: back_link,
             applicationServiceURL: envVariables.applicationServiceURL,
             qs: req.query
         });
     });
 
     router.post('/sign-in', function(req,res,next){
+            req.body.email = req.body.email.toLowerCase();
+
             req.session.email = req.body.email;
             if(!req.body.email){
                 if(!req.body.password) {
@@ -169,6 +182,7 @@ module.exports = function(express,envVariables) {
             .then( function(user) {
                 if (!user) {
                     req.flash('info', 'The link for resetting your password has expired. Enter your email to get sent a new link.');
+                    console.info('Password reset requested. Reset link expired.');
                     return res.render('forgot',{message: req.flash('info'),locked:false});
                 }
                 return res.render('reset', {resetPasswordToken : req.params.token, error:false});

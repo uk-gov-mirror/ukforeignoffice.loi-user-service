@@ -52,15 +52,19 @@ module.exports.show = function(req, res) {
 };
 
 module.exports.register = function(req, res) {
+    req.body.email = req.body.email.toLowerCase();
+    req.body.confirm_email = req.body.confirm_email.toLowerCase();
+
 
     var patt = new RegExp(envVariables.password_settings.passwordPattern);
-    var emailPattern = /\S+@\S+\.\S+/;
+    var isemail = require('isemail');
+    var emailValid =isemail.validate(req.body.email);
 
     var messages=[];
     var errorDescription =[];
     var erroneousFields=[{email:false,confirm_email:false, password:false, confirm_password:false, business_yes_no: false, company_name:false,all_info_correct: false }];
 
-    if (emailPattern.test(req.body.email) === false){
+    if (!emailValid){
         errorDescription.push("You have not provided a valid email address \n");
         messages.push({email:"Enter a valid email address \n"});
         erroneousFields[0].email=true;
@@ -143,6 +147,8 @@ module.exports.register = function(req, res) {
             applicationServiceURL: envVariables.applicationServiceURL
         });
     }
+
+
 
 
     //check to see if the email address has already been used

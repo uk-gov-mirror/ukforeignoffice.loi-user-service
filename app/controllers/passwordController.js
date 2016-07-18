@@ -22,6 +22,7 @@ module.exports.forgotPassword =  function(req, res) {
         },
         function(token, done) {
             //Find User
+            req.body.email = req.body.email.toLowerCase();
             Model.User.findOne({
                 where: {
                     'email': req.body.email
@@ -30,6 +31,7 @@ module.exports.forgotPassword =  function(req, res) {
                 var emailPattern = /\S+@\S+\.\S+/;
 
                 if (!emailPattern.test(req.body.email)) {
+                    console.info('Password reset requested. Invalid email pattern.');
                     return res.render('forgot', {message: "Please enter a valid email address."});
                 }
                 else  {
@@ -38,6 +40,7 @@ module.exports.forgotPassword =  function(req, res) {
                 }
 
                 if (!user) {
+                    console.info('Password reset requested. Email not found.');
                     return res.redirect('/api/user/sign-in');
                 }
                 //Create expiry variable for token expiration
@@ -54,6 +57,7 @@ module.exports.forgotPassword =  function(req, res) {
                         email: req.body.email
                     }})
                     .then(function(){
+                        console.info('Password reset requested.');
                         done(null,token);
                     });
             });
@@ -146,6 +150,7 @@ module.exports.resetPassword = function(req, res) {
                             where: {email: user.email}
                         })
                             .then(function () {
+                                console.info('Password reset requested. Change successful.');
                                 done(user);
 
                             });

@@ -38,10 +38,23 @@ var store = new MongoDBStore(
         collection: 'sessions'
     });
 app.set('view engine', 'ejs');
+
 var cookie_domain = null;
 if(environmentVariables.cookieDomain && environmentVariables.cookieDomain.cookieDomain ){
     cookie_domain = environmentVariables.cookieDomain.cookieDomain;
 }
+
+app.use(function (req, res, next) {
+    res.locals = {
+        piwikID:cookie_domain == ("www.legalisationbeta.co.uk" ||"www.get-document-legalised.service.gov.uk") ? 19 :18,
+        feedbackURL:environmentVariables.live_variables.Public ? environmentVariables.live_variables.feedbackURL : "http://www.smartsurvey.co.uk/s/2264M/",
+        service_public: environmentVariables.live_variables.Public,
+        start_url: environmentVariables.live_variables.startPageURL,
+        govuk_url: environmentVariables.live_variables.GOVUKURL
+    };
+    next();
+});
+
 
 app.use(session({
     secret: '6542356733921bb813d3ca61002410fe',
