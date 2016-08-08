@@ -72,7 +72,7 @@ module.exports = function(express,envVariables) {
                 back_link = envVariables.applicationServiceURL;
             }
             else if (req.query.from == 'start') {
-                back_link = envVariables.applicationServiceURL + 'start'
+                back_link = envVariables.applicationServiceURL + 'start';
             }
             else {
                 back_link =  req.query.from;
