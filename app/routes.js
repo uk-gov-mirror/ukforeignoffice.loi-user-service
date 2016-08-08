@@ -67,13 +67,19 @@ module.exports = function(express,envVariables) {
         }
         //render page and pass in flash data if any exists
         var back_link = '/api/user/usercheck';
-        if(req.query.from == "home"){
-            back_link = envVariables.applicationServiceURL;
+
+        if(req.query.from) {
+            if (req.query.from == 'home') {
+                back_link = envVariables.applicationServiceURL;
+            }
+            else if (req.query.from == 'start') {
+                back_link = envVariables.applicationServiceURL + 'start'
+            }
+            else {
+                back_link =  req.query.from;
+            }
         }
-        else{
-            back_link = req.query.from
-        }
-        console.log(back_link);
+        
         return res.render('sign-in.ejs', {
             error: error,
             error_subitem: error_subitem,
