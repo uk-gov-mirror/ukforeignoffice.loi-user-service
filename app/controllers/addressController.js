@@ -89,10 +89,8 @@ module.exports.findAddress= function(req,res) {
     if(!req.query.postcode && !req.body['find-postcode']){
         return res.redirect('/api/user/add-address-uk?is_uk=true');
     }else if(req.query && req.query.postcode){
-        console.log(req.body['find-postcode'].replace(/ /g,''));
         postcode = new Postcode(req.query.postcode.replace(/ /g,''));
     }else{
-        console.log(req.query.postcode.replace(/ /g,''));
         postcode = new Postcode(req.body['find-postcode'].replace(/ /g,''));
     }
 
