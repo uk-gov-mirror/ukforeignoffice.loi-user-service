@@ -51,6 +51,7 @@ describe('Work with Users', function () {
             .end(function (err, res) {
                 if (err) return done(err);
                 expect(res.text).to.have.string('Redirecting to /api/user/sign-in');
+                console.log(res.headers['set-cookie']);
                 done();
             });
     });
@@ -77,7 +78,7 @@ describe('Work with Users', function () {
                     .expect(302)
                     .end(function (err, res) {
                         if (err) return done(err);
-                        expect(res.text).to.have.string('Found. Redirecting to /api/user/dashboard');
+                        expect(res.text).to.have.string('Redirecting to /api/user/dashboard');
                         done();
                     });
             }).catch( function(error) {
