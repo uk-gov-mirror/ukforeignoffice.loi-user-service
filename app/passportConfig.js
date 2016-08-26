@@ -31,8 +31,13 @@ module.exports = function(app,passport) {
                         //users account is not yet activated
                         return done(null, false, { message: 'Activation failed' });
                     }
+                    else  if(user.accountExpiry < new Date()){
+                        //users account is not yet activated
+                        return done(null, false, { message: 'Account expired' });
+                    }
                     else {
-                        Model.User.update({failedLoginAttemptCount: 0}, {
+                        var  accountExpiry= new Date(new Date().setYear(new Date().getFullYear() + 1));
+                        Model.User.update({failedLoginAttemptCount: 0, accountExpiry:accountExpiry}, {
                             where: {
                                 'email': email
                             }

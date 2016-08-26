@@ -122,13 +122,24 @@ var attributes = {
                     "errSoltn": 'Agree to the terms and conditions',
                     "questionId": 'all_info_correct'
                 }
-            },
+            }
         }
+    },
+    accountExpiry:{
+        type: 'date'
+    },
+    warningSent:{
+        type:'boolean', default: false
+    },
+    expiryConfirmationSent:{
+        type:'boolean', default: false
     }
+
+
 };
 
 var options = {
-  freezeTableName: true
+    freezeTableName: true
 };
 
 module.exports.attributes = attributes;
