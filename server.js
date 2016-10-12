@@ -44,9 +44,6 @@ if(environmentVariables.cookieDomain && environmentVariables.cookieDomain.cookie
     cookie_domain = environmentVariables.cookieDomain.cookieDomain;
 }
 
-console.log("JFS: piwik ID: ", environmentVariables.live_variables.piwikId);
-
-
 app.use(function (req, res, next) {
     res.locals = {
         //piwikID:cookie_domain == ("www.legalisationbeta.co.uk" ||"www.get-document-legalised.service.gov.uk") ? 19 :18,
