@@ -151,6 +151,7 @@ module.exports.resetPassword = function(req, res) {
                         })
                             .then(function () {
                                 console.info('Password reset requested. Change successful.');
+                                emailService.confirmPasswordChange(user.first_name, user.email);
                                 done(user);
 
                             });
@@ -159,7 +160,7 @@ module.exports.resetPassword = function(req, res) {
 
             },
             function ( user, done) {
-                emailService.confirmPasswordChange(user.first_name, user.email);
+
                 done(null);
 
 

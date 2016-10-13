@@ -151,7 +151,7 @@ module.exports.register = function(req, res) {
             email: req.session.email,
             all_info_correct: allInfoCorrect,
             form_values: req.body,
-            back_link: req.session.back_link ? envVariables.applicationServiceURL + req.session.back_link : '/api/user/usercheck',
+            back_link: req.session.back_link ? req.session.back_link : '/api/user/usercheck',
             applicationServiceURL: envVariables.applicationServiceURL
         });
     }
@@ -176,7 +176,7 @@ module.exports.register = function(req, res) {
                     error_report:false,
                     email: req.body.email,
                     form_values: req.body,
-                    back_link: req.session.back_link ? envVariables.applicationServiceURL + req.session.back_link : '/api/user/usercheck',
+                    back_link: req.session.back_link ?  req.session.back_link : '/api/user/usercheck',
                     applicationServiceURL: envVariables.applicationServiceURL,
                     erroneousFields:false
 
