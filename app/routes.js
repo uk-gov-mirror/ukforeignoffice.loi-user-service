@@ -63,7 +63,11 @@ module.exports = function(express,envVariables) {
             error_subitem = 'Check your email and password and try again';
         }
         if (error.length>0){
-            console.info('Failed Sign In Attempt: '+ error);
+            var info_text = error;
+            if (info_text == 'There was a problem signing in') {
+                info_text = 'The specified email and password combination does not exist';
+            }
+            console.info('Failed Sign In Attempt: '+ info_text);
         }
         //render page and pass in flash data if any exists
         var back_link = '/api/user/usercheck';
@@ -121,7 +125,9 @@ module.exports = function(express,envVariables) {
         }));
 
     router.get('/dashboard', isAuthenticated, function(req, res) {
-        res.cookie('LoggedIn',true,{ maxAge: 3600000 }); //Lasts twice as long as normal session
+        // res.cookie('LoggedIn',true,{ httpOnly: true });
+        res.cookie('LoggedIn',true,{ maxAge: 3600000, httpOnly: true }); //Lasts twice as long as normal session
+
         //set payment reference for user
         Model.User.findOne({where: {email: req.session.email}})
             .then(function (user) {
