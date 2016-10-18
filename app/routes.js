@@ -128,7 +128,9 @@ module.exports = function(express,envVariables) {
         }));
 
     router.get('/dashboard', isAuthenticated, function(req, res) {
-        res.cookie('LoggedIn',true,{ maxAge: 3600000 }); //Lasts twice as long as normal session
+        // res.cookie('LoggedIn',true,{ httpOnly: true });
+        res.cookie('LoggedIn',true,{ maxAge: 3600000, httpOnly: true }); //Lasts twice as long as normal session
+
         //set payment reference for user
         Model.User.findOne({where: {email: req.session.email}})
             .then(function (user) {
