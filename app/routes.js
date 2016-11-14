@@ -62,6 +62,9 @@ module.exports = function(express,envVariables) {
         else if (error == 'There was a problem signing in') {
             error_subitem = 'Check your email and password and try again';
         }
+        else if (error == 'Account expired') {
+            error = 'Your account has expired.';
+        }
         if (error.length>0){
             var info_text = error;
             if (info_text == 'There was a problem signing in') {
