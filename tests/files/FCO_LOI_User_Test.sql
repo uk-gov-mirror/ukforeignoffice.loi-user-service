@@ -140,7 +140,10 @@ CREATE TABLE "Users" (
     payment_reference text,
     "activationToken" text,
     activated boolean,
-    "activationTokenExpires" date
+    "activationTokenExpires" date,
+    "accountExpiry" timestamp without time zone,
+    "warningSent" boolean default false,
+    "expiryConfirmationSent" boolean default false
 );
 
 
