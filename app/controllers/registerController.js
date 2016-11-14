@@ -240,13 +240,16 @@ module.exports.register = function(req, res) {
                                     salt:salt,
                                     failedLoginAttemptCount: 0,
                                     accountLocked:false,
-                                    passwordExpiry: password_expiry(new Date(),envVariables.password_settings.passwordExpiryInDays),
+                                    passwordExpiry: date_shift(new Date(),envVariables.password_settings.passwordExpiryInDays),
                                     payment_reference: paymentReference,
                                     activationToken: token,
                                     activated: false,
                                     activationTokenExpires:expire,
                                     premiumEnabled: req.body.business_yes_no == 'Yes' ? true : false,
-                                    allInfoCorrect:allInfoCorrect
+                                    allInfoCorrect:allInfoCorrect,
+                                    accountExpiry:date_shift(new Date(),365),
+                                    warningSent:false,
+                                    expiryConfirmationSent:false
                                 };
 
 
@@ -528,7 +531,7 @@ module.exports.activate = function(req, res) {
     });
 };
 
-function password_expiry (date, days) {
+function date_shift (date, days) {
     var result = new Date(date);
     result.setDate(result.getDate() + days);
     return result;
