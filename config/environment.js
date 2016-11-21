@@ -16,8 +16,7 @@ var notificationserviceurl = JSON.parse(env.NOTIFICATIONSERVICEURL);
 var passwordsettings = JSON.parse(env.PASSWORDSETTINGS);
 var postcodelookupoptions = JSON.parse(env.POSTCODELOOKUPOPTIONS);
 var live_variables = JSON.parse(env.LIVEVARIABLES);
-var daysBeforeAccountIsDeleted = JSON.parse(env.DAYSBEFOREACCOUNTISDELETED);
-var jobSchedule = env.JOBSCHEDULE;
+var userAccountSettings = JSON.parse(env.USERACCOUNTSETTINGS);
 var pgPassword = env.PGPASSWORD;
 var Sequelize = require('sequelize');
 
@@ -33,8 +32,7 @@ var config = {
     "password_settings":passwordsettings,
     "postcodeLookUpApiOptions":postcodelookupoptions,
     "pgpassword": pgPassword,
-    "daysBeforeAccountIsDeleted": daysBeforeAccountIsDeleted,
-    "jobSchedule": jobSchedule,
+    "userAccountSettings": userAccountSettings,
     "live_variables":live_variables
 };
 
