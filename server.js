@@ -84,7 +84,7 @@ var schedule = require('node-schedule');
 
 var jobs = require('./config/jobs.js');
 //Expiry Job completed at 6:00AM every day.
-var ExpiryJob = schedule.scheduleJob(environmentVariables.jobSchedule, function(){jobs.accountExpiryCheck()});
+var ExpiryJob = schedule.scheduleJob(environmentVariables.userAccountSettings.jobSchedule, function(){jobs.accountExpiryCheck()});
 
 
 passportConfig(app, passport);

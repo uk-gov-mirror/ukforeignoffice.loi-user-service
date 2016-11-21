@@ -63,10 +63,10 @@ emailService = {
             }
         });
     },
-    expiryWarning: function(email){
+    expiryWarning: function(email, accountExpiryDateText, dayAndMonthText){
         
                     var url = '/expiry_warning';
-                var postData= {to: email};
+                var postData= {to: email, accountExpiryDateText: accountExpiryDateText, dayAndMonthText: dayAndMonthText};
         
                     // send request to notification service
                         request(setOptions(postData, url), function (err, res, body) {
