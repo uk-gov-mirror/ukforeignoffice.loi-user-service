@@ -62,7 +62,36 @@ emailService = {
                 console.log(res.statusCode, body);
             }
         });
-    }
+    },
+    expiryWarning: function(email, accountExpiryDateText, dayAndMonthText){
+        
+                    var url = '/expiry_warning';
+                var postData= {to: email, accountExpiryDateText: accountExpiryDateText, dayAndMonthText: dayAndMonthText};
+        
+                    // send request to notification service
+                        request(setOptions(postData, url), function (err, res, body) {
+                                if(err) {
+                                        console.log(err);
+                                    } else {
+                                        console.log(res.statusCode, body);
+                                    }
+                                return res.statusCode;
+                            });
+            },
+    expiryConfirmation: function(email){
+    
+                var url = '/expiry_confirmation';
+            var postData= {to: email};
+    
+                // send request to notification service
+                    request(setOptions(postData, url), function (err, res, body) {
+                            if(err) {
+                                    console.log(err);
+                                } else {
+                                    console.log(res.statusCode, body);
+                                }
+                        });
+        }
 };
 
 module.exports = emailService;

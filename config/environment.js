@@ -16,6 +16,7 @@ var notificationserviceurl = JSON.parse(env.NOTIFICATIONSERVICEURL);
 var passwordsettings = JSON.parse(env.PASSWORDSETTINGS);
 var postcodelookupoptions = JSON.parse(env.POSTCODELOOKUPOPTIONS);
 var live_variables = JSON.parse(env.LIVEVARIABLES);
+var userAccountSettings = JSON.parse(env.USERACCOUNTSETTINGS);
 var pgPassword = env.PGPASSWORD;
 var Sequelize = require('sequelize');
 
@@ -31,6 +32,7 @@ var config = {
     "password_settings":passwordsettings,
     "postcodeLookUpApiOptions":postcodelookupoptions,
     "pgpassword": pgPassword,
+    "userAccountSettings": userAccountSettings,
     "live_variables":live_variables
 };
 
