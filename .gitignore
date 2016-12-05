@@ -9,6 +9,7 @@ test.tap
 coverage
 .vscode
 mongodb.log
+Jenkinsfile
 
 node_modules
 
