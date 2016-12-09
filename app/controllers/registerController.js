@@ -70,7 +70,7 @@ module.exports.register = function(req, res) {
 
     var messages=[];
     var errorDescription =[];
-    var erroneousFields=[{email:false,confirm_email:false, password:false, confirm_password:false, business_yes_no: false, company_name:false,all_info_correct: false }];
+    var erroneousFields=[{email:false,confirm_email:false, password:false, confirm_password:false, business_yes_no: false, company_name:false, company_verification_check:false, all_info_correct: false }];
 
     if (!emailValid){
         errorDescription.push("You have not provided a valid email address \n");
@@ -112,6 +112,17 @@ module.exports.register = function(req, res) {
         erroneousFields[0].password=true;
     }
 
+    var companyVerification = false;
+    if (typeof req.body.company_verification_check !== 'undefined') {
+        var companyVerificationArr = req.body.company_verification_check;
+        if (companyVerificationArr.indexOf('on') > -1) {
+            companyVerification = true;
+        } else {
+            companyVerification = false;
+        }
+    }
+    req.body.company_verification_check = companyVerification;
+
     if (typeof req.body.business_yes_no == 'undefined') {
         errorDescription.push("You have not stated if you are registering on behalf of a business \n");
         messages.push({business:"Confirm whether you are registering on behalf of a business \n"});
@@ -123,9 +134,13 @@ module.exports.register = function(req, res) {
                 messages.push({company_name:"Enter a valid company name \n"});
                 erroneousFields[0].company_name=true;
             }
+            if(req.body.company_verification_check !== true){
+                errorDescription.push("Confirm that you represent a business \n");
+                messages.push({company_verification_check:"Confirm that you represent a business \n"});
+                erroneousFields[0].company_verification_check=true;
+            }
         }
     }
-
 
     var allInfoCorrectArr = req.body.all_info_correct;
     var allInfoCorrect = false;
