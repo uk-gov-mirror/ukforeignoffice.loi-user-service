@@ -13,7 +13,7 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     jsonParser = bodyParser.json(),
     dotenv = require('dotenv'),
-    env = dotenv.config(),
+    env = dotenv.config({path: process.env.DOTENV || '.env'})
     sass = require('node-sass');
 
 require('./config/logs');

@@ -6,7 +6,7 @@
 // module.exports = {
 
 var dotenv = require('dotenv');
-var env = dotenv.config();
+var env = dotenv.config({path: process.env.DOTENV || '.env'});
 var mongourl = JSON.parse(env.MONGOURL);
 var cookiedomain = JSON.parse(env.COOKIEDOMAIN);
 var sequelizeusers = JSON.parse(env.SEQUELIZEUSERS);
