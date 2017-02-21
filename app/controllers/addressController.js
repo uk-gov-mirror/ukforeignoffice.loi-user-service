@@ -160,7 +160,23 @@ module.exports.findAddress= function(req,res) {
                     });
 
 
-                });
+                },
+                    function(err)
+                    {
+                        console.log(err)
+                        req.flash('error', 'Please enter your address manually');
+                        return res.render('address_pages/UKAddressSelect.ejs', {
+                            initial: req.session.initial,
+                            user:user,
+                            account:account,
+                            url:envVariables,
+                            addresses: false,
+                            postcode: postcode.normalise(),
+                            error_report:req.flash('error')
+                        });
+                        return  res.view("address_pages/UKAddressSelect.ejs",options);
+                    }
+                    );
             }
         });
     });
@@ -226,6 +242,11 @@ module.exports.ajaxFindPostcode = function(req,res) {
             //todo: remove this from session, better to write it to the page as a hidden block than to risk polluting the session with a massive block of json
             req.session.addresses = addresses;
             return res.json( {error:return_error, addresses: addresses, postcode:  postcode.normalise()});
+        },
+        function(err)
+        {
+            console.log(err)
+            return res.json({error:'Please enter your address manually'});
         });
     }
 };
@@ -432,9 +453,16 @@ module.exports.deleteAddress= function(req,res) {
 function postcodeLookup(postcode) {
     var rp = require('request-promise');
     var options = JSON.parse(JSON.stringify(envVariables.postcodeLookUpApiOptions));
-    options.uri = options.uri+postcode;
+    console.log("options uri: " + options.uri)
+    console.log("options time: " + options.timeout)
 
-    return rp(options);
+    return rp({
+            uri: options.uri+postcode,
+            timeout: options.timeout
+        },
+        function(err){
+            console.log(err)
+        });
 }
 
 function getCountries() {
