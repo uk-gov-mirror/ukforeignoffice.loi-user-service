@@ -452,15 +452,9 @@ module.exports.deleteAddress= function(req,res) {
 
 function postcodeLookup(postcode) {
     var rp = require('request-promise');
-    //console.log(JSON.parse(JSON.stringify(envVariables.postcodeLookUpApiOptions)))
     var options = JSON.parse(JSON.stringify(envVariables.postcodeLookUpApiOptions));
     console.log("options uri: " + options.uri)
     console.log("options time: " + options.timeout)
-    //options.uri = options.uri+postcode;
-    //options.timeout = JSON.parse(JSON.stringify(envVariables.postcodeLookUpApiOptions.timeout));;
-
-
-    //return rp(options);
 
     return rp({
             uri: options.uri+postcode,
