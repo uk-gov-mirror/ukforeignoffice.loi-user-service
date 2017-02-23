@@ -101,9 +101,16 @@ $('#find-address').click(function(event){
 
 
 function showPostCodeError(error){
-    var html = '<h2 class="heading-medium error-summary-heading" id="error-summary-heading">Please check the form</h2>' +
-        '<ul class="error-summary-list nopadding"><li><a href="#find-postcode">'+error+'</a></li></ul>';
-    $('#postcode-error').removeClass('hide').html(html);
+    if (error === 'Enter your address manually instead'){
+        var html = '<h2 class="heading-medium error-summary-heading" id="error-summary-heading">Postcode search is not available at the moment</h2>' +
+            '<ul class="error-summary-list nopadding"><li><a href="/api/user/your-address-manual">'+error+'</a></li></ul>';
+        $('#postcode-error').removeClass('hide').html(html);
+    }else{
+        var html = '<h2 class="heading-medium error-summary-heading" id="error-summary-heading">Please check the form</h2>' +
+            '<ul class="error-summary-list nopadding"><li><a href="#find-postcode">'+error+'</a></li></ul>';
+        $('#postcode-error').removeClass('hide').html(html);
+    }
+
 }
 
 function clearResultAddresses(){
