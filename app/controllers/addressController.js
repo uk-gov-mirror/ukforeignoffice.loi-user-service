@@ -164,7 +164,7 @@ module.exports.findAddress= function(req,res) {
                     function(err)
                     {
                         console.log(err)
-                        req.flash('error', 'Please enter your address manually');
+                        req.flash('error', 'Enter your address manually instead');
                         return res.render('address_pages/UKAddressSelect.ejs', {
                             initial: req.session.initial,
                             user:user,
@@ -247,7 +247,7 @@ module.exports.ajaxFindPostcode = function(req,res) {
         function(err)
         {
             console.log(err)
-            return res.json({error:'Please enter your address manually'});
+            return res.json({error:'Enter your address manually instead'});
         });
     }
 };
