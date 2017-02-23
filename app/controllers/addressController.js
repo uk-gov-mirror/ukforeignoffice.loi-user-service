@@ -172,7 +172,8 @@ module.exports.findAddress= function(req,res) {
                             url:envVariables,
                             addresses: false,
                             postcode: postcode.normalise(),
-                            error_report:req.flash('error')
+                            error_report:req.flash('error'),
+                            error_heading:'Postcode search is not available at the moment'
                         });
                         return  res.view("address_pages/UKAddressSelect.ejs",options);
                     }

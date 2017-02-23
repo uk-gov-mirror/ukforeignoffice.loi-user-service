@@ -8,13 +8,21 @@
 <h1 class="heading-xlarge">Add a return address</h1>
 
 <%if (error_report && error_report.length>0) {%>
-<div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" style="clear:left; width:66.6%">
+<div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" style="clear:left; width:100%">
 
-    <p class="heading-medium error-summary-heading" id="error-summary-heading">
+    <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
+        <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
+        <%= error_heading %>
+        <%}else{%>
         Please check the form
-    </p>
+        <%}%>
+    </h2>
     <ul class="error-summary-list nopadding">
-        <li class="error-no-link"><%= error_report%></li>
+        <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
+        <li><a href="/api/user/your-address-manual"><%= error_report%></a></li>
+        <%}else{%>
+        <li><a><%= error_report%></a></li>
+        <%}%>
     </ul>
 </div>
 <%}%>
