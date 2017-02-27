@@ -8,22 +8,32 @@
 
 
 <h1 class="heading-xlarge">Add a return address</h1>
-<div class="column-two-thirds">
+
     <%if (error_report && error_report.length>0) {%>
     <div class="error-summary column-two-thirds" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" >
 
 
         <h2 class="heading-medium error-summary-heading"  id="error-summary-heading-example-2">
+            <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
+            <%= error_heading %>
+            <%}else{%>
             Please check the form
+            <%}%>
         </h2>
         <ul class="error-summary-list nopadding">
+            <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
+            <li><a href="/api/user/your-address-manual"><%= error_report%></a></li>
+            <%}else{%>
             <li><a><%= error_report%></a></li>
+            <%}%>
         </ul>
     </div>
     <%}%>
+
     <div class="error-summary hide" id="postcode-error" role="group" tabindex="-1"></div>
 
     <div id="sr-notification-container" class="visually-hidden"  aria-live="assertive" aria-atomic="true"></div>
+<div class="column-two-thirds">
     <div class="form-group column-two-third">
         <form id="find-address-form"  method="post" action="<%= '/api/user/find-your-address'%>">
             <label class="form-label-bold"  for="find-postcode">Enter postcode</label>
