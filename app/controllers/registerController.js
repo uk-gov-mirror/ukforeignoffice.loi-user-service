@@ -11,6 +11,7 @@ var bcrypt = require('bcryptjs'),
     Model = require('../model/models.js'),
     ValidationService = require('../services/ValidationService.js'),  common = require('../../config/common.js'),
     envVariables = common.config(),
+    validator = require('validator'),
     dbConnection = require('../sequelize.js');
 
 
@@ -81,6 +82,27 @@ module.exports.register = function(req, res) {
         errorDescription.push("Confirm your email address \n");
         messages.push({confirm_email:"Email addresses must match \n"});
         erroneousFields[0].confirm_email=true;
+    }
+
+    // check the password against the blacklists
+    // normalise the password by removing all spaces and converting to lower case
+    var normalisedPassword = validator.blacklist(req.body.password, ' ').trim().toLowerCase();
+    // location of the password blacklist and phraselist
+    var blackList = require('../../config/blacklist.js');
+    var phraselist = require('../../config/phraselist.js');
+    //return true if password is in the blacklist
+    var passwordInBlacklist = validator.isIn(normalisedPassword, blackList);
+    var passwordInPhraselist = false;
+    if (new RegExp(phraselist.join("|")).test(normalisedPassword)) {
+        passwordInPhraselist = true;
+    }
+
+    if (passwordInBlacklist || passwordInPhraselist) {
+        errorDescription.push("Your password contains a reserved word and cannot be used \n");
+        messages.push({password:"Enter a different password \n"});
+        messages.push({confirm_password:"Enter a different password \n"});
+        erroneousFields[0].password=true;
+        erroneousFields[0].confirm_password=true;
     }
 
     if (req.body.password === '') {
@@ -204,7 +226,6 @@ module.exports.register = function(req, res) {
                 var email = req.body.email;
                 var password = req.body.password;
                 var confirm_password = req.body.confirm_password;
-
                 var salt = bcrypt.genSaltSync(10);
 
                 /**
