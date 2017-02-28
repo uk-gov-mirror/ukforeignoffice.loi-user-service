@@ -8,6 +8,7 @@ var async = require('async'),
     Model = require('../model/models.js'),
     common = require('../../config/common.js'),
     envVariables = common.config(),
+    validator = require('validator'),
     ValidationService = require('../services/ValidationService.js');
 
 module.exports.forgotPassword =  function(req, res) {
@@ -78,6 +79,24 @@ module.exports.resetPassword = function(req, res) {
     var patt = new RegExp(envVariables.password_settings.passwordPattern);
 
     var messages=[];
+
+    // check the password against the blacklists
+    // normalise the password by removing all spaces and converting to lower case
+    var normalisedPassword = validator.blacklist(req.body.password, ' ').trim().toLowerCase();
+    // location of the password blacklist and phraselist
+    var blackList = require('../../config/blacklist.js');
+    var phraselist = require('../../config/phraselist.js');
+    //return true if password is in the blacklist
+    var passwordInBlacklist = validator.isIn(normalisedPassword, blackList);
+    var passwordInPhraselist = false;
+    if (new RegExp(phraselist.join("|")).test(normalisedPassword)) {
+        passwordInPhraselist = true;
+    }
+
+    if (passwordInBlacklist || passwordInPhraselist) {
+        messages.push("This password is blacklisted. Enter a different password\n");
+    }
+
     if (req.body.password === '') {
         messages.push("Enter a password \n");
     } else {

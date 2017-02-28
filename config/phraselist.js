@@ -1,1 +1,1 @@
-module.exports = ['password','hello'];
+module.exports = ['password','hello','123456','qwerty'];

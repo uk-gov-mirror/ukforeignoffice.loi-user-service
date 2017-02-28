@@ -99,8 +99,8 @@ module.exports.register = function(req, res) {
 
     if (passwordInBlacklist || passwordInPhraselist) {
         errorDescription.push("Your password contains a reserved word and cannot be used \n");
-        messages.push({password:"Enter a different password \n"});
-        messages.push({confirm_password:"Enter a different password \n"});
+        messages.push({password:"This password is blacklisted. Enter a different password \n"});
+        messages.push({confirm_password:"This password is blacklisted. Enter a different password \n"});
         erroneousFields[0].password=true;
         erroneousFields[0].confirm_password=true;
     }
