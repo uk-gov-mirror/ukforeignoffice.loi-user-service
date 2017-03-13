@@ -372,7 +372,12 @@ module.exports.saveAddress= function(req,res) {
 module.exports.showEditAddress= function(req,res) {
     Model.User.findOne({where:{email:req.session.email}}).then(function(user) {
         Model.AccountDetails.findOne({where:{user_id:user.id}}).then(function(account){
-            Model.SavedAddress.findOne({where:{id:req.query.id}}).then(function(address) {
+            Model.SavedAddress.findOne({where:{user_id:user.id, id:req.query.id}}).then(function(address) {
+                if (!address)
+                {
+                    console.log("Address is null")
+                    return res.redirect('/api/user/addresses');
+                }
                 return getCountries().then(function (countries) {
                     return res.render('address_pages/edit-address.ejs', {
                         initial: req.session.initial,
