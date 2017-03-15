@@ -458,7 +458,6 @@ module.exports.deleteAddress= function(req,res) {
             }
             else {
                 console.log("address not deleted for user %s and id %s", user.id, req.query.id)
-                req.flash('info', 'Address not deleted');
             }
             return res.redirect('/api/user/addresses');
         });
