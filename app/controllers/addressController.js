@@ -395,6 +395,9 @@ module.exports.showEditAddress= function(req,res) {
                         countries:countries[0]
                     });
                 });
+            }).catch(function (error) {
+                console.log(error);
+                return res.redirect('/api/user/addresses');
             });
         });
     });
@@ -448,20 +451,27 @@ module.exports.editAddress= function(req,res) {
 };
 
 module.exports.deleteAddress= function(req,res) {
-    Model.User.findOne({where:{email:req.session.email}}).then(function(user) {
-        Model.SavedAddress.destroy({where: {user_id:user.id, id: req.query.id}}).then(function (result) {
 
-            if(result == true)
-            {
-                console.log("address successfully deleted for user %s and id %s", user.id, req.query.id)
-                req.flash('info', 'Address successfully deleted');
-            }
-            else {
-                console.log("address not deleted for user %s and id %s", user.id, req.query.id)
-            }
-            return res.redirect('/api/user/addresses');
+        Model.User.findOne({where:{email:req.session.email}}).then(function(user) {
+            Model.SavedAddress.destroy({where: {user_id:user.id, id: req.query.id}})
+                .then(function (result) {
+
+                    if(result == true)
+                    {
+                        console.log("address successfully deleted for user %s and id %s", user.id, req.query.id)
+                        req.flash('info', 'Address successfully deleted');
+                    }
+                    else {
+                        console.log("address not deleted for user %s and id %s", user.id, req.query.id)
+                    }
+                    return res.redirect('/api/user/addresses');
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    return res.redirect('/api/user/addresses');
+                });
         });
-    });
+
 };
 
 function postcodeLookup(postcode) {
