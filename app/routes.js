@@ -83,7 +83,7 @@ module.exports = function(express,envVariables) {
                 back_link = envVariables.applicationServiceURL + 'start';
             }
             else {
-                back_link =  req.query.from;
+                back_link = envVariables.applicationServiceURL + 'start';
             }
         }
         
@@ -102,7 +102,10 @@ module.exports = function(express,envVariables) {
     router.post('/sign-in', function(req,res,next){
             req.body.email = req.body.email.toLowerCase();
 
-            req.session.email = req.body.email;
+            if (!req.session.email){
+                req.session.email = req.body.email
+            }
+
             if(!req.body.email){
                 if(!req.body.password) {
                     req.flash('error','Missing email and password');
