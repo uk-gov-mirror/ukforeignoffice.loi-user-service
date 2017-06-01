@@ -27,7 +27,15 @@
                 <li><a href="#legend_confirm_email"><%= err.confirm_email %></a></li>
                 <% } %>
                 <% if (err.password) { %>
-                <li><a href="#legend_password"><%= err.password %></a></li>
+                <% if (passwordErrorType.toString().includes("blacklist") && (passwordErrorType.toString().includes("phraselist"))){%>
+                    <li><a id="bothlists" href="#legend_password"><%= err.password %></a></li>
+                <% } else if (passwordErrorType.toString().includes("phraselist")){%>
+                    <li><a id="phraselist" href="#legend_password"><%= err.password %></a></li>
+                <% } else if (passwordErrorType.toString().includes("blacklist")){%>
+                    <li><a id="blacklist" href="#legend_password"><%= err.password %></a></li>
+                <% } else { %>
+                    <li><a href="#legend_password"><%= err.password %></a></li>
+                <% } %>
                 <% } %>
                 <% if (err.confirm_password) { %>
                 <li><a href="#legend_confirm_password"><%= err.confirm_password %></a></li>

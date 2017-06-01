@@ -79,22 +79,32 @@ module.exports.resetPassword = function(req, res) {
     var patt = new RegExp(envVariables.password_settings.passwordPattern);
 
     var messages=[];
+    var passwordErrorType=[];
 
     // check the password against the blacklists
-    // normalise the password by removing all spaces and converting to lower case
-    var normalisedPassword = validator.blacklist(req.body.password, ' ').trim().toLowerCase();
     // location of the password blacklist and phraselist
     var blackList = require('../../config/blacklist.js');
     var phraselist = require('../../config/phraselist.js');
     //return true if password is in the blacklist
-    var passwordInBlacklist = validator.isIn(normalisedPassword, blackList);
+    var passwordInBlacklist = validator.isIn(req.body.password, blackList);
+    // normalise the password by removing all spaces and converting to lower case
+    var normalisedPassword = validator.blacklist(req.body.password, ' ').trim().toLowerCase();
+    // check to see if a word in the phraselist appears in the normalised password
     var passwordInPhraselist = false;
     if (new RegExp(phraselist.join("|")).test(normalisedPassword)) {
         passwordInPhraselist = true;
     }
 
-    if (passwordInBlacklist || passwordInPhraselist) {
-        messages.push("This password is blacklisted. Enter a different password\n");
+    if (passwordInBlacklist | passwordInPhraselist) {
+        messages.push("Change the words in your password - don't include any commonly used words that are easy to guess. \n");
+    }
+
+    if (passwordInBlacklist) {
+        passwordErrorType.push("blacklist");
+    }
+
+    if (passwordInPhraselist) {
+        passwordErrorType.push("phraselist");
     }
 
     if (req.body.password === '') {
@@ -111,6 +121,7 @@ module.exports.resetPassword = function(req, res) {
     if(messages.length>0){
         return res.render(reset ? 'reset.ejs' : 'set-new-password.ejs', {
             error:  messages,
+            passwordErrorType: passwordErrorType,
             resetPasswordToken: req.params.token
         });
     }

@@ -16,7 +16,28 @@ $(function () {
         this.submit();
     });
 
+    //Event category: Password 01 - Blacklist checks
+    $(document).ready(function () {
+        if ($('#blacklist').length){
+            console.log("inside blacklist");
+            _paq.push(['trackEvent', 'Password 01 - Blacklist checks', 'Password blocked by exact match list']);
+        }
+    });
 
+    $(document).ready(function () {
+        if ($('#phraselist').length){
+            console.log("inside phraselist");
+            _paq.push(['trackEvent', 'Password 01 - Blacklist checks', 'Password blocked by phrase match list']);
+        }
+    });
+
+    $(document).ready(function () {
+        if ($('#bothlists').length){
+            console.log("inside phraselist and blacklist");
+            _paq.push(['trackEvent', 'Password 01 - Blacklist checks', 'Password blocked by exact match list']);
+            _paq.push(['trackEvent', 'Password 01 - Blacklist checks', 'Password blocked by phrase match list']);
+        }
+    });
 
     //Event category: Reg 02 - business signup? AND
     //Event category: Reg 03 - submit registration

@@ -70,6 +70,7 @@ module.exports.register = function(req, res) {
     var emailValid =isemail.validate(req.body.email);
 
     var messages=[];
+    var passwordErrorType=[];
     var errorDescription =[];
     var erroneousFields=[{email:false,confirm_email:false, password:false, confirm_password:false, business_yes_no: false, company_name:false, company_verification_check:false, all_info_correct: false }];
 
@@ -85,24 +86,31 @@ module.exports.register = function(req, res) {
     }
 
     // check the password against the blacklists
-    // normalise the password by removing all spaces and converting to lower case
-    var normalisedPassword = validator.blacklist(req.body.password, ' ').trim().toLowerCase();
     // location of the password blacklist and phraselist
     var blackList = require('../../config/blacklist.js');
     var phraselist = require('../../config/phraselist.js');
     //return true if password is in the blacklist
-    var passwordInBlacklist = validator.isIn(normalisedPassword, blackList);
+    var passwordInBlacklist = validator.isIn(req.body.password, blackList);
+    // normalise the password by removing all spaces and converting to lower case
+    var normalisedPassword = validator.blacklist(req.body.password, ' ').trim().toLowerCase();
+    // check to see if a word in the phraselist appears in the normalised password
     var passwordInPhraselist = false;
     if (new RegExp(phraselist.join("|")).test(normalisedPassword)) {
         passwordInPhraselist = true;
     }
 
-    if (passwordInBlacklist || passwordInPhraselist) {
-        errorDescription.push("Your password contains a reserved word and cannot be used \n");
-        messages.push({password:"This password is blacklisted. Enter a different password \n"});
-        messages.push({confirm_password:"This password is blacklisted. Enter a different password \n"});
+    if (passwordInBlacklist | passwordInPhraselist) {
+        errorDescription.push("Change the words in your password - don't include any commonly used words that are easy to guess. \n");
+        messages.push({password:"Change the words in your password - don't include any commonly used words that are easy to guess. \n"});
         erroneousFields[0].password=true;
-        erroneousFields[0].confirm_password=true;
+    }
+
+    if (passwordInBlacklist) {
+        passwordErrorType.push("blacklist");
+    }
+
+    if (passwordInPhraselist) {
+        passwordErrorType.push("phraselist");
     }
 
     if (req.body.password === '') {
@@ -184,6 +192,7 @@ module.exports.register = function(req, res) {
         return res.render('register.ejs', {
             error:  messages,
             error_description: errorDescription,
+            passwordErrorType: passwordErrorType,
             erroneousFields:erroneousFields,
             email: req.session.email,
             all_info_correct: allInfoCorrect,
