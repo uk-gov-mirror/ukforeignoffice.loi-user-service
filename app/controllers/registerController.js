@@ -52,6 +52,7 @@ module.exports.show = function(req, res) {
     return res.render('register.ejs', {
         form_values: false,
         erroneousFields:false,
+        passwordErrorType: false,
         error_report: false,
         error:false,
         error_description: false,
@@ -219,6 +220,7 @@ module.exports.register = function(req, res) {
                     errorHeader: 'There was a problem creating your account.',
                     error:  messages,
                     error_description: errorDescription,
+                    passwordErrorType: passwordErrorType,
                     error_report:false,
                     email: req.body.email,
                     form_values: req.body,
@@ -325,6 +327,7 @@ module.exports.register = function(req, res) {
                                                             form_values: req.body,
                                                             error:false,
                                                             error_description: false,
+                                                            passwordErrorType: false,
                                                             applicationServiceURL: envVariables.applicationServiceURL,
                                                             back_link: req.session.back_link ? envVariables.applicationServiceURL + req.session.back_link : '/api/user/usercheck',
                                                             erroneousFields: false
@@ -342,6 +345,7 @@ module.exports.register = function(req, res) {
                                                             form_values: req.body,
                                                             error:false,
                                                             error_description: false,
+                                                            passwordErrorType: false,
                                                             back_link: req.session.back_link ? envVariables.applicationServiceURL + req.session.back_link : '/api/user/usercheck',
                                                             applicationServiceURL: envVariables.applicationServiceURL,
                                                             erroneousFields: false

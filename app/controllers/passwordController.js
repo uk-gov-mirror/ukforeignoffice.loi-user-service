@@ -161,6 +161,7 @@ module.exports.resetPassword = function(req, res) {
                         if(user.password == bcrypt.hashSync(password, user.salt) ){
                             return res.render(reset ? 'reset.ejs' : 'set-new-password.ejs', {
                                 error:  ["Your new password must be different from your last password."],
+                                passwordErrorType: passwordErrorType,
                                 resetPasswordToken: req.params.token
                             });
                         }
