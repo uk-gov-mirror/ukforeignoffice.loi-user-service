@@ -507,7 +507,7 @@ module.exports.resendActivationEmail = function(req, res) {
             })
                 .then(function (user, error) {
                     if (!user) {
-                        req.flash('error', 'Invalid email');
+                        req.flash('info', "We've sent you another confirmation email");
                         return res.redirect('/api/user/sign-in');
                     }
                     //Update the user with the new token and expiry
@@ -525,7 +525,7 @@ module.exports.resendActivationEmail = function(req, res) {
                         .then(function () {
                             done(null, token);
                         }).catch( function(error) {
-                            req.flash('error', 'An error has occurred.');
+                            req.flash('info', "We've sent you another confirmation email");
                             return res.redirect('/api/user/sign-in');
                         });
                 });
@@ -538,7 +538,7 @@ module.exports.resendActivationEmail = function(req, res) {
     ], function() {
 
         req.flash('info', "We've sent you another confirmation email");
-        return res.redirect('/api/user/emailconfirm');
+        return res.redirect('/api/user/sign-in');
     });
 };
 
