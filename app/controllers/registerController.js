@@ -11,6 +11,7 @@ var bcrypt = require('bcryptjs'),
     Model = require('../model/models.js'),
     ValidationService = require('../services/ValidationService.js'),  common = require('../../config/common.js'),
     envVariables = common.config(),
+    validator = require('validator'),
     dbConnection = require('../sequelize.js');
 
 
@@ -51,6 +52,7 @@ module.exports.show = function(req, res) {
     return res.render('register.ejs', {
         form_values: false,
         erroneousFields:false,
+        passwordErrorType: false,
         error_report: false,
         error:false,
         error_description: false,
@@ -69,6 +71,7 @@ module.exports.register = function(req, res) {
     var emailValid =isemail.validate(req.body.email);
 
     var messages=[];
+    var passwordErrorType=[];
     var errorDescription =[];
     var erroneousFields=[{email:false,confirm_email:false, password:false, confirm_password:false, business_yes_no: false, company_name:false, company_verification_check:false, all_info_correct: false }];
 
@@ -81,6 +84,34 @@ module.exports.register = function(req, res) {
         errorDescription.push("Confirm your email address \n");
         messages.push({confirm_email:"Email addresses must match \n"});
         erroneousFields[0].confirm_email=true;
+    }
+
+    // check the password against the blacklists
+    // location of the password blacklist and phraselist
+    var blackList = require('../../config/blacklist.js');
+    var phraselist = require('../../config/phraselist.js');
+    //return true if password is in the blacklist
+    var passwordInBlacklist = validator.isIn(req.body.password, blackList);
+    // normalise the password by removing all spaces and converting to lower case
+    var normalisedPassword = validator.blacklist(req.body.password, ' ').trim().toLowerCase();
+    // check to see if a word in the phraselist appears in the normalised password
+    var passwordInPhraselist = false;
+    if (new RegExp(phraselist.join("|")).test(normalisedPassword)) {
+        passwordInPhraselist = true;
+    }
+
+    if (passwordInBlacklist | passwordInPhraselist) {
+        errorDescription.push("Change the words in your password - don't include any commonly used words that are easy to guess. \n");
+        messages.push({password:"Change the words in your password - don't include any commonly used words that are easy to guess. \n"});
+        erroneousFields[0].password=true;
+    }
+
+    if (passwordInBlacklist) {
+        passwordErrorType.push("blacklist");
+    }
+
+    if (passwordInPhraselist) {
+        passwordErrorType.push("phraselist");
     }
 
     if (req.body.password === '') {
@@ -162,6 +193,7 @@ module.exports.register = function(req, res) {
         return res.render('register.ejs', {
             error:  messages,
             error_description: errorDescription,
+            passwordErrorType: passwordErrorType,
             erroneousFields:erroneousFields,
             email: req.session.email,
             all_info_correct: allInfoCorrect,
@@ -188,6 +220,7 @@ module.exports.register = function(req, res) {
                     errorHeader: 'There was a problem creating your account.',
                     error:  messages,
                     error_description: errorDescription,
+                    passwordErrorType: passwordErrorType,
                     error_report:false,
                     email: req.body.email,
                     form_values: req.body,
@@ -204,7 +237,6 @@ module.exports.register = function(req, res) {
                 var email = req.body.email;
                 var password = req.body.password;
                 var confirm_password = req.body.confirm_password;
-
                 var salt = bcrypt.genSaltSync(10);
 
                 /**
@@ -295,6 +327,7 @@ module.exports.register = function(req, res) {
                                                             form_values: req.body,
                                                             error:false,
                                                             error_description: false,
+                                                            passwordErrorType: false,
                                                             applicationServiceURL: envVariables.applicationServiceURL,
                                                             back_link: req.session.back_link ? envVariables.applicationServiceURL + req.session.back_link : '/api/user/usercheck',
                                                             erroneousFields: false
@@ -312,6 +345,7 @@ module.exports.register = function(req, res) {
                                                             form_values: req.body,
                                                             error:false,
                                                             error_description: false,
+                                                            passwordErrorType: false,
                                                             back_link: req.session.back_link ? envVariables.applicationServiceURL + req.session.back_link : '/api/user/usercheck',
                                                             applicationServiceURL: envVariables.applicationServiceURL,
                                                             erroneousFields: false
@@ -473,7 +507,7 @@ module.exports.resendActivationEmail = function(req, res) {
             })
                 .then(function (user, error) {
                     if (!user) {
-                        req.flash('error', 'Invalid email');
+                        req.flash('info', "If an account matches " + req.body.email + " we'll send you another confirmation email.");
                         return res.redirect('/api/user/sign-in');
                     }
                     //Update the user with the new token and expiry
@@ -491,7 +525,7 @@ module.exports.resendActivationEmail = function(req, res) {
                         .then(function () {
                             done(null, token);
                         }).catch( function(error) {
-                            req.flash('error', 'An error has occurred.');
+                        req.flash('info', "If an account matches " + req.body.email + " we'll send you another confirmation email.");
                             return res.redirect('/api/user/sign-in');
                         });
                 });
@@ -503,8 +537,8 @@ module.exports.resendActivationEmail = function(req, res) {
         }
     ], function() {
 
-        req.flash('info', "We've sent you another confirmation email");
-        return res.redirect('/api/user/emailconfirm');
+        req.flash('info', "If an account matches " + req.body.email + " we'll send you another confirmation email.");
+        return res.redirect('/api/user/sign-in');
     });
 };
 

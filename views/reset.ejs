@@ -12,7 +12,15 @@
     </h2>
     <ul class="error-summary-list">
         <%if (error) {error.forEach(function(msg){%>
+        <%if (passwordErrorType.toString().includes("phraselist") && (passwordErrorType.toString().includes("blacklist"))){%>
+        <li><a id="bothlists" href="#legend_password"><%= msg %></a></li>
+        <%} else if (passwordErrorType.toString().includes("phraselist")){%>
+        <li><a id="phraselist" href="#legend_password"><%= msg %></a></li>
+        <%} else if (passwordErrorType.toString().includes("blacklist")){%>
+        <li><a id="blacklist" href="#legend_password"><%= msg %></a></li>
+        <%} else { %>
         <li><a href="#legend_password"><%= msg %></a></li>
+        <%}%>
         <%})
         }%>
     </ul>
