@@ -102,10 +102,8 @@ module.exports = function(express,envVariables) {
     router.post('/sign-in', function(req,res,next){
             req.body.email = req.body.email.toLowerCase();
 
-            if (!req.session.email){
-                req.session.email = req.body.email
-            }
-
+            req.session.email = req.body.email;
+        
             if(!req.body.email){
                 if(!req.body.password) {
                     req.flash('error','Missing email and password');
