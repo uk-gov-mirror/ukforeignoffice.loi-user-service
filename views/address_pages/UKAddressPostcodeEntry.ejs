@@ -118,6 +118,20 @@
                 <input class="form-control form-control-1-4 postcode" id="postcode" aria-required="true" name="postcode" type="text" value="" >
             </div>
 
+            <div class="form-group" id="legend_telephone">
+                <label class="form-label-bold" for="telephone">Telephone number</label>
+
+
+                <input class="form-control" type="tel" id="telephone" aria-required="true" name="telephone" value="">
+            </div>
+
+            <div class="form-group" id="legend_email">
+                <label class="form-label-bold" for="email">Email address <span>(optional)</span></label>
+
+
+                <input class="form-control" type="text" id="email" name="email" value="">
+            </div>
+
             <input type="hidden" name="country" value="United Kingdom">
             <input type="hidden" name="manual" value=false>
             <input type="hidden" name="initial" value=<%if(initial){%><%= initial%><%}%>>

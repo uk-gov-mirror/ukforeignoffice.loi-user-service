@@ -349,7 +349,9 @@ module.exports.saveAddress= function(req,res) {
                 town:req.body.town,
                 county:req.body.county || '',
                 postcode:postcode,
-                country: req.body.country || ''
+                country: req.body.country || '',
+                telephone: req.body.telephone,
+                email : req.body.email || ''
             }).then(function(){
                 if(req.session.initial===true){
                     req.session.initial=false;
@@ -433,7 +435,9 @@ module.exports.editAddress= function(req,res) {
                 town:req.body.town,
                 county:req.body.county,
                 postcode:postcode,
-                country: req.body.country
+                country: req.body.country,
+                telephone: req.body.telephone,
+                email: req.body.email
             },{where:{  user_id: user.id, id:req.body.address_id }
             }).then(function(){
                 return res.redirect('/api/user/addresses');
