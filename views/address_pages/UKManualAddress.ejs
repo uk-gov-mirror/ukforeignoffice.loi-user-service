@@ -219,7 +219,7 @@ if (error_report) {
                     </span>
                 </legend>
 
-                <input class="form-control" type="tel" id="telephone" aria-required="true" name="telephone" value="<%if(form_values[0]){%><%= form_values[0].telephone%><%} else if (form_values) { %><%= form_values.telephone %><% } %>">
+                <input class="form-control" type="tel" id="telephone" aria-required="true" name="telephone" value="<%if(form_values[0]){%><%= form_values[0].telephone%><%} else if (form_values) { %><%= form_values.telephone %><% } else {%><%= contact_telephone %><%}%>">
             </fieldset>
         </div>
 
@@ -240,7 +240,7 @@ if (error_report) {
                     </span>
                 </legend>
 
-                <input class="form-control" type="text" id="email" name="email" value="<%if(form_values[0]){%><%= form_values[0].email%><%} else if (form_values) { %><%= form_values.email %><% } %>">
+                <input class="form-control" type="text" id="email" name="email" value="<%if(form_values[0]){%><%= form_values[0].email%><%} else if (form_values) { %><%= form_values.email %><% } else {%><%= contact_email %><%}%>">
             </fieldset>
         </div>
 

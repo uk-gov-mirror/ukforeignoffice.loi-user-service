@@ -245,7 +245,7 @@ if (error_report) {
                         <% } %>
                     </span>
                 </legend>
-                <input class="form-control" type="tel" id="telephone" name="telephone" aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].telephone%><%} else if (form_values) { %><%= form_values.telephone %><% } %>">
+                <input class="form-control" type="tel" id="telephone" name="telephone" aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].telephone%><%} else if (form_values) { %><%= form_values.telephone %><% } else {%><%= contact_telephone %><%}%>">
             </fieldset>
         </div>
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('email')>-1) { %>error<% } %>" id="legend_email">
@@ -264,7 +264,7 @@ if (error_report) {
                         <% } %>
                     </span>
                 </legend>
-                <input class="form-control" type="text" id="email" name="email" value="<%if(form_values[0]){%><%= form_values[0].email%><%} else if (form_values) { %><%= form_values.email %><% } %>">
+                <input class="form-control" type="text" id="email" name="email" value="<%if(form_values[0]){%><%= form_values[0].email%><%} else if (form_values) { %><%= form_values.email %><% } else {%><%= contact_email %><%}%>">
             </fieldset>
         </div>
 

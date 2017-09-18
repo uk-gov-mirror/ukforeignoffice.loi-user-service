@@ -44,7 +44,9 @@ module.exports.submitUKQuestion = function(req,res){
                     user:user,
                     account:account,
                     url:envVariables,
-                    error_report:req.flash('error')
+                    error_report:req.flash('error'),
+                    contact_telephone:req.session.contact_telephone,
+                    contact_email:req.session.contact_email
                 });
             });
         });
@@ -59,7 +61,9 @@ module.exports.submitUKQuestion = function(req,res){
                         account:account,
                         url:envVariables,
                         form_values: false,
-                        countries:countries[0]
+                        countries:countries[0],
+                        contact_telephone:req.session.contact_telephone,
+                        contact_email:req.session.contact_email
                     });
                 });
             });
@@ -75,7 +79,9 @@ module.exports.showPostcodeLookup = function(req,res){
                 user:user,
                 account:account,
                 url:envVariables,
-                error_report:req.flash('error')
+                error_report:req.flash('error'),
+                contact_telephone:req.session.contact_telephone,
+                contact_email:req.session.contact_email
             });
         });
     });
@@ -313,7 +319,9 @@ module.exports.showManualAddress = function(req, res) {
                 user:user,
                 account:account,
                 url:envVariables,
-                form_values: false
+                form_values: false,
+                contact_telephone:req.session.contact_telephone,
+                contact_email:req.session.contact_email
             });
         });
     });

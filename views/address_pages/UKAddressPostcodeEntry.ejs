@@ -120,16 +120,18 @@
 
             <div class="form-group" id="legend_telephone">
                 <label class="form-label-bold" for="telephone">Telephone number</label>
+                <span class="form-hint">Contact number for this address for delivery questions or updates</span>
 
 
-                <input class="form-control" type="tel" id="telephone" aria-required="true" name="telephone" value="">
+                <input class="form-control" type="tel" id="telephone" aria-required="true" name="telephone" value="<% if (contact_telephone) { %><%= contact_telephone %><% } %>">
             </div>
 
             <div class="form-group" id="legend_email">
                 <label class="form-label-bold" for="email">Email address <span>(optional)</span></label>
+                <span class="form-hint">Contact email for this address for delivery questions or updates</span>
 
 
-                <input class="form-control" type="text" id="email" name="email" value="">
+                <input class="form-control" type="text" id="email" name="email" value="<% if (contact_email) { %><%= contact_email %><% } %>">
             </div>
 
             <input type="hidden" name="country" value="United Kingdom">
