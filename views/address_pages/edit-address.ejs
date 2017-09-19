@@ -3,7 +3,11 @@
 <% include ../partials/header.ejs %>
 
 <a href="/api/user/addresses" class="back_to_previous_button">Back</a>
+<% if (require_contact_details === 'yes') {%>
+<h1 class="heading-xlarge">Update your saved address</h1>
+<%}else{%>
 <h1 class="heading-xlarge">Edit return address</h1>
+<%}%>
 
 
 <%
@@ -64,8 +68,13 @@ if (error_report) {
         </ul>
     </div>
 </div>
+
 <form id="edit_address_form" class="column-two-thirds" method="post" action="/api/user/edit-address">
     <div class=" form-group" id="address-details-group">
+
+        <% if (require_contact_details === 'yes') {%>
+        <p>To help ensure safe delivery to this address we need to confirm delivery contact information. Check the details below, make any changes, then continue with your application. We'll save the information in your account for next time. </p>
+        <%}%>
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('full_name')>-1) { %>error<% } %>">
             <label class="form-label-bold" for="full-name">Full name</label>

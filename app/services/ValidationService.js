@@ -157,6 +157,10 @@ console.log(req.body.postcode === '' || req.body.postcode.length >20);
             }
         );
         if(edit){
+            var require_contact_details = 'no';
+            if (req.session.require_contact_details){
+                require_contact_details = 'yes';
+            }
             return res.render('address_pages/edit-address.ejs', {
                 uk: (req.body.country=='United Kingdom'),
                 addresses: req.session.addresses,
@@ -171,7 +175,8 @@ console.log(req.body.postcode === '' || req.body.postcode.length >20);
                 account:account,
                 url:envVariables,
                 countries: countries[0],
-                initial:req.session.initial
+                initial:req.session.initial,
+                require_contact_details:require_contact_details
             });
 
         }else if(req.body.country == 'United Kingdom' && !JSON.parse(req.body.manual)){

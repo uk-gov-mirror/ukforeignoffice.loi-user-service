@@ -385,8 +385,13 @@ module.exports.showEditAddress= function(req,res) {
             Model.SavedAddress.findOne({where:{user_id:user.id, id:req.query.id}}).then(function(address) {
                 if (!address)
                 {
-                    console.log("Address is null")
+                    console.log("Address is null");
                     return res.redirect('/api/user/addresses');
+                }
+                var require_contact_details = 'no';
+                if (req.param('require-contact-details')==='yes'){
+                    require_contact_details = 'yes';
+                    req.session.require_contact_details = 'yes';
                 }
                 return getCountries().then(function (countries) {
                     return res.render('address_pages/edit-address.ejs', {
@@ -402,7 +407,8 @@ module.exports.showEditAddress= function(req,res) {
                         show_fields: true,
                         manual: false,
                         postcodeFlash: req.flash('error'),
-                        countries:countries[0]
+                        countries:countries[0],
+                        require_contact_details:require_contact_details
                     });
                 });
             }).catch(function (error) {
