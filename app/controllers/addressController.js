@@ -389,9 +389,10 @@ module.exports.showEditAddress= function(req,res) {
                     return res.redirect('/api/user/addresses');
                 }
                 var require_contact_details = 'no';
-                if (req.param('require-contact-details')==='yes'){
+                var back_link = '';
+                if (req.session.require_contact_details === 'yes'){
                     require_contact_details = 'yes';
-                    req.session.require_contact_details = 'yes';
+                    back_link = req.session.require_contact_details_back_link;
                 }
                 return getCountries().then(function (countries) {
                     return res.render('address_pages/edit-address.ejs', {
@@ -408,7 +409,8 @@ module.exports.showEditAddress= function(req,res) {
                         manual: false,
                         postcodeFlash: req.flash('error'),
                         countries:countries[0],
-                        require_contact_details:require_contact_details
+                        require_contact_details:require_contact_details,
+                        back_link:back_link
                     });
                 });
             }).catch(function (error) {
@@ -454,7 +456,11 @@ module.exports.editAddress= function(req,res) {
                 email: req.body.email
             },{where:{  user_id: user.id, id:req.body.address_id }
             }).then(function(){
-                return res.redirect('/api/user/addresses');
+                if (req.session.require_contact_details === 'yes') {
+                    return res.redirect(envVariables.applicationServiceURL + req.session.require_contact_details_back_link);
+                }else{
+                    return res.redirect('/api/user/addresses');
+                }
             })
                 .catch(Sequelize.ValidationError, function (error) {
                     console.log(error);

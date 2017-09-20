@@ -2,7 +2,11 @@
 
 <% include ../partials/header.ejs %>
 
+<%if (back_link != ''){%>
+<a href="<%= url.applicationServiceURL+back_link %>" class="back_to_previous_button">Back</a>
+<%}else{%>
 <a href="/api/user/addresses" class="back_to_previous_button">Back</a>
+<%}%>
 <% if (require_contact_details === 'yes') {%>
 <h1 class="heading-xlarge">Update your saved address</h1>
 <%}else{%>
