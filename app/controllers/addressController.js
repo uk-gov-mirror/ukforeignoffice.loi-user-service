@@ -331,6 +331,10 @@ module.exports.saveAddress= function(req,res) {
     Model.User.findOne({where:{email:req.session.email}}).then(function(user) {
         Model.AccountDetails.findOne({where:{user_id:user.id}}).then(function(account){
             var country = req.body.country || '';
+            var email = req.body.email;
+            if (email === ''){
+                email = null;
+            }
             var Postcode = require("postcode");
             var postcodeObject = new Postcode(req.body.postcode.replace(/ /g,''));
             var postcode = ' ';
@@ -359,7 +363,7 @@ module.exports.saveAddress= function(req,res) {
                 postcode:postcode,
                 country: req.body.country || '',
                 telephone: req.body.telephone,
-                email : req.body.email || ''
+                email : email
             }).then(function(){
                 if(req.session.initial===true){
                     req.session.initial=false;
@@ -423,6 +427,10 @@ module.exports.showEditAddress= function(req,res) {
 
 module.exports.editAddress= function(req,res) {
     var country = req.body.country || '';
+    var email = req.body.email;
+    if (email === ''){
+        email = null;
+    }
     var Postcode = require("postcode");
     var postcodeObject = new Postcode(req.body.postcode.replace(/ /g,''));
     var postcode = ' ';
@@ -453,7 +461,7 @@ module.exports.editAddress= function(req,res) {
                 postcode:postcode,
                 country: req.body.country,
                 telephone: req.body.telephone,
-                email: req.body.email
+                email: email
             },{where:{  user_id: user.id, id:req.body.address_id }
             }).then(function(){
                 if (req.session.require_contact_details === 'yes') {

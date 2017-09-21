@@ -255,7 +255,7 @@ if (error_report) {
                     </span>
             </legend>
 
-            <input class="form-control" type="text" id="email" name="email" value="<%if(form_values){%><%= form_values.email%><%}%>" >
+            <input class="form-control" type="text" id="email" name="email" value="<%if(form_values){%><%= form_values.email || ''%><%}%>" >
         </fieldset>
     </div>
 

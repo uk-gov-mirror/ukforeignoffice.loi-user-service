@@ -127,7 +127,16 @@ var attributes = {
     },
     email: {
         type: Sequelize.STRING,
-        allowNull: true
+        allowNull: true,
+        validate: {
+            isEmail: {
+                msg: JSON.stringify([{
+                    "errInfo": 'The email address you have entered is invalid',
+                    "errSoltn": 'Enter a valid email address',
+                    "questionId" : 'email'
+                }])
+            }
+        }
     }
 
 };
