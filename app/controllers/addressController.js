@@ -45,8 +45,8 @@ module.exports.submitUKQuestion = function(req,res){
                     account:account,
                     url:envVariables,
                     error_report:req.flash('error'),
-                    contact_telephone:req.session.contact_telephone,
-                    contact_email:req.session.contact_email
+                    contact_telephone:account.telephone,
+                    contact_email:user.email
                 });
             });
         });
@@ -62,8 +62,8 @@ module.exports.submitUKQuestion = function(req,res){
                         url:envVariables,
                         form_values: false,
                         countries:countries[0],
-                        contact_telephone:req.session.contact_telephone,
-                        contact_email:req.session.contact_email
+                        contact_telephone:account.telephone,
+                        contact_email:user.email
                     });
                 });
             });
@@ -80,8 +80,8 @@ module.exports.showPostcodeLookup = function(req,res){
                 account:account,
                 url:envVariables,
                 error_report:req.flash('error'),
-                contact_telephone:req.session.contact_telephone,
-                contact_email:req.session.contact_email
+                contact_telephone:account.telephone,
+                contact_email:user.email
             });
         });
     });
@@ -320,8 +320,8 @@ module.exports.showManualAddress = function(req, res) {
                 account:account,
                 url:envVariables,
                 form_values: false,
-                contact_telephone:req.session.contact_telephone,
-                contact_email:req.session.contact_email
+                contact_telephone:account.telephone,
+                contact_email:user.email
             });
         });
     });
@@ -414,7 +414,9 @@ module.exports.showEditAddress= function(req,res) {
                         postcodeFlash: req.flash('error'),
                         countries:countries[0],
                         require_contact_details:require_contact_details,
-                        back_link:back_link
+                        back_link:back_link,
+                        contact_telephone:account.telephone,
+                        contact_email:user.email
                     });
                 });
             }).catch(function (error) {

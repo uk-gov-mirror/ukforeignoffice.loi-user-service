@@ -397,9 +397,6 @@ module.exports.completeRegistration =function(req,res){
                 }, {where: {user_id: user.id}})
                     .then(function () {
                         req.session.initial = true;
-                        req.session.contact_telephone = phonePattern.test(req.body.telephone) ? req.body.telephone : '';
-                        req.session.contact_email = req.session.email;
-                        // return res.redirect('/api/user/dashboard?complete=true');
                         return  res.render('initial/address-skip.ejs');
 
                     })
