@@ -394,10 +394,26 @@ module.exports.showEditAddress= function(req,res) {
                 }
                 var require_contact_details = 'no';
                 var back_link = '';
+
+                // if the user has been sent here from the application
+                // service because they need to update their telephone
+                // numnber and email address, set some flags
                 if (req.session.require_contact_details === 'yes'){
                     require_contact_details = 'yes';
                     back_link = req.session.require_contact_details_back_link;
                 }
+
+                // if there is no telephone or email found
+                // pull them from their account so we can
+                // pre-populate
+                if (address.telephone === null){
+                    address.telephone = account.telephone;
+                }
+
+                if (address.email === null){
+                    address.email = user.email;
+                }
+
                 return getCountries().then(function (countries) {
                     return res.render('address_pages/edit-address.ejs', {
                         initial: req.session.initial,
@@ -414,9 +430,7 @@ module.exports.showEditAddress= function(req,res) {
                         postcodeFlash: req.flash('error'),
                         countries:countries[0],
                         require_contact_details:require_contact_details,
-                        back_link:back_link,
-                        contact_telephone:account.telephone,
-                        contact_email:user.email
+                        back_link:back_link
                     });
                 });
             }).catch(function (error) {
@@ -466,8 +480,28 @@ module.exports.editAddress= function(req,res) {
                 email: email
             },{where:{  user_id: user.id, id:req.body.address_id }
             }).then(function(){
+
+                // enter this section if the user was sent here because they
+                // didnt have any telephone or email associated with this
+                // selected address
                 if (req.session.require_contact_details === 'yes') {
-                    return res.redirect(envVariables.applicationServiceURL + req.session.require_contact_details_back_link);
+
+                    req.session.addressToUpdate = {
+                        full_name: req.body.full_name,
+                        organisation: req.body.organisation,
+                        house_name: req.body.house_name,
+                        street: req.body.street,
+                        town:req.body.town,
+                        county:req.body.county,
+                        postcode:postcode,
+                        country: req.body.country,
+                        telephone: req.body.telephone,
+                        email: email
+                    };
+
+                    // go back to the application-service and update details
+                    // before being redirected to the correct page
+                    return res.redirect(envVariables.applicationServiceURL + 'manage-saved-address');
                 }else{
                     return res.redirect('/api/user/addresses');
                 }
