@@ -44,7 +44,9 @@ module.exports.submitUKQuestion = function(req,res){
                     user:user,
                     account:account,
                     url:envVariables,
-                    error_report:req.flash('error')
+                    error_report:req.flash('error'),
+                    contact_telephone:account.telephone,
+                    contact_email:user.email
                 });
             });
         });
@@ -59,7 +61,9 @@ module.exports.submitUKQuestion = function(req,res){
                         account:account,
                         url:envVariables,
                         form_values: false,
-                        countries:countries[0]
+                        countries:countries[0],
+                        contact_telephone:account.telephone,
+                        contact_email:user.email
                     });
                 });
             });
@@ -75,7 +79,9 @@ module.exports.showPostcodeLookup = function(req,res){
                 user:user,
                 account:account,
                 url:envVariables,
-                error_report:req.flash('error')
+                error_report:req.flash('error'),
+                contact_telephone:account.telephone,
+                contact_email:user.email
             });
         });
     });
@@ -313,7 +319,9 @@ module.exports.showManualAddress = function(req, res) {
                 user:user,
                 account:account,
                 url:envVariables,
-                form_values: false
+                form_values: false,
+                contact_telephone:account.telephone,
+                contact_email:user.email
             });
         });
     });
@@ -323,6 +331,10 @@ module.exports.saveAddress= function(req,res) {
     Model.User.findOne({where:{email:req.session.email}}).then(function(user) {
         Model.AccountDetails.findOne({where:{user_id:user.id}}).then(function(account){
             var country = req.body.country || '';
+            var email = req.body.email;
+            if (email === ''){
+                email = null;
+            }
             var Postcode = require("postcode");
             var postcodeObject = new Postcode(req.body.postcode.replace(/ /g,''));
             var postcode = ' ';
@@ -349,7 +361,9 @@ module.exports.saveAddress= function(req,res) {
                 town:req.body.town,
                 county:req.body.county || '',
                 postcode:postcode,
-                country: req.body.country || ''
+                country: req.body.country || '',
+                telephone: req.body.telephone,
+                email : email
             }).then(function(){
                 if(req.session.initial===true){
                     req.session.initial=false;
@@ -375,9 +389,31 @@ module.exports.showEditAddress= function(req,res) {
             Model.SavedAddress.findOne({where:{user_id:user.id, id:req.query.id}}).then(function(address) {
                 if (!address)
                 {
-                    console.log("Address is null")
+                    console.log("Address is null");
                     return res.redirect('/api/user/addresses');
                 }
+                var require_contact_details = 'no';
+                var back_link = '';
+
+                // if the user has been sent here from the application
+                // service because they need to update their telephone
+                // numnber and email address, set some flags
+                if (req.session.require_contact_details === 'yes'){
+                    require_contact_details = 'yes';
+                    back_link = req.session.require_contact_details_back_link;
+                }
+
+                // if there is no telephone or email found
+                // pull them from their account so we can
+                // pre-populate
+                if (address.telephone === null){
+                    address.telephone = account.telephone;
+                }
+
+                if (address.email === null){
+                    address.email = user.email;
+                }
+
                 return getCountries().then(function (countries) {
                     return res.render('address_pages/edit-address.ejs', {
                         initial: req.session.initial,
@@ -392,7 +428,9 @@ module.exports.showEditAddress= function(req,res) {
                         show_fields: true,
                         manual: false,
                         postcodeFlash: req.flash('error'),
-                        countries:countries[0]
+                        countries:countries[0],
+                        require_contact_details:require_contact_details,
+                        back_link:back_link
                     });
                 });
             }).catch(function (error) {
@@ -405,6 +443,10 @@ module.exports.showEditAddress= function(req,res) {
 
 module.exports.editAddress= function(req,res) {
     var country = req.body.country || '';
+    var email = req.body.email;
+    if (email === ''){
+        email = null;
+    }
     var Postcode = require("postcode");
     var postcodeObject = new Postcode(req.body.postcode.replace(/ /g,''));
     var postcode = ' ';
@@ -433,10 +475,36 @@ module.exports.editAddress= function(req,res) {
                 town:req.body.town,
                 county:req.body.county,
                 postcode:postcode,
-                country: req.body.country
+                country: req.body.country,
+                telephone: req.body.telephone,
+                email: email
             },{where:{  user_id: user.id, id:req.body.address_id }
             }).then(function(){
-                return res.redirect('/api/user/addresses');
+
+                // enter this section if the user was sent here because they
+                // didnt have any telephone or email associated with this
+                // selected address
+                if (req.session.require_contact_details === 'yes') {
+
+                    req.session.addressToUpdate = {
+                        full_name: req.body.full_name,
+                        organisation: req.body.organisation,
+                        house_name: req.body.house_name,
+                        street: req.body.street,
+                        town:req.body.town,
+                        county:req.body.county,
+                        postcode:postcode,
+                        country: req.body.country,
+                        telephone: req.body.telephone,
+                        email: email
+                    };
+
+                    // go back to the application-service and update details
+                    // before being redirected to the correct page
+                    return res.redirect(envVariables.applicationServiceURL + 'manage-saved-address');
+                }else{
+                    return res.redirect('/api/user/addresses');
+                }
             })
                 .catch(Sequelize.ValidationError, function (error) {
                     console.log(error);

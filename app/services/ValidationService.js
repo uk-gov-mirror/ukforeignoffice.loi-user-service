@@ -113,6 +113,7 @@ var ValidationService = {
 
     buildAddressErrorArray: function (error, req, res, countries,user, account,edit) {
         var country = req.body.country || '';
+        var isemail = require('isemail');
         var Postcode = require("postcode");
         var postcodeObject = new Postcode(req.body.postcode.replace(/ /g,''));
         var postcode = ' ';
@@ -141,6 +142,14 @@ var ValidationService = {
         if (req.body.country === '' || typeof(req.body.country)=='undefined') {
             erroneousFields.push('country');
         }
+        if (req.body.telephone === '') {
+            erroneousFields.push('telephone');
+        }
+        if (req.body.email !== '') {
+            if (!isemail.validate(req.body.email)){
+                erroneousFields.push('email');
+            }
+        }
 
 console.log(req.body.postcode === '' || req.body.postcode.length >20);
         var dataValues = [];
@@ -153,10 +162,18 @@ console.log(req.body.postcode === '' || req.body.postcode.length >20);
                 street: req.body.street !== '' && req.body.street !== undefined && req.body.street != 'undefined'  ? req.body.street : "",
                 town: req.body.town !== '' && req.body.town !== undefined && req.body.town != 'undefined'  ? req.body.town : "",
                 county: req.body.county !== '' && req.body.county !== undefined && req.body.county != 'undefined'  ? req.body.county : "",
-                country: req.body.country !== '' && req.body.country !== undefined && req.body.country != 'undefined'  ? req.body.country : ""
+                country: req.body.country !== '' && req.body.country !== undefined && req.body.country != 'undefined'  ? req.body.country : "",
+                telephone: req.body.telephone !== '' && req.body.telephone !== undefined && req.body.telephone != 'undefined'  ? req.body.telephone : "",
+                email: req.body.email !== '' && req.body.email !== undefined && req.body.email != 'undefined'  ? req.body.email : ""
             }
         );
         if(edit){
+            var require_contact_details = 'no';
+            var back_link = '';
+            if (req.session.require_contact_details === 'yes'){
+                require_contact_details = 'yes';
+                back_link = req.session.require_contact_details_back_link;
+            }
             return res.render('address_pages/edit-address.ejs', {
                 uk: (req.body.country=='United Kingdom'),
                 addresses: req.session.addresses,
@@ -171,7 +188,9 @@ console.log(req.body.postcode === '' || req.body.postcode.length >20);
                 account:account,
                 url:envVariables,
                 countries: countries[0],
-                initial:req.session.initial
+                initial:req.session.initial,
+                require_contact_details:require_contact_details,
+                back_link:back_link
             });
 
         }else if(req.body.country == 'United Kingdom' && !JSON.parse(req.body.manual)){

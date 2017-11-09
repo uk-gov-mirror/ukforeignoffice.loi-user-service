@@ -397,7 +397,6 @@ module.exports.completeRegistration =function(req,res){
                 }, {where: {user_id: user.id}})
                     .then(function () {
                         req.session.initial = true;
-                        // return res.redirect('/api/user/dashboard?complete=true');
                         return  res.render('initial/address-skip.ejs');
 
                     })

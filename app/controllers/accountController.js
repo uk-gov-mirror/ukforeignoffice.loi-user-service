@@ -36,7 +36,7 @@ module.exports.showAddresses = function(req, res) {
     if(req.session.email) {
         Model.User.findOne({where: {email: req.session.email}}).then(function (user) {
             Model.AccountDetails.findOne({where: {user_id: user.id}}).then(function (account) {
-                Model.SavedAddress.findAll({where: {user_id: user.id}}).then(function (addresses) {
+                Model.SavedAddress.findAll({where: {user_id: user.id}, order: [['id', 'ASC']]}).then(function (addresses) {
                     return res.render('account_pages/addresses.ejs', {
                         user: user,
                         account: account,

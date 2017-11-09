@@ -2,8 +2,16 @@
 
 <% include ../partials/header.ejs %>
 
+<%if (back_link != ''){%>
+<a href="<%= url.applicationServiceURL+back_link %>" class="back_to_previous_button">Back</a>
+<%}else{%>
 <a href="/api/user/addresses" class="back_to_previous_button">Back</a>
+<%}%>
+<% if (require_contact_details === 'yes') {%>
+<h1 class="heading-xlarge">Update your saved address</h1>
+<%}else{%>
 <h1 class="heading-xlarge">Edit return address</h1>
+<%}%>
 
 
 <%
@@ -28,6 +36,12 @@ if (error_report) {
                         primaryAddressErrors.push(error);
                     }
                     if (error.fieldName == "postcode") {
+                        primaryAddressErrors.push(error);
+                    }
+                    if (error.fieldName == "telephone") {
+                        primaryAddressErrors.push(error);
+                    }
+                    if (error.fieldName == "email") {
                         primaryAddressErrors.push(error);
                     }
 
@@ -58,8 +72,13 @@ if (error_report) {
         </ul>
     </div>
 </div>
+
 <form id="edit_address_form" class="column-two-thirds" method="post" action="/api/user/edit-address">
     <div class=" form-group" id="address-details-group">
+
+        <% if (require_contact_details === 'yes') {%>
+        <p>To help ensure safe delivery to this address we need to confirm delivery contact information. Check the details below, make any changes, then continue with your application. We'll save the information in your account for next time. </p>
+        <%}%>
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('full_name')>-1) { %>error<% } %>">
             <label class="form-label-bold" for="full-name">Full name</label>
@@ -194,6 +213,50 @@ if (error_report) {
             <% } %>
 
         </select>
+    </div>
+
+    <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>error<% } %>">
+        <label class="form-label-bold" for="town">Telephone number</label>
+        <span class="form-hint">Contact number for this address for delivery questions or updates</span>
+        <fieldset>
+            <legend id="legend_telephone"
+                    class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>show<% } else { %>hide<% } %>">
+
+                    <span class="error-message">
+                        <% if (error_report && primaryAddressErrors.length>0) { %>
+                        <% primaryAddressErrors.forEach( function(errorItem) { %>
+                        <% if (errorItem.questionId == "telephone") { %>
+                        <%= errorItem.fieldError %>
+                        <% } %>
+                        <% }) %>
+                        <% } %>
+                    </span>
+            </legend>
+
+            <input class="form-control" type="tel" id="telephone" aria-required="true" name="telephone" value="<% if(form_values){%><%= form_values.telephone%><%}%>" >
+        </fieldset>
+    </div>
+
+    <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('email')>-1) { %>error<% } %>">
+        <label class="form-label-bold" for="email">Email address <span>(optional)</span></label>
+        <span class="form-hint">Contact email for this address for delivery questions or updates</span>
+        <fieldset>
+            <legend id="legend_email"
+                    class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('email')>-1) { %>show<% } else { %>hide<% } %>">
+
+                    <span class="error-message">
+                        <% if (error_report && primaryAddressErrors.length>0) { %>
+                        <% primaryAddressErrors.forEach( function(errorItem) { %>
+                        <% if (errorItem.questionId == "email") { %>
+                        <%= errorItem.fieldError %>
+                        <% } %>
+                        <% }) %>
+                        <% } %>
+                    </span>
+            </legend>
+
+            <input class="form-control" type="text" id="email" name="email" value="<% if (form_values){%><%= form_values.email || ''%><%}%>" >
+        </fieldset>
     </div>
 
     <input type="hidden" name="address_id" value='<%= address_id%>'>
