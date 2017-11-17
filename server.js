@@ -13,15 +13,24 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     jsonParser = bodyParser.json(),
     dotenv = require('dotenv'),
-    env = dotenv.config({path: process.env.DOTENV || '.env'})
+    env = dotenv.config({path: process.env.DOTENV || '.env'}),
+    cookieParser = require('cookie-parser'),
     sass = require('node-sass');
 
 require('./config/logs');
 
+app.use(cookieParser());
 
 app.use(function(req, res, next) {
     res.removeHeader("X-Powered-By");
     res.removeHeader("Server");
+    return next();
+});
+
+app.use(function(req, res, next) {
+    if (req.cookies['LoggedIn']){
+        res.cookie('LoggedIn',true,{ maxAge: 1800000, httpOnly: true });
+    }
     return next();
 });
 
