@@ -6,8 +6,11 @@
  */
 
 var bcrypt = require('bcryptjs'),
+    request = require('request'),
     async = require('async'),
+    config = require('../../config/environment'),
     crypto = require('crypto'),
+    fs = require('fs'),
     Model = require('../model/models.js'),
     ValidationService = require('../services/ValidationService.js'),  common = require('../../config/common.js'),
     envVariables = common.config(),
@@ -399,8 +402,44 @@ module.exports.completeRegistration =function(req,res){
                         req.session.initial = true;
                         return  res.render('initial/address-skip.ejs');
 
+                    }).then(function () {
+
+                        var accountCreationObject = {'':''};
+
+                        // calculate HMAC string and encode in base64
+                        var objectString = JSON.stringify(accountCreationObject, null, 0);
+                        var hash = crypto.createHmac('sha512', config.hmacKey).update(new Buffer(objectString, 'utf-8')).digest('hex').toUpperCase();
+
+
+                        request.post({
+                            headers: {
+                                "accept": "application/json",
+                                "hash": hash,
+                                "content-type": "application/json; charset=utf-8",
+                                "api-version": "3"
+                            },
+                            url: config.creationApiUrl,
+                            agentOptions: config.certPath ? {
+                                cert: fs.readFileSync(config.certPath),
+                                key: fs.readFileSync(config.keyPath)
+                            } : null,
+                            json: true,
+                            body: accountCreationObject
+                        }, function (error, response, body) {
+                            if (error) {
+                                console.log(JSON.stringify(error));
+                            } else if (response.statusCode === 200) {
+                                console.log('account creation sent to casebook successfully for user_id ' + user.id);
+                            } else {
+                                console.error('account creation failed sending to casebook for user_id ' + user.id);
+                                console.error('response code: ' + response.code);
+                                console.error(body);
+                            }
+                        })
                     })
                     .catch(function (error) {
+
+                        console.log(error);
 
                         // Custom error array builder for email match confirmation
                         var erroneousFields = [];
