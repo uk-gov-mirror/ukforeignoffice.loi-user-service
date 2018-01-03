@@ -19,7 +19,7 @@ var live_variables = JSON.parse(env.LIVEVARIABLES);
 var userAccountSettings = JSON.parse(env.USERACCOUNTSETTINGS);
 var pgPassword = env.PGPASSWORD;
 var Sequelize = require('sequelize');
-var creationApiUrl = env.CREATIONAPIURL;
+var accountManagementApiUrl = env.ACCOUNTMANAGEMENTAPIURL;
 var certPath = env.CERTPATH;
 var keyPath = env.KEYPATH;
 var hmacKey = env.HMACKEY;
@@ -38,7 +38,7 @@ var config = {
     "pgpassword": pgPassword,
     "userAccountSettings": userAccountSettings,
     "live_variables":live_variables,
-    "creationApiUrl":creationApiUrl,
+    "accountManagementApiUrl":accountManagementApiUrl,
     "certPath":certPath,
     "keyPath":keyPath,
     "hmacKey":hmacKey

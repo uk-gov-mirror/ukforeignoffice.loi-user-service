@@ -404,10 +404,26 @@ module.exports.completeRegistration =function(req,res){
 
                     }).then(function () {
 
-                        var accountCreationObject = {'':''};
+                        var accountManagementObject = {
+                            "portalCustomerUpdate": {
+                                "userId": "legalisation",
+                                "timestamp": (new Date()).getTime().toString(),
+                                "portalCustomer": {
+                                    "portalCustomerId": user.id,
+                                    "forename": req.body.first_name,
+                                    "surname": req.body.last_name,
+                                    "primaryTelephone": phonePattern.test(req.body.telephone) ? req.body.telephone : '',
+                                    "mobileTelephone": "",
+                                    "eveningTelephone": "",
+                                    "email": req.session.email,
+                                    "companyName": data.company_name,
+                                    "companyRegistrationNumber": data.company_number
+                                }
+                            }
+                        };
 
                         // calculate HMAC string and encode in base64
-                        var objectString = JSON.stringify(accountCreationObject, null, 0);
+                        var objectString = JSON.stringify(accountManagementObject, null, 0);
                         var hash = crypto.createHmac('sha512', config.hmacKey).update(new Buffer(objectString, 'utf-8')).digest('hex').toUpperCase();
 
 
@@ -418,13 +434,13 @@ module.exports.completeRegistration =function(req,res){
                                 "content-type": "application/json; charset=utf-8",
                                 "api-version": "3"
                             },
-                            url: config.creationApiUrl,
+                            url: config.accountManagementApiUrl,
                             agentOptions: config.certPath ? {
                                 cert: fs.readFileSync(config.certPath),
                                 key: fs.readFileSync(config.keyPath)
                             } : null,
                             json: true,
-                            body: accountCreationObject
+                            body: accountManagementObject
                         }, function (error, response, body) {
                             if (error) {
                                 console.log(JSON.stringify(error));
