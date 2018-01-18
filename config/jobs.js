@@ -8,33 +8,62 @@ var Model = require('../app/model/models.js'),
 
 var jobs ={
     accountExpiryCheck: function(){
-    console.log("RUNNING ACCOUNT EXPIRY CHECK JOB");
+    console.log("[ACCOUNT CHECK JOB] STARTING");
         var now = new Date(),
         gracePeriod = new Date(now);
         gracePeriod.setDate(now.getDate()+envVariables.userAccountSettings.gracePeriod);
-        Model.User.findAll().then(function(users){
+        Model.User.findAll({
+            where: {
+                accountExpiry: {
+                    $lte: gracePeriod
+                }
+            }
+        }).then(function(users){
+            console.log('[ACCOUNT CHECK JOB] ACCOUNTS TO CHECK: ' + users.length);
+
                 for(var u=0; u<users.length; u++){
-                    var user = users[u],
-                        expired = user.accountExpiry < now,
-                        expiringSoon = user.accountExpiry < gracePeriod,
-                        warningSent = user.warningSent,
-                        expiryConfirmationSent = user.expiryConfirmationSent,
-                        accountExpiryDateText = moment(user.accountExpiry).format('DD MMMM YYYY'),
-                        dayAndMonthText = moment(user.accountExpiry).format('DD MMMM');
-                    
-                    if(!expired && expiringSoon && !warningSent){
-                        console.log('SEND WARNING EMAIL');
-                        Model.User.update({warningSent:true}, {where:{email : user.email}});
-                        emailService.expiryWarning(user.email,accountExpiryDateText,dayAndMonthText);
-                    }
-                    else if(expired && !expiryConfirmationSent){
-                        console.log('SEND EXPIRY EMAIL AND DELETE ACCOUNT');
-                        Model.User.update({expiryConfirmationSent:true}, {where:{email : user.email}});
-                        emailService.expiryConfirmation(user.email);
-                        Model.AccountDetails.destroy({where:{user_id:user.id}});
-                        Model.SavedAddress.destroy({where:{user_id:user.id}});
-                        Model.User.destroy({where:{email:user.email}});
-                    }
+                    setTimeout(function(u){
+
+                            var user = users[u],
+                                expired = user.accountExpiry < now,
+                                expiringSoon = user.accountExpiry < gracePeriod,
+                                warningSent = user.warningSent,
+                                expiryConfirmationSent = user.expiryConfirmationSent,
+                                accountExpiryDateText = moment(user.accountExpiry).format('DD MMMM YYYY'),
+                                dayAndMonthText = moment(user.accountExpiry).format('DD MMMM');
+
+                            console.log('[ACCOUNT CHECK JOB] PROCESSING USER ' + user.id);
+
+                            if (!expired && expiringSoon && !warningSent) {
+                                console.log('[ACCOUNT CHECK JOB] SENDING WARNING EMAIL FOR USER ' + user.id);
+
+                                Model.User.update({warningSent: true}, {where: {email: user.email}}).then(function () {
+
+                                    emailService.expiryWarning(user.email,accountExpiryDateText,dayAndMonthText, user.id);
+
+                                });
+
+                            }
+                            else if (expired && !expiryConfirmationSent) {
+                                console.log('[ACCOUNT CHECK JOB] SENDING EXPIRY EMAIL AND DELETE ACCOUNT FOR USER ' + user.id);
+
+                                Model.User.update({expiryConfirmationSent: true}, {where: {email: user.email}}).then(function () {
+
+                                    emailService.expiryConfirmation(user.email, user.id);
+
+                                    Model.AccountDetails.destroy({where: {user_id: user.id}}).then(function () {
+                                        Model.SavedAddress.destroy({where: {user_id: user.id}}).then(function () {
+                                            Model.User.destroy({where: {email: user.email}}).then(function(){
+                                                console.log('[ACCOUNT CHECK JOB] ACCOUNT DELETED SUCCESSFULLY FOR USER ' + user.id);
+                                            });
+                                        });
+                                    });
+                                });
+                            } else {
+                                console.log('[ACCOUNT CHECK JOB] NO ACTION REQUIRED FOR USER ' + user.id);
+                            }
+
+                    }, 1000 * u, u);
                 }
             }
         )
