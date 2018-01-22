@@ -63,7 +63,7 @@ emailService = {
             }
         });
     },
-    expiryWarning: function(email, accountExpiryDateText, dayAndMonthText){
+    expiryWarning: function(email, accountExpiryDateText, dayAndMonthText, userID){
         
                     var url = '/expiry_warning';
                 var postData= {to: email, accountExpiryDateText: accountExpiryDateText, dayAndMonthText: dayAndMonthText};
@@ -73,12 +73,12 @@ emailService = {
                                 if(err) {
                                         console.log(err);
                                     } else {
-                                        console.log(res.statusCode, body);
+                                        console.log('[ACCOUNT CHECK JOB] WARNING EMAIL SENT SUCCESSFULLY FOR USER ' + userID);
                                     }
                                 return res.statusCode;
                             });
             },
-    expiryConfirmation: function(email){
+    expiryConfirmation: function(email, userID){
     
                 var url = '/expiry_confirmation';
             var postData= {to: email};
@@ -88,7 +88,7 @@ emailService = {
                             if(err) {
                                     console.log(err);
                                 } else {
-                                    console.log(res.statusCode, body);
+                                console.log('[ACCOUNT CHECK JOB] EXPIRY EMAIL SENT SUCCESSFULLY FOR USER ' + userID);
                                 }
                         });
         }
