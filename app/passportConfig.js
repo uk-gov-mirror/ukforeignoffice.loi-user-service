@@ -42,7 +42,7 @@ module.exports = function(app,passport) {
                                 'email': email
                             }
                         }).then(function () {
-                            console.info('Successful Login');
+                            console.info('SUCCESSFUL LOGIN FOR USER ' + user.id);
                             return done(null, user);
 
                         });
