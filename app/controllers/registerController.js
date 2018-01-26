@@ -445,9 +445,9 @@ module.exports.completeRegistration =function(req,res){
                             if (error) {
                                 console.log(JSON.stringify(error));
                             } else if (response.statusCode === 200) {
-                                console.log('account creation sent to casebook successfully for user_id ' + user.id);
+                                console.log('[ACCOUNT MANAGEMENT] ACCOUNT CREATION SENT TO CASEBOOK SUCCESSFULLY FOR USER_ID ' + user.id);
                             } else {
-                                console.error('account creation failed sending to casebook for user_id ' + user.id);
+                                console.error('[ACCOUNT MANAGEMENT] ACCOUNT CREATION FAILED SENDING TO CASEBOOK FOR USER_ID ' + user.id);
                                 console.error('response code: ' + response.code);
                                 console.error(body);
                             }

@@ -124,9 +124,9 @@ module.exports.changeDetails = function(req, res) {
                             if (error) {
                                 console.log(JSON.stringify(error));
                             } else if (response.statusCode === 200) {
-                                console.log('account update sent to casebook successfully for user_id ' + user.id);
+                                console.log('[ACCOUNT MANAGEMENT] ACCOUNT UPDATE SENT TO CASEBOOK SUCCESSFULLY FOR USER_ID ' + user.id);
                             } else {
-                                console.error('account update failed sending to casebook for user_id ' + user.id);
+                                console.error('[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO CASEBOOK FOR USER_ID ' + user.id);
                                 console.error('response code: ' + response.code);
                                 console.error(body);
                             }
