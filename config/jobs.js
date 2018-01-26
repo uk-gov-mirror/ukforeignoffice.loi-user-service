@@ -29,8 +29,8 @@ var jobs ={
                                 expiringSoon = user.accountExpiry < gracePeriod,
                                 warningSent = user.warningSent,
                                 expiryConfirmationSent = user.expiryConfirmationSent,
-                                accountExpiryDateText = moment(user.accountExpiry).format('DD MMMM YYYY'),
-                                dayAndMonthText = moment(user.accountExpiry).format('DD MMMM');
+                                accountExpiryDateText = moment(user.accountExpiry).format('Do MMMM YYYY'),
+                                dayAndMonthText = moment(user.accountExpiry).format('Do MMMM');
 
                             console.log('[ACCOUNT CHECK JOB] PROCESSING USER ' + user.id);
 
