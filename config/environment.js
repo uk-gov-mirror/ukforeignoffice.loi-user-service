@@ -19,6 +19,10 @@ var live_variables = JSON.parse(env.LIVEVARIABLES);
 var userAccountSettings = JSON.parse(env.USERACCOUNTSETTINGS);
 var pgPassword = env.PGPASSWORD;
 var Sequelize = require('sequelize');
+var accountManagementApiUrl = env.ACCOUNTMANAGEMENTAPIURL;
+var certPath = env.CERTPATH;
+var keyPath = env.KEYPATH;
+var hmacKey = env.HMACKEY;
 
 var config = {
     "mongoURL": mongourl.mongoURL,
@@ -33,7 +37,11 @@ var config = {
     "postcodeLookUpApiOptions":postcodelookupoptions,
     "pgpassword": pgPassword,
     "userAccountSettings": userAccountSettings,
-    "live_variables":live_variables
+    "live_variables":live_variables,
+    "accountManagementApiUrl":accountManagementApiUrl,
+    "certPath":certPath,
+    "keyPath":keyPath,
+    "hmacKey":hmacKey
 };
 
 module.exports = config;
