@@ -410,7 +410,7 @@ module.exports.completeRegistration =function(req,res){
                                 "timestamp": (new Date()).getTime().toString(),
                                 "portalCustomer": {
                                     "portalCustomerId": user.id,
-                                    "forename": req.body.first_name,
+                                    "forenames": req.body.first_name,
                                     "surname": req.body.last_name,
                                     "primaryTelephone": phonePattern.test(req.body.telephone) ? req.body.telephone : '',
                                     "mobileTelephone": "",
