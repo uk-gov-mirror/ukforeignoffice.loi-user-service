@@ -238,7 +238,7 @@ module.exports.changeCompanyDetails = function(req, res) {
                                     "userId": "legalisation",
                                     "timestamp": (new Date()).getTime().toString(),
                                     "portalCustomer": {
-                                        "portalCustomerId": data.id,
+                                        "portalCustomerId": user.id,
                                         "forenames": data.first_name,
                                         "surname": data.last_name,
                                         "primaryTelephone": data.telephone,
@@ -348,6 +348,56 @@ module.exports.upgradeAccount = function(req, res) {
                     if(data){
                         Model.AccountDetails.update(accountDetails,{where:{user_id:user.id}})
                             .then(function(){
+
+                                var accountManagementObject = {
+                                    "portalCustomerUpdate": {
+                                        "userId": "legalisation",
+                                        "timestamp": (new Date()).getTime().toString(),
+                                        "portalCustomer": {
+                                            "portalCustomerId": user.id,
+                                            "forenames": data.first_name,
+                                            "surname": data.last_name,
+                                            "primaryTelephone": data.telephone,
+                                            "mobileTelephone": "",
+                                            "eveningTelephone": "",
+                                            "email": req.session.email,
+                                            "companyName": req.body.company_name,
+                                            "companyRegistrationNumber": data.company_number
+                                        }
+                                    }
+                                };
+
+                                // calculate HMAC string and encode in base64
+                                var objectString = JSON.stringify(accountManagementObject, null, 0);
+                                var hash = crypto.createHmac('sha512', config.hmacKey).update(new Buffer(objectString, 'utf-8')).digest('hex').toUpperCase();
+
+
+                                request.post({
+                                    headers: {
+                                        "accept": "application/json",
+                                        "hash": hash,
+                                        "content-type": "application/json; charset=utf-8",
+                                        "api-version": "3"
+                                    },
+                                    url: config.accountManagementApiUrl,
+                                    agentOptions: config.certPath ? {
+                                        cert: fs.readFileSync(config.certPath),
+                                        key: fs.readFileSync(config.keyPath)
+                                    } : null,
+                                    json: true,
+                                    body: accountManagementObject
+                                }, function (error, response, body) {
+                                    if (error) {
+                                        console.log(JSON.stringify(error));
+                                    } else if (response.statusCode === 200) {
+                                        console.log('[ACCOUNT MANAGEMENT] ACCOUNT UPDATE SENT TO CASEBOOK SUCCESSFULLY FOR USER_ID ' + user.id);
+                                    } else {
+                                        console.error('[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO CASEBOOK FOR USER_ID ' + user.id);
+                                        console.error('response code: ' + response.code);
+                                        console.error(body);
+                                    }
+                                });
+
                                 req.flash('company_info','You have successfully upgraded to a premium account.');
                                 return res.redirect('/api/user/account');
                             })
