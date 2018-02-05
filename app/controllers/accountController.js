@@ -95,7 +95,7 @@ module.exports.changeDetails = function(req, res) {
                                     "mobileTelephone": "",
                                     "eveningTelephone": "",
                                     "email": req.session.email,
-                                    "companyName": data.company_name,
+                                    "companyName": data.company_name !== 'N/A' ? data.company_name : "",
                                     "companyRegistrationNumber": data.company_number
                                 }
                             }
