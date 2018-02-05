@@ -416,11 +416,12 @@ module.exports.completeRegistration =function(req,res){
                                     "mobileTelephone": "",
                                     "eveningTelephone": "",
                                     "email": req.session.email,
-                                    "companyName": data.company_name,
+                                    "companyName": data.company_name !== 'N/A' ? data.company_name : "",
                                     "companyRegistrationNumber": data.company_number
                                 }
                             }
                         };
+
 
                         // calculate HMAC string and encode in base64
                         var objectString = JSON.stringify(accountManagementObject, null, 0);
