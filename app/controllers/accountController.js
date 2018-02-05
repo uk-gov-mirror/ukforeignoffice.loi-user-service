@@ -361,7 +361,7 @@ module.exports.upgradeAccount = function(req, res) {
                                             "mobileTelephone": "",
                                             "eveningTelephone": "",
                                             "email": req.session.email,
-                                            "companyName": data.company_name !== 'N/A' ? data.company_name : "",
+                                            "companyName": req.body.company_name,
                                             "companyRegistrationNumber": data.company_number
                                         }
                                     }
