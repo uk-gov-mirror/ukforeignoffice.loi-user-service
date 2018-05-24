@@ -90,7 +90,9 @@
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('feedback_consent')>-1) { %>error<% } %>" >
             <h2 class="form-label-bold">Feedback</h2>
 
-            <span>Can we contact you for feedback to help improve this service? For more information see the <a href="/terms-and-conditions"  target="_blank">privacy policy<span class="visually-hidden"> opens in new window</span></a>.</span>
+            <span>We welcome your views on the legalisation service. If you agree to be contacted by answering "Yes" below, you will be consenting to share your personal data - name, email address, telephone number and service received - with our independent partner research agency, IFF Research. You may withdraw your consent at any stage by emailing <a href="mailto:consular.research@fco.gov.uk" >consular.research@fco.gov.uk <span class="visually-hidden"> opens in new window</span></a>. For more details on how your data will be handled in relation to feedback see the <a href="https://www.gov.uk/government/organisations/foreign-commonwealth-office/about/research" >research privacy policy<span class="visually-hidden"> opens in new window</span></a>.<br>
+
+              Can our partner contact you for feedback to help improve this service?.</span>
             <fieldset class="inline" aria-required="true" role="radiogroup">
                 <legend id="legend_feedback_consent" class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('feedback_consent')>-1) { %>show<% } else { %>hide<% } %>">
                     <% if (error_report) { %>
