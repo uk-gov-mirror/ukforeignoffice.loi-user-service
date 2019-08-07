@@ -28,6 +28,11 @@
                 <td class="summary-table-cell-link"><a href="/api/user/change-details">Change<span class="visually-hidden"> telephone number</span></a></td>
             </tr>
             <tr>
+                <td class="summary-table-cell-label">Mobile No</td>
+                <td class="summary-table-cell-content"><%= account.mobileNo%></td>
+                <td class="summary-table-cell-link"><a href="/api/user/change-details">Change<span class="visually-hidden"> mobile number</span></a></td>
+            </tr>
+            <tr>
                 <td class="summary-table-cell-label">Feedback consent</td>
                 <td class="summary-table-cell-content"><%= account.feedback_consent==null? 'Not set':account.feedback_consent ? 'Yes' : 'No'%></td>
                 <td class="summary-table-cell-link"><a href="/api/user/change-details">Change<span class="visually-hidden"> feedback consent</span></a></td>

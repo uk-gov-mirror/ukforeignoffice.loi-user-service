@@ -46,6 +46,7 @@ module.exports.submitUKQuestion = function(req,res){
                     url:envVariables,
                     error_report:req.flash('error'),
                     contact_telephone:account.telephone,
+                    contact_mobileNo:account.mobileNo,
                     contact_email:user.email
                 });
             });
@@ -63,6 +64,7 @@ module.exports.submitUKQuestion = function(req,res){
                         form_values: false,
                         countries:countries[0],
                         contact_telephone:account.telephone,
+                        contact_mobileNo:account.mobileNo,
                         contact_email:user.email
                     });
                 });
@@ -81,6 +83,7 @@ module.exports.showPostcodeLookup = function(req,res){
                 url:envVariables,
                 error_report:req.flash('error'),
                 contact_telephone:account.telephone,
+                contact_mobileNo:account.mobileNo,
                 contact_email:user.email
             });
         });
@@ -321,6 +324,7 @@ module.exports.showManualAddress = function(req, res) {
                 url:envVariables,
                 form_values: false,
                 contact_telephone:account.telephone,
+                contact_mobileNo:account.mobileNo,
                 contact_email:user.email
             });
         });
@@ -363,6 +367,7 @@ module.exports.saveAddress= function(req,res) {
                 postcode:postcode,
                 country: req.body.country || '',
                 telephone: req.body.telephone,
+                mobileNo: req.body.mobileNo,
                 email : email
             }).then(function(){
                 if(req.session.initial===true){
@@ -410,6 +415,9 @@ module.exports.showEditAddress= function(req,res) {
                     address.telephone = account.telephone;
                 }
 
+                if (address.mobileNo === null){
+                    address.mobileNo = account.mobileNo;
+                }
                 if (address.email === null){
                     address.email = user.email;
                 }
@@ -477,6 +485,7 @@ module.exports.editAddress= function(req,res) {
                 postcode:postcode,
                 country: req.body.country,
                 telephone: req.body.telephone,
+                mobileNo: req.body.mobileNo,
                 email: email
             },{where:{  user_id: user.id, id:req.body.address_id }
             }).then(function(){
@@ -496,6 +505,7 @@ module.exports.editAddress= function(req,res) {
                         postcode:postcode,
                         country: req.body.country,
                         telephone: req.body.telephone,
+                        mobileNo: req.body.mobileNo,
                         email: email
                     };
 
