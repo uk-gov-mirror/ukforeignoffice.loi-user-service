@@ -413,7 +413,7 @@ module.exports.completeRegistration =function(req,res){
                                     "forenames": req.body.first_name,
                                     "surname": req.body.last_name,
                                     "primaryTelephone": phonePattern.test(req.body.telephone) ? req.body.telephone : '',
-                                    "mobileTelephone": "",
+                                    "mobileTelephone": phonePattern.test(req.body.mobileNo) ? req.body.mobileNo : '',
                                     "eveningTelephone": "",
                                     "email": req.session.email,
                                     "companyName": data.company_name !== 'N/A' ? data.company_name : "",
