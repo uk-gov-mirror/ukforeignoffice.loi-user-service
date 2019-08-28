@@ -41,6 +41,9 @@ if (error_report) {
                     if (error.fieldName == "telephone") {
                         primaryAddressErrors.push(error);
                     }
+                    if (error.fieldName == "mobileNo") {
+                        primaryAddressErrors.push(error);
+                    }
                     if (error.fieldName == "email") {
                         primaryAddressErrors.push(error);
                     }
@@ -217,7 +220,7 @@ if (error_report) {
 
     <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>error<% } %>">
         <label class="form-label-bold" for="town">Telephone number</label>
-        <span class="form-hint">Contact number for this address for delivery questions or updates</span>
+        <span class="form-hint">Landline number for this address for delivery questions or updates</span>
         <fieldset>
             <legend id="legend_telephone"
                     class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>show<% } else { %>hide<% } %>">
@@ -237,6 +240,27 @@ if (error_report) {
         </fieldset>
     </div>
 
+    <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>">
+        <label class="form-label-bold" for="town">Mobile No </label>
+        <span class="form-hint">Mobile number for this address for delivery questions or updates</span>
+        <fieldset>
+            <legend id="legend_telephone"
+                    class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>show<% } else { %>hide<% } %>">
+
+                    <span class="error-message">
+                        <% if (error_report && primaryAddressErrors.length>0) { %>
+                        <% primaryAddressErrors.forEach( function(errorItem) { %>
+                        <% if (errorItem.questionId == "mobileNo") { %>
+                        <%= errorItem.fieldError %>
+                        <% } %>
+                        <% }) %>
+                        <% } %>
+                    </span>
+            </legend>
+
+            <input class="form-control" type="tel" id="mobileNo" aria-required="true" name="mobileNo" value="<% if(form_values){%><%= form_values.mobileNo%><%}%>" >
+        </fieldset>
+    </div>
     <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('email')>-1) { %>error<% } %>">
         <label class="form-label-bold" for="email">Email address <span>(optional)</span></label>
         <span class="form-hint">Contact email for this address for delivery questions or updates</span>

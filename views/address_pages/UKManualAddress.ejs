@@ -24,6 +24,9 @@ if (error_report) {
                     if (error.fieldName == "telephone") {
                         primaryAddressErrors.push(error);
                     }
+                    if (error.fieldName == "mobileNo") {
+                        primaryAddressErrors.push(error);
+                    }
                     if (error.fieldName == "email") {
                         primaryAddressErrors.push(error);
                     }
@@ -220,6 +223,27 @@ if (error_report) {
                 </legend>
 
                 <input class="form-control" type="tel" id="telephone" aria-required="true" name="telephone" value="<%if(form_values[0]){%><%= form_values[0].telephone%><%} else if (form_values) { %><%= form_values.telephone %><% } else {%><%= contact_telephone %><%}%>">
+            </fieldset>
+        </div>
+
+        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>" id="legend_telephone">
+            <label class="form-label-bold" for="county">Mobile No </label>
+            <span class="form-hint">Mobile number for this address for delivery questions or updates</span>
+            <fieldset>
+                <legend
+                        class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>show<% } else { %>hide<% } %>">
+                    <span class="error-message">
+                        <% if (error_report && primaryAddressErrors.length>0) { %>
+                        <% primaryAddressErrors.forEach( function(errorItem) { %>
+                        <% if (errorItem.questionId == "mobileNo") { %>
+                        <%= errorItem.fieldError %>
+                        <% } %>
+                        <% }) %>
+                        <% } %>
+                    </span>
+                </legend>
+
+                <input class="form-control" type="tel" id="mobileNo" aria-required="true" name="mobileNo" value="<%if(form_values[0]){%><%= form_values[0].mobileNo%><%} else if (form_values) { %><%= form_values.mobileNo %><% } else {%><%= contact_mobileNo%><%}%>">
             </fieldset>
         </div>
 

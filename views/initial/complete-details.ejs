@@ -69,7 +69,6 @@
         </div>
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>error<% } %>">
             <label for="phone" class="form-label-bold">Telephone number</label>
-            <span class="form-hint">Can be landline or mobile</span>
             <fieldset>
                 <legend id="legend_telephone" class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>show<% } else { %>hide<% } %>">
                     <% if (error_report) { %>
@@ -85,7 +84,23 @@
                 <input type="tel" id="phone" class="form-control phone" autocomplete="off" aria-required="true" name="telephone" value="<% if(form_values){%><%=form_values.telephone%><%} %>">
             </fieldset>
         </div>
-
+        <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>">
+            <label for="phone" class="form-label-bold">Mobile number</label>
+            <fieldset>
+                <legend id="legend_telephone" class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>show<% } else { %>hide<% } %>">
+                    <% if (error_report) { %>
+                    <% error_report[0][0].errMsgs.forEach( function(error) { %>
+                    <% if (error.questionId=="mobileNo") { %>
+                    <span class="error-message">
+                       <%= error.fieldSolution %>
+                    </span>
+                    <% } %>
+                    <% }) %>
+                    <% } %>
+                </legend>
+                <input type="tel" id="mobileNo" class="form-control phone" autocomplete="off" aria-required="true" name="mobileNo" value="<% if(form_values){%><%=form_values.mobileNo%><%} %>">
+            </fieldset>
+        </div>
 
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('feedback_consent')>-1) { %>error<% } %>" >
             <h2 class="form-label-bold">Feedback</h2>

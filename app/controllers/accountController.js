@@ -70,6 +70,8 @@ module.exports.changeDetails = function(req, res) {
         first_name: req.body.first_name,
         last_name: req.body.last_name,
         telephone: phonePattern.test(req.body.telephone) ? req.body.telephone : '',
+        mobileNo: phonePattern.test(req.body.mobileNo) ? req.body.mobileNo : '',
+
         feedback_consent: req.body.feedback_consent || ''
     };
 
@@ -92,7 +94,7 @@ module.exports.changeDetails = function(req, res) {
                                     "forenames": req.body.first_name,
                                     "surname": req.body.last_name,
                                     "primaryTelephone": phonePattern.test(req.body.telephone) ? req.body.telephone : '',
-                                    "mobileTelephone": "",
+                                    "mobileTelephone": phonePattern.test(req.body.mobileNo) ? req.body.mobileNo : '',
                                     "eveningTelephone": "",
                                     "email": req.session.email,
                                     "companyName": data.company_name !== 'N/A' ? data.company_name : "",
@@ -143,6 +145,7 @@ module.exports.changeDetails = function(req, res) {
                                 erroneousFields.push('feedback_consent');
                             }
                             if (req.param('telephone') === ''|| req.param('telephone').length<6 || req.param('telephone').length>25  ||  !phonePattern.test(req.param('telephone'))) { erroneousFields.push('telephone'); }
+                            if (req.param('mobileNo') === ''|| req.param('mobileNo').length<6 || req.param('mobileNo').length>25  ||  !phonePattern.test(req.param('mobileNo'))) { erroneousFields.push('mobileNo'); }
 
 
                             dataValues = [];
@@ -150,6 +153,7 @@ module.exports.changeDetails = function(req, res) {
                                 first_name: req.param('first_name') !== '' ? req.param('first_name') : "",
                                 last_name: req.param('last_name') !== '' ? req.param('last_name') : "",
                                 telephone: req.param('telephone') !== '' ? req.param('telephone') : "",
+                                mobileNo: req.param('mobileNo') !== '' ? req.param('mobileNo') : "",
                                 feedback_consent: typeof (req.param('feedback_consent')) !== 'undefined' ? req.param('feedback_consent') : ""
                             });
                             return res.render('account_pages/change-details.ejs', {
@@ -171,6 +175,7 @@ module.exports.changeDetails = function(req, res) {
                                 erroneousFields.push('feedback_consent');
                             }
                             if (req.param('telephone') === ''|| req.param('telephone').length<6 || req.param('telephone').length>25) { erroneousFields.push('telephone'); }
+                            if (req.param('mobileNo') === ''|| req.param('mobileNo').length<6 || req.param('mobileNo').length>25) { erroneousFields.push('mobileNo'); }
 
 
                             dataValues = [];
@@ -178,6 +183,7 @@ module.exports.changeDetails = function(req, res) {
                                 first_name: req.param('first_name') !== '' ? req.param('first_name') : "",
                                 last_name: req.param('last_name') !== '' ? req.param('last_name') : "",
                                 telephone: req.param('telephone') !== '' ? req.param('telephone') : "",
+                                mobileNo: req.param('mobileNo') !== '' ? req.param('mobileNo') : "",
                                 feedback_consent: typeof (req.param('feedback_consent')) !== 'undefined' ? req.param('feedback_consent') : ""
                             });
                             return res.render('account_pages/change-details.ejs', {
@@ -242,7 +248,7 @@ module.exports.changeCompanyDetails = function(req, res) {
                                         "forenames": data.first_name,
                                         "surname": data.last_name,
                                         "primaryTelephone": data.telephone,
-                                        "mobileTelephone": "",
+                                        "mobileTelephone": data.mobileNo,
                                         "eveningTelephone": "",
                                         "email": req.session.email,
                                         "companyName": req.body.company_name,
@@ -358,7 +364,7 @@ module.exports.upgradeAccount = function(req, res) {
                                             "forenames": data.first_name,
                                             "surname": data.last_name,
                                             "primaryTelephone": data.telephone,
-                                            "mobileTelephone": "",
+                                            "mobileTelephone": data.mobileNo,
                                             "eveningTelephone": "",
                                             "email": req.session.email,
                                             "companyName": req.body.company_name,
