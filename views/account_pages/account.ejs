@@ -29,7 +29,12 @@
             </tr>
             <tr>
                 <td class="summary-table-cell-label">Mobile No</td>
-                <td class="summary-table-cell-content"><%= account.mobileNo%></td>
+                <td class="summary-table-cell-content">
+                    <% if(account.mobileNo != null){ %>
+                    <%= account.mobileNo %>
+                    <% }else{ %>
+                    None provided
+                    <% } %></td>
                 <td class="summary-table-cell-link"><a href="/api/user/change-details">Change<span class="visually-hidden"> mobile number</span></a></td>
             </tr>
             <tr>
