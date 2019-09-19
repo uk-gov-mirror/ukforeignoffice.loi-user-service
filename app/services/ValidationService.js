@@ -113,6 +113,7 @@ var ValidationService = {
 
     buildAddressErrorArray: function (error, req, res, countries,user, account,edit) {
         var country = req.body.country || '';
+        var phonePattern = /([0-9]|[\-+#() ]){6,}/;
         var isemail = require('isemail');
         var Postcode = require("postcode");
         var postcodeObject = new Postcode(req.body.postcode.replace(/ /g,''));
@@ -142,9 +143,15 @@ var ValidationService = {
         if (req.body.country === '' || typeof(req.body.country)=='undefined') {
             erroneousFields.push('country');
         }
-        if (req.body.telephone === '') {
+        if (req.body.telephone === '' || req.body.telephone.length < 6 || req.body.telephone.length > 25 || !phonePattern.test(req.body.telephone)) {
             erroneousFields.push('telephone');
         }
+        if (req.body.mobileNo !== "" && typeof(req.body.mobileNo) != 'undefined') {
+            if (req.body.mobileNo === '' || req.body.mobileNo.length < 6 || req.body.mobileNo.length > 25 || !phonePattern.test(req.body.mobileNo)) {
+                erroneousFields.push('mobileNo');
+            }
+        }
+
         if (req.body.email !== '') {
             if (!isemail.validate(req.body.email)){
                 erroneousFields.push('email');
@@ -164,6 +171,7 @@ console.log(req.body.postcode === '' || req.body.postcode.length >20);
                 county: req.body.county !== '' && req.body.county !== undefined && req.body.county != 'undefined'  ? req.body.county : "",
                 country: req.body.country !== '' && req.body.country !== undefined && req.body.country != 'undefined'  ? req.body.country : "",
                 telephone: req.body.telephone !== '' && req.body.telephone !== undefined && req.body.telephone != 'undefined'  ? req.body.telephone : "",
+                mobileNo: req.body.mobileNo !== '' && req.body.mobileNo !== undefined && req.body.mobileNo != 'undefined'  ? req.body.mobileNo : "",
                 email: req.body.email !== '' && req.body.email !== undefined && req.body.email != 'undefined'  ? req.body.email : ""
             }
         );
