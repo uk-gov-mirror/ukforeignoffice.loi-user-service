@@ -339,6 +339,10 @@ module.exports.saveAddress= function(req,res) {
             if (email === ''){
                 email = null;
             }
+            var mobileNo = req.body.mobileNo;
+            if (mobileNo === ''){
+                mobileNo = null;
+            }
             var Postcode = require("postcode");
             var postcodeObject = new Postcode(req.body.postcode.replace(/ /g,''));
             var postcode = ' ';
@@ -367,7 +371,7 @@ module.exports.saveAddress= function(req,res) {
                 postcode:postcode,
                 country: req.body.country || '',
                 telephone: req.body.telephone,
-                mobileNo: req.body.mobileNo,
+                mobileNo: mobileNo,
                 email : email
             }).then(function(){
                 if(req.session.initial===true){
@@ -455,6 +459,10 @@ module.exports.editAddress= function(req,res) {
     if (email === ''){
         email = null;
     }
+    var mobileNo = req.body.mobileNo;
+    if (mobileNo === ''){
+        mobileNo = null;
+    }
     var Postcode = require("postcode");
     var postcodeObject = new Postcode(req.body.postcode.replace(/ /g,''));
     var postcode = ' ';
@@ -485,7 +493,7 @@ module.exports.editAddress= function(req,res) {
                 postcode:postcode,
                 country: req.body.country,
                 telephone: req.body.telephone,
-                mobileNo: req.body.mobileNo,
+                mobileNo: mobileNo,
                 email: email
             },{where:{  user_id: user.id, id:req.body.address_id }
             }).then(function(){
@@ -505,7 +513,7 @@ module.exports.editAddress= function(req,res) {
                         postcode:postcode,
                         country: req.body.country,
                         telephone: req.body.telephone,
-                        mobileNo: req.body.mobileNo,
+                        mobileNo: mobileNo,
                         email: email
                     };
 

@@ -127,7 +127,7 @@ var attributes = {
     },
     mobileNo: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
         validate: {
             len:{
                 args: [6,25], //

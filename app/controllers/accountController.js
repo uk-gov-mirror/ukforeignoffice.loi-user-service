@@ -66,14 +66,26 @@ module.exports.showChangePassword = function(req, res) {
 };
 
 module.exports.changeDetails = function(req, res) {
-    var accountDetails ={
-        first_name: req.body.first_name,
-        last_name: req.body.last_name,
-        telephone: phonePattern.test(req.body.telephone) ? req.body.telephone : '',
-        mobileNo: phonePattern.test(req.body.mobileNo) ? req.body.mobileNo : '',
+    if (req.body.mobileNo != '') {
+        var accountDetails = {
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            telephone: phonePattern.test(req.body.telephone) ? req.body.telephone : '',
+            mobileNo: phonePattern.test(req.body.mobileNo) ? req.body.mobileNo : '',
 
-        feedback_consent: req.body.feedback_consent || ''
-    };
+            feedback_consent: req.body.feedback_consent || ''
+        };
+    }
+    else{
+        var accountDetails = {
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            telephone: phonePattern.test(req.body.telephone) ? req.body.telephone : '',
+            mobileNo: null,
+
+            feedback_consent: req.body.feedback_consent || ''
+        };
+    }
 
     Model.User.findOne({where:{email:req.session.email}})
         .then(function (user) {
@@ -84,24 +96,44 @@ module.exports.changeDetails = function(req, res) {
                             return res.redirect('/api/user/account');
                         })
                         .then(function () {
-
-                        var accountManagementObject = {
-                            "portalCustomerUpdate": {
-                                "userId": "legalisation",
-                                "timestamp": (new Date()).getTime().toString(),
-                                "portalCustomer": {
-                                    "portalCustomerId": user.id,
-                                    "forenames": req.body.first_name,
-                                    "surname": req.body.last_name,
-                                    "primaryTelephone": phonePattern.test(req.body.telephone) ? req.body.telephone : '',
-                                    "mobileTelephone": phonePattern.test(req.body.mobileNo) ? req.body.mobileNo : '',
-                                    "eveningTelephone": "",
-                                    "email": req.session.email,
-                                    "companyName": data.company_name !== 'N/A' ? data.company_name : "",
-                                    "companyRegistrationNumber": data.company_number
-                                }
+                            if (req.body.mobileNo != '') {
+                                var accountManagementObject = {
+                                    "portalCustomerUpdate": {
+                                        "userId": "legalisation",
+                                        "timestamp": (new Date()).getTime().toString(),
+                                        "portalCustomer": {
+                                            "portalCustomerId": user.id,
+                                            "forenames": req.body.first_name,
+                                            "surname": req.body.last_name,
+                                            "primaryTelephone": phonePattern.test(req.body.telephone) ? req.body.telephone : '',
+                                            "mobileTelephone": phonePattern.test(req.body.mobileNo) ? req.body.mobileNo : '',
+                                            "eveningTelephone": "",
+                                            "email": req.session.email,
+                                            "companyName": data.company_name !== 'N/A' ? data.company_name : "",
+                                            "companyRegistrationNumber": data.company_number
+                                        }
+                                    }
+                                };
                             }
-                        };
+                            else{
+                                var accountManagementObject = {
+                                    "portalCustomerUpdate": {
+                                        "userId": "legalisation",
+                                        "timestamp": (new Date()).getTime().toString(),
+                                        "portalCustomer": {
+                                            "portalCustomerId": user.id,
+                                            "forenames": req.body.first_name,
+                                            "surname": req.body.last_name,
+                                            "primaryTelephone": phonePattern.test(req.body.telephone) ? req.body.telephone : '',
+                                            "mobileTelephone": null,
+                                            "eveningTelephone": "",
+                                            "email": req.session.email,
+                                            "companyName": data.company_name !== 'N/A' ? data.company_name : "",
+                                            "companyRegistrationNumber": data.company_number
+                                        }
+                                    }
+                                };
+                            }
 
                         // calculate HMAC string and encode in base64
                         var objectString = JSON.stringify(accountManagementObject, null, 0);
@@ -145,8 +177,11 @@ module.exports.changeDetails = function(req, res) {
                                 erroneousFields.push('feedback_consent');
                             }
                             if (req.param('telephone') === ''|| req.param('telephone').length<6 || req.param('telephone').length>25  ||  !phonePattern.test(req.param('telephone'))) { erroneousFields.push('telephone'); }
-                            if (req.param('mobileNo') === ''|| req.param('mobileNo').length<6 || req.param('mobileNo').length>25  ||  !phonePattern.test(req.param('mobileNo'))) { erroneousFields.push('mobileNo'); }
-
+                            if (req.param('mobileNo') !== "" && typeof(req.param('mobileNo')) != 'undefined') {
+                                if (req.param('mobileNo') === '' || req.param('mobileNo').length < 6 || req.param('mobileNo').length > 25 || !phonePattern.test(req.param('mobileNo'))) {
+                                    erroneousFields.push('mobileNo');
+                                }
+                            }
 
                             dataValues = [];
                             dataValues.push({
@@ -175,8 +210,11 @@ module.exports.changeDetails = function(req, res) {
                                 erroneousFields.push('feedback_consent');
                             }
                             if (req.param('telephone') === ''|| req.param('telephone').length<6 || req.param('telephone').length>25) { erroneousFields.push('telephone'); }
-                            if (req.param('mobileNo') === ''|| req.param('mobileNo').length<6 || req.param('mobileNo').length>25) { erroneousFields.push('mobileNo'); }
-
+                            if (req.param('mobileNo') !== "" && typeof(req.param('mobileNo')) != 'undefined') {
+                                if (req.param('mobileNo') === '' || req.param('mobileNo').length < 6 || req.param('mobileNo').length > 25) {
+                                    erroneousFields.push('mobileNo');
+                                }
+                            }
 
                             dataValues = [];
                             dataValues.push({
@@ -238,24 +276,45 @@ module.exports.changeCompanyDetails = function(req, res) {
                 if(data){
                     Model.AccountDetails.update(accountDetails,{where:{user_id:user.id}})
                         .then(function(){
-
-                            var accountManagementObject = {
-                                "portalCustomerUpdate": {
-                                    "userId": "legalisation",
-                                    "timestamp": (new Date()).getTime().toString(),
-                                    "portalCustomer": {
-                                        "portalCustomerId": user.id,
-                                        "forenames": data.first_name,
-                                        "surname": data.last_name,
-                                        "primaryTelephone": data.telephone,
-                                        "mobileTelephone": data.mobileNo,
-                                        "eveningTelephone": "",
-                                        "email": req.session.email,
-                                        "companyName": req.body.company_name,
-                                        "companyRegistrationNumber": data.company_number
+                            if (req.body.mobileNo != '') {
+                                var accountManagementObject = {
+                                    "portalCustomerUpdate": {
+                                        "userId": "legalisation",
+                                        "timestamp": (new Date()).getTime().toString(),
+                                        "portalCustomer": {
+                                            "portalCustomerId": user.id,
+                                            "forenames": data.first_name,
+                                            "surname": data.last_name,
+                                            "primaryTelephone": data.telephone,
+                                            "mobileTelephone": data.mobileNo,
+                                            "eveningTelephone": "",
+                                            "email": req.session.email,
+                                            "companyName": req.body.company_name,
+                                            "companyRegistrationNumber": data.company_number
+                                        }
                                     }
-                                }
-                            };
+                                };
+                            }
+                            else{
+                                var accountManagementObject = {
+                                    "portalCustomerUpdate": {
+                                        "userId": "legalisation",
+                                        "timestamp": (new Date()).getTime().toString(),
+                                        "portalCustomer": {
+                                            "portalCustomerId": user.id,
+                                            "forenames": data.first_name,
+                                            "surname": data.last_name,
+                                            "primaryTelephone": data.telephone,
+                                            "mobileTelephone": "",
+                                            "eveningTelephone": "",
+                                            "email": req.session.email,
+                                            "companyName": req.body.company_name,
+                                            "companyRegistrationNumber": data.company_number
+                                        }
+                                    }
+                                };
+                            }
+
 
                             // calculate HMAC string and encode in base64
                             var objectString = JSON.stringify(accountManagementObject, null, 0);
@@ -355,23 +414,45 @@ module.exports.upgradeAccount = function(req, res) {
                         Model.AccountDetails.update(accountDetails,{where:{user_id:user.id}})
                             .then(function(){
 
-                                var accountManagementObject = {
-                                    "portalCustomerUpdate": {
-                                        "userId": "legalisation",
-                                        "timestamp": (new Date()).getTime().toString(),
-                                        "portalCustomer": {
-                                            "portalCustomerId": user.id,
-                                            "forenames": data.first_name,
-                                            "surname": data.last_name,
-                                            "primaryTelephone": data.telephone,
-                                            "mobileTelephone": data.mobileNo,
-                                            "eveningTelephone": "",
-                                            "email": req.session.email,
-                                            "companyName": req.body.company_name,
-                                            "companyRegistrationNumber": data.company_number
+                                if (req.body.mobileNo != '') {
+
+                                    var accountManagementObject = {
+                                        "portalCustomerUpdate": {
+                                            "userId": "legalisation",
+                                            "timestamp": (new Date()).getTime().toString(),
+                                            "portalCustomer": {
+                                                "portalCustomerId": user.id,
+                                                "forenames": data.first_name,
+                                                "surname": data.last_name,
+                                                "primaryTelephone": data.telephone,
+                                                "mobileTelephone": data.mobileNo,
+                                                "eveningTelephone": "",
+                                                "email": req.session.email,
+                                                "companyName": req.body.company_name,
+                                                "companyRegistrationNumber": data.company_number
+                                            }
                                         }
-                                    }
-                                };
+                                    };
+                                }
+                                else{
+                                    var accountManagementObject = {
+                                        "portalCustomerUpdate": {
+                                            "userId": "legalisation",
+                                            "timestamp": (new Date()).getTime().toString(),
+                                            "portalCustomer": {
+                                                "portalCustomerId": user.id,
+                                                "forenames": data.first_name,
+                                                "surname": data.last_name,
+                                                "primaryTelephone": data.telephone,
+                                                "mobileTelephone": "",
+                                                "eveningTelephone": "",
+                                                "email": req.session.email,
+                                                "companyName": req.body.company_name,
+                                                "companyRegistrationNumber": data.company_number
+                                            }
+                                        }
+                                    };
+                                }
 
                                 // calculate HMAC string and encode in base64
                                 var objectString = JSON.stringify(accountManagementObject, null, 0);

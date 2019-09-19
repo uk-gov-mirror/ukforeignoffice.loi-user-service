@@ -98,7 +98,7 @@
                     <% }) %>
                     <% } %>
                 </legend>
-                <input type="tel" id="mobileNo" class="form-control phone" autocomplete="off" aria-required="true" name="mobileNo" value="<% if(form_values){%><%=form_values.mobileNo%><%} %>">
+                <input type="tel" id="mobileNo" class="form-control phone" autocomplete="off"  name="mobileNo" value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo%><%} %>">
             </fieldset>
         </div>
 
