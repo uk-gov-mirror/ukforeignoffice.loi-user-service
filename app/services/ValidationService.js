@@ -113,6 +113,7 @@ var ValidationService = {
 
     buildAddressErrorArray: function (error, req, res, countries,user, account,edit) {
         var country = req.body.country || '';
+        var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\)| |\-){7,16}$/;
         var phonePattern = /([0-9]|[\-+#() ]){6,}/;
         var isemail = require('isemail');
         var Postcode = require("postcode");
@@ -147,7 +148,7 @@ var ValidationService = {
             erroneousFields.push('telephone');
         }
         if (req.body.mobileNo !== "" && typeof(req.body.mobileNo) != 'undefined') {
-            if (req.body.mobileNo === '' || req.body.mobileNo.length < 6 || req.body.mobileNo.length > 25 || !phonePattern.test(req.body.mobileNo)) {
+            if (req.body.mobileNo === '' || req.body.mobileNo.length < 6 || req.body.mobileNo.length > 25 || !mobilePattern.test(req.body.mobileNo)) {
                 erroneousFields.push('mobileNo');
             }
         }

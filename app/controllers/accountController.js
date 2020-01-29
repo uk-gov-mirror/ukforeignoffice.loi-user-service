@@ -14,8 +14,8 @@ var async = require('async'),
     ValidationService = require('../services/ValidationService.js'),  common = require('../../config/common.js'),
     envVariables = common.config();
 
+var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\)| |\-){7,16}$/;
 var phonePattern = /([0-9]|[\-+#() ]){6,}/;
-
 
 module.exports.showAccount = function(req, res) {
     Model.User.findOne({where:{email:req.session.email}}).then(function(user) {
@@ -71,7 +71,7 @@ module.exports.changeDetails = function(req, res) {
             first_name: req.body.first_name,
             last_name: req.body.last_name,
             telephone: phonePattern.test(req.body.telephone) ? req.body.telephone : '',
-            mobileNo: phonePattern.test(req.body.mobileNo) ? req.body.mobileNo : '',
+            mobileNo: mobilePattern.test(req.body.mobileNo) ? req.body.mobileNo : '',
 
             feedback_consent: req.body.feedback_consent || ''
         };
@@ -106,7 +106,7 @@ module.exports.changeDetails = function(req, res) {
                                             "forenames": req.body.first_name,
                                             "surname": req.body.last_name,
                                             "primaryTelephone": phonePattern.test(req.body.telephone) ? req.body.telephone : '',
-                                            "mobileTelephone": phonePattern.test(req.body.mobileNo) ? req.body.mobileNo : '',
+                                            "mobileTelephone": mobilePattern.test(req.body.mobileNo) ? req.body.mobileNo : '',
                                             "eveningTelephone": "",
                                             "email": req.session.email,
                                             "companyName": data.company_name !== 'N/A' ? data.company_name : "",
@@ -178,7 +178,7 @@ module.exports.changeDetails = function(req, res) {
                             }
                             if (req.param('telephone') === ''|| req.param('telephone').length<6 || req.param('telephone').length>25  ||  !phonePattern.test(req.param('telephone'))) { erroneousFields.push('telephone'); }
                             if (req.param('mobileNo') !== "" && typeof(req.param('mobileNo')) != 'undefined') {
-                                if (req.param('mobileNo') === '' || req.param('mobileNo').length < 6 || req.param('mobileNo').length > 25 || !phonePattern.test(req.param('mobileNo'))) {
+                                if (req.param('mobileNo') === '' || req.param('mobileNo').length < 6 || req.param('mobileNo').length > 25 || !mobilePattern.test(req.param('mobileNo'))) {
                                     erroneousFields.push('mobileNo');
                                 }
                             }

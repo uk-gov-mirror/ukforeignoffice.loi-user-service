@@ -18,6 +18,7 @@ var bcrypt = require('bcryptjs'),
     dbConnection = require('../sequelize.js');
 
 
+var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\)| |\-){7,16}$/;
 var phonePattern = /([0-9]|[\-+#() ]){6,}/;
 
 module.exports.usercheck = function(req, res) {
@@ -415,7 +416,7 @@ module.exports.completeRegistration =function(req,res){
                                     "forenames": req.body.first_name,
                                     "surname": req.body.last_name,
                                     "primaryTelephone": phonePattern.test(req.body.telephone) ? req.body.telephone : '',
-                                    "mobileTelephone": phonePattern.test(req.body.mobileNo) ? req.body.mobileNo : '',
+                                    "mobileTelephone": mobilePattern.test(req.body.mobileNo) ? req.body.mobileNo : '',
                                     "eveningTelephone": "",
                                     "email": req.session.email,
                                     "companyName": data.company_name !== 'N/A' ? data.company_name : "",
