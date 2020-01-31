@@ -14,8 +14,9 @@ var async = require('async'),
     ValidationService = require('../services/ValidationService.js'),  common = require('../../config/common.js'),
     envVariables = common.config();
 
-var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\)| |\-){7,16}$/;
-var phonePattern = /([0-9]|[\-+#() ]){6,}/;
+var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
+var phonePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
+    //old pattern /([0-9]|[\-+#() ]){6,}/;
 
 module.exports.showAccount = function(req, res) {
     Model.User.findOne({where:{email:req.session.email}}).then(function(user) {
