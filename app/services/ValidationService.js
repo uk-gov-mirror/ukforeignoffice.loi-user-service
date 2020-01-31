@@ -113,8 +113,8 @@ var ValidationService = {
 
     buildAddressErrorArray: function (error, req, res, countries,user, account,edit) {
         var country = req.body.country || '';
-        var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\)| |\-){5,14}$/;
-        var phonePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\)| |\-){5,14}$/;
+        var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
+        var phonePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
             //old phone pattern /([0-9]|[\-+#() ]){6,}/;
         var isemail = require('isemail');
         var Postcode = require("postcode");

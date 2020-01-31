@@ -18,8 +18,8 @@ var bcrypt = require('bcryptjs'),
     dbConnection = require('../sequelize.js');
 
 
-var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\)| |\-){5,15}$/;
-var phonePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\)| |\-){5,15}$/;
+var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
+var phonePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
     //old pattern /([0-9]|[\-+#() ]){6,}/;
 
 module.exports.usercheck = function(req, res) {
