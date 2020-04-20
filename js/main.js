@@ -6,13 +6,60 @@ var browser = {
     getVersion: function() {
         var version = 999; // we assume a sane browser
         if (navigator.appVersion.indexOf("MSIE") != -1)
-        // bah, IE again, lets downgrade version number
+            // bah, IE again, lets downgrade version number
             version = parseFloat(navigator.appVersion.split("MSIE")[1]);
         return version;
     }
 };
 
 $(document).ready(function() {
+
+//cookie banner
+
+    $('#accept-all-cookies').click(function(event){
+        if (browser.isIe() && browser.getVersion() <= 9) {
+            return true;
+        }
+        GOVUK.approveAllCookieTypes();
+        //remove cookie banner when called (button pressed)
+    });
+
+    $('#hide-confirmation').click(function(event){
+        if (browser.isIe() && browser.getVersion() <= 9) {
+            return true;
+        }
+        GOVUK.hideConfirmationBanner();
+    });
+
+    $('#preference-cookies').click(function(event){
+        if (browser.isIe() && browser.getVersion() <= 9) {
+            return true;
+        }
+        //redirects to cookie screen, could maybe be a new tab instead
+        window.location ="/cookies";
+    });
+
+    $('#save-cookie-changes').click(function(event){
+        if (browser.isIe() && browser.getVersion() <= 9) {
+            return true;
+        }
+        //save selections onclick of save button
+        GOVUK.savePreferencesSelected();
+    });
+
+    //Display cookie banner(if required)
+    GOVUK.showCookieBanner();
+
+    //set default/essential cookies if policy not set (user hasnt accepted all)
+    if (!GOVUK.cookie('cookies_preferences_set')) {
+        GOVUK.setDefaultConsentCookie();
+    }
+    //disable matomo if required
+    GOVUK.disableMatomo(GOVUK.getConsentCookie());
+
+    //------end of cookies
+
+// end cookie banner
 
 
     $('.no-js-show').removeClass('no-js-show');
@@ -69,12 +116,10 @@ $(document).ready(function() {
             $(this).removeClass('collapsible').addClass('expandable');
         })
         .on('click','.expandable', function(){
-        $('.expandable span').html('click to collapse');
-        $("#sr-notification-container").empty().text('Help expanded, content can be found below');
-        $(this).removeClass('expandable').addClass('collapsible');
-    });
-
-
+            $('.expandable span').html('click to collapse');
+            $("#sr-notification-container").empty().text('Help expanded, content can be found below');
+            $(this).removeClass('expandable').addClass('collapsible');
+        });
 
 });
 
@@ -127,13 +172,13 @@ function showResultAddresses(addresses){
             .text('Pick an address')
             .attr('disabled','true')
             .attr('selected','true')
-    );
+        );
     for(var i=0;i<addresses.length;i++){
         $('#address-list-box')
             .append($("<option></option>")
                 .attr("value",i)
                 .text(addresses[i].option)
-        );
+            );
     }
 }
 
