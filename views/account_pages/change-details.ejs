@@ -59,7 +59,7 @@
             </fieldset>
         </div>
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>error<% } %>">
-            <label for="phone" class="form-label-bold">Primary number</label>
+            <label for="telephone" class="form-label-bold">Primary number</label>
             <fieldset>
                 <legend id="legend_telephone" class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>show<% } else { %>hide<% } %>">
                     <% if (error_report) { %>
@@ -72,11 +72,11 @@
                     <% }) %>
                     <% } %>
                 </legend>
-                <input type="tel" id="phone" class="form-control phone" autocomplete="off" name="telephone" aria-required="true" value="<% if(form_values){%><%=form_values.telephone%><%} %>">
+                <input type="tel" id="telephone" class="form-control phone" autocomplete="off" name="telephone" aria-required="true" value="<% if(form_values){%><%=form_values.telephone%><%} %>">
             </fieldset>
         </div>
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>">
-            <label for="phone" class="form-label-bold">Mobile number </label>
+            <label for="mobileNo" class="form-label-bold">Mobile number </label>
             <fieldset>
                 <legend id="legend_telephone" class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>show<% } else { %>hide<% } %>">
                     <% if (error_report) { %>
