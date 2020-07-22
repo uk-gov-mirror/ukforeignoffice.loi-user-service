@@ -5,24 +5,23 @@
 
 // module.exports = {
 
-var dotenv = require('dotenv');
-var env = dotenv.config({path: process.env.DOTENV || '.env'});
-var mongourl = JSON.parse(env.MONGOURL);
-var cookiedomain = JSON.parse(env.COOKIEDOMAIN);
-var sequelizeusers = JSON.parse(env.SEQUELIZEUSERS);
-var servicesequelize = JSON.parse(env.SERVICESEQUELIZE);
-var applicationserviceurl = JSON.parse(env.APPLICATIONSERVICEURL);
-var notificationserviceurl = JSON.parse(env.NOTIFICATIONSERVICEURL);
-var passwordsettings = JSON.parse(env.PASSWORDSETTINGS);
-var postcodelookupoptions = JSON.parse(env.POSTCODELOOKUPOPTIONS);
-var live_variables = JSON.parse(env.LIVEVARIABLES);
-var userAccountSettings = JSON.parse(env.USERACCOUNTSETTINGS);
-var pgPassword = env.PGPASSWORD;
+require('dotenv').config()
+var mongourl = JSON.parse(process.env.MONGOURL);
+var cookiedomain = JSON.parse(process.env.COOKIEDOMAIN);
+var sequelizeusers = JSON.parse(process.env.SEQUELIZEUSERS);
+var servicesequelize = JSON.parse(process.env.SERVICESEQUELIZE);
+var applicationserviceurl = JSON.parse(process.env.APPLICATIONSERVICEURL);
+var notificationserviceurl = JSON.parse(process.env.NOTIFICATIONSERVICEURL);
+var passwordsettings = JSON.parse(process.env.PASSWORDSETTINGS);
+var postcodelookupoptions = JSON.parse(process.env.POSTCODELOOKUPOPTIONS);
+var live_variables = JSON.parse(process.env.LIVEVARIABLES);
+var userAccountSettings = JSON.parse(process.env.USERACCOUNTSETTINGS);
+var pgPassword = process.env.PGPASSWORD;
 var Sequelize = require('sequelize');
-var accountManagementApiUrl = env.ACCOUNTMANAGEMENTAPIURL;
-var certPath = env.CERTPATH;
-var keyPath = env.KEYPATH;
-var hmacKey = env.HMACKEY;
+var accountManagementApiUrl = process.env.ACCOUNTMANAGEMENTAPIURL;
+var certPath = process.env.CERTPATH;
+var keyPath = process.env.KEYPATH;
+var hmacKey = process.env.HMACKEY;
 
 var config = {
     "mongoURL": mongourl.mongoURL,
