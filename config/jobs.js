@@ -12,10 +12,13 @@ var jobs ={
         var now = new Date(),
         gracePeriod = new Date(now);
         gracePeriod.setDate(now.getDate()+envVariables.userAccountSettings.gracePeriod);
+
+        const { Op } = require("sequelize");
+
         Model.User.findAll({
             where: {
                 accountExpiry: {
-                    $lte: gracePeriod
+                    [Op.lte]: gracePeriod
                 }
             }
         }).then(function(users){
