@@ -1,6 +1,6 @@
 <% var title='Register'; %>
 <% pageTitle = "Create an account - Get a document legalised – GOV.UK" %>
-<% include partials/header %>
+<%- include ('partials/header') %>
 
 <%if(back_link){%><a href="<%= back_link%>" class="back-to-previous">Back</a><%}%>
 
@@ -247,4 +247,4 @@
     </div>
 
 </div>
-<% include partials/footer %>
+<%- include ('partials/footer') %>

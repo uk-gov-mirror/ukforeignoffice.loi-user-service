@@ -37,7 +37,7 @@ if (error_report) {
 
 }%>
 <% pageTitle ="Add a return address - Get a document legalised – GOV.UK" %>
-<%include ../partials/header.ejs %>
+<%- include ('../partials/header.ejs') %>
 
 
 <a href="/api/user/add-address-uk" class="back_to_previous_button">Back</a>
@@ -293,4 +293,4 @@ if (error_report) {
 
 
 
-<% include ../partials/footer.ejs %>
+<%- include ('../partials/footer.ejs') %>

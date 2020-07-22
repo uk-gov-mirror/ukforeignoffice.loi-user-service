@@ -1,5 +1,5 @@
 <% var title='User check'; %>
-<% include partials/header %>
+<%- include ('partials/header') %>
 <a href="<%= applicationServiceURL%>start" class="back_to_previous_button">Back</a>
 <% pageTitle = "Account check - Get a document legalised – GOV.UK" %>
 <h1 class="heading-xlarge" style="margin-bottom: .75em;">Have you already got an online account for legalisation?</h1>
@@ -55,4 +55,4 @@
     </form>
 </div>
 
-<% include partials/footer %>
+<%- include ('partials/footer') %>
