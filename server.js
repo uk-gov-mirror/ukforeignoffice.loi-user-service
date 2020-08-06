@@ -30,7 +30,7 @@ app.use(function(req, res, next) {
 
 app.use(function(req, res, next) {
     if (req.cookies['LoggedIn']){
-        res.cookie('LoggedIn',true,{ maxAge: 1800000, httpOnly: true });
+        res.cookie('LoggedIn',true,{ maxAge: sessionSettings.cookieMaxAge, httpOnly: true });
     }
     return next();
 });
@@ -41,7 +41,8 @@ var store = new RedisStore(
     {
         host: sessionSettings.host,
         port: sessionSettings.port,
-        prefix: sessionSettings.prefix
+        prefix: sessionSettings.prefix,
+        tls: {}
     });
 
 app.set('view engine', 'ejs');
@@ -72,7 +73,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         domain: cookie_domain ,//environmentVariables.cookieDomain,
-        maxAge: 30 * 60 * 1000  //30 minutes
+        maxAge: sessionSettings.cookieMaxAge  //30 minutes
     }
 }));
 app.use(flash()); //use connect-flash for flash messages stored in session
