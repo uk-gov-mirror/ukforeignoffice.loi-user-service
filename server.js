@@ -5,7 +5,7 @@ var express = require('express'),
     common = require('./config/common.js'),
     environmentVariables = common.config(),
     session = require('express-session'),
-    MongoDBStore = require('connect-mongo')(session),
+    RedisStore = require('connect-redis')(session),
     passport = require('passport'),
     passportConfig = require('./app/passportConfig'),
     flash = require('connect-flash'),
@@ -35,13 +35,14 @@ app.use(function(req, res, next) {
 });
 
 var port = (process.argv[2] && !isNaN(process.argv[2])  ? process.argv[2] : (process.env.PORT || 8080));
-var store = new MongoDBStore(
+
+var store = new RedisStore(
     {
-        uri: environmentVariables.mongoURL,
-        url: environmentVariables.mongoURL,
-        db: 'User_Service',
-        collection: 'sessions'
+        host: '127.0.0.1',
+        port: 6379,
+        prefix: "sess:"
     });
+
 app.set('view engine', 'ejs');
 
 var cookie_domain = null;

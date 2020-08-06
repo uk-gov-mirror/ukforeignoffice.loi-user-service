@@ -490,15 +490,16 @@ module.exports.upgradeAccount = function(req, res) {
                                 return res.redirect('/api/user/account');
                             })
                             .catch(function (error) {
+                                console.log('debug error', error)
                                 // Custom error array builder for email match confirmation
                                 var erroneousFields = [];
 
-                                if (req.param('company_name') === '') { erroneousFields.push('company_name'); }
+                                if (req.body.company_name === '') { erroneousFields.push('company_name'); }
 
 
                                 dataValues = [];
                                 dataValues.push({
-                                    company_name: req.param('company_name') !== '' ? req.param('company_name') : ""
+                                    company_name: req.body.company_name !== '' ? req.body.company_name : ""
                                 });
                                 return res.render('account_pages/upgrade-account.ejs', {
                                     error_report:ValidationService.validateForm({error:error,erroneousFields: erroneousFields}), form_values:req.body, url:envVariables

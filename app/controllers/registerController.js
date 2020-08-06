@@ -16,6 +16,9 @@ var bcrypt = require('bcryptjs'),
     envVariables = common.config(),
     validator = require('validator'),
     dbConnection = require('../sequelize.js');
+    moment = require('moment')
+
+    const { Op } = require("sequelize");
 
 
 var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
@@ -625,10 +628,13 @@ module.exports.activate = function(req, res) {
     async.waterfall([
         function (done) {
             //Find User with the password token which has not expired
+
             Model.User.findOne({
                 where: {
                     activationToken: req.params.token,
-                    activationTokenExpires: {$gt: new Date()}
+                    activationTokenExpires: {
+                        [Op.gt]: new Date()
+                    }
                 }
             })
                 .then(function (user, error) {
