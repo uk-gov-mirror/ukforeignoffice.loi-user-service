@@ -12,12 +12,13 @@ var express = require('express'),
     appRouter = require('./app/routes.js')(express,environmentVariables),
     bodyParser = require('body-parser'),
     jsonParser = bodyParser.json(),
-    dotenv = require('dotenv'),
-    env = dotenv.config({path: process.env.DOTENV || '.env'}),
     cookieParser = require('cookie-parser'),
     sass = require('node-sass');
 
 require('./config/logs');
+require('dotenv').config();
+
+var sessionSettings = JSON.parse(process.env.THESESSION);
 
 app.use(cookieParser());
 
@@ -38,9 +39,9 @@ var port = (process.argv[2] && !isNaN(process.argv[2])  ? process.argv[2] : (pro
 
 var store = new RedisStore(
     {
-        host: '127.0.0.1',
-        port: 6379,
-        prefix: "sess:"
+        host: sessionSettings.host,
+        port: sessionSettings.port,
+        prefix: sessionSettings.prefix
     });
 
 app.set('view engine', 'ejs');
@@ -64,8 +65,8 @@ app.use(function (req, res, next) {
 
 
 app.use(session({
-    secret: '6542356733921bb813d3ca61002410fe',
-    key: 'express.sid',
+    secret: sessionSettings.secret,
+    key: sessionSettings.key,
     store: store,
     resave: false,
     saveUninitialized: false,
