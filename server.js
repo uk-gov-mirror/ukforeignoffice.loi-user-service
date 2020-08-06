@@ -42,6 +42,7 @@ var store = new RedisStore(
         host: sessionSettings.host,
         port: sessionSettings.port,
         prefix: sessionSettings.prefix,
+        pass: sessionSettings.password,
         tls: {}
     });
 
