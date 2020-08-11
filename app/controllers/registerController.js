@@ -464,8 +464,8 @@ module.exports.completeRegistration =function(req,res){
                             },
                             url: config.accountManagementApiUrl,
                             agentOptions: config.certPath ? {
-                                cert: fs.readFileSync(config.certPath),
-                                key: fs.readFileSync(config.keyPath)
+                                cert: config.certPath,
+                                key: config.keyPath
                             } : null,
                             json: true,
                             body: accountManagementObject

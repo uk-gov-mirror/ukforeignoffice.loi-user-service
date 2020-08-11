@@ -150,8 +150,8 @@ module.exports.changeDetails = function(req, res) {
                             },
                             url: config.accountManagementApiUrl,
                             agentOptions: config.certPath ? {
-                                cert: fs.readFileSync(config.certPath),
-                                key: fs.readFileSync(config.keyPath)
+                                cert: config.certPath,
+                                key: config.keyPath
                             } : null,
                             json: true,
                             body: accountManagementObject
@@ -331,8 +331,8 @@ module.exports.changeCompanyDetails = function(req, res) {
                                 },
                                 url: config.accountManagementApiUrl,
                                 agentOptions: config.certPath ? {
-                                    cert: fs.readFileSync(config.certPath),
-                                    key: fs.readFileSync(config.keyPath)
+                                    cert: config.certPath,
+                                    key: config.keyPath
                                 } : null,
                                 json: true,
                                 body: accountManagementObject
@@ -469,8 +469,8 @@ module.exports.upgradeAccount = function(req, res) {
                                     },
                                     url: config.accountManagementApiUrl,
                                     agentOptions: config.certPath ? {
-                                        cert: fs.readFileSync(config.certPath),
-                                        key: fs.readFileSync(config.keyPath)
+                                        cert: config.certPath,
+                                        key: config.keyPath
                                     } : null,
                                     json: true,
                                     body: accountManagementObject
