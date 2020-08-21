@@ -1,4 +1,7 @@
 $path : '../images/govuk_frontend_toolkit/';
+
+@import '../node_modules/govuk-frontend/govuk/all';
+
 //govuk_frontend_toolkit
 @import '../node_modules/govuk_frontend_toolkit/stylesheets/_colours';
 @import '../node_modules/govuk_frontend_toolkit/stylesheets/_conditionals';

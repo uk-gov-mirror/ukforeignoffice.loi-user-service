@@ -21,11 +21,11 @@
         _paq.push(['trackEvent', 'Reg 04 - verify email address', 'Verification link expired']);
     </script>
     <%}%>
-    <div class="error-summary">
+    <div class="govuk-error-summary">
 
-        <h2 class="heading-medium error-summary-heading">Please check the form</h2>
+        <h2 class="heading-medium error-summary-heading">There is a problem</h2>
 
-        <ul class="error-summary-list nopadding">
+        <ul class="govuk-list govuk-error-summary__list">
             <%if(error=='Missing email and password' || error=='Missing email'){var email_error=true;%><li><a href="#email">Enter your email</a></li><%}%>
             <%if(error=='Missing email and password' || error=='Missing password'){var password_error=true; %><li><a href="#password">Enter your password</a></li><%}%>
             <%if(error!='Missing email and password' && error!='Missing email' && error!='Missing password'){ %><li><a href="#email"><%= error%></a></li><%}%>
@@ -67,7 +67,7 @@
 
 
         <input type="submit" class="button" id="sign-in-button" value="Sign in">
-        <p><a href="/api/user/forgot">Forgotten your password?</a></p>
+        <p><a class="govuk-link" href="/api/user/forgot">Forgotten your password?</a></p>
 
 
     </form>
