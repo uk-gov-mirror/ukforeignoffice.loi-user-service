@@ -55,14 +55,14 @@ if (error_report) {
 }
 %>
 
-<div class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
+<div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
 
     <p class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
-        Please check the form
+        There is a problem
     </p>
 
     <div id="all-errors">
-        <ul class="error-summary-list nopadding">
+        <ul class="govuk-list govuk-error-summary__list">
             <% if (error_report) {  %>
             <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
             <li>
@@ -285,7 +285,7 @@ if (error_report) {
 
     <input type="hidden" name="address_id" value='<%= address_id%>'>
     <div class="form-group">
-        <button class="button">Save</button>
+        <button class="govuk-button govuk-button--start">Save</button>
     </div>
 </form>
 

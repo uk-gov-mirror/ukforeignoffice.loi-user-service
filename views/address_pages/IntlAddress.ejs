@@ -47,14 +47,14 @@ if (error_report) {
 <a href="/api/user/add-address" class="back_to_previous_button">Back</a>
 
 <h1 class="heading-xlarge">Add a return address</h1>
-<div class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" style="clear:left;">
+<div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" style="clear:left;">
 
     <p class="heading-medium error-summary-heading" id="error-summary-heading">
-        Please check the form
+        There is a problem
     </p>
 
     <div id="all-errors">
-        <ul class="error-summary-list nopadding">
+        <ul class="govuk-list govuk-error-summary__list">
             <% if (error_report) {  %>
             <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
             <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution.replace('postcode','zip code') %></a></li>
@@ -283,7 +283,7 @@ if (error_report) {
     </div>
     <input type="hidden" name="initial" value=<%if(initial){%><%= initial%><%}%>>
     <div class="form-group">
-        <button id="NextBtn" class="button">Continue</button>
+        <button id="NextBtn" class="govuk-button govuk-button--start">Continue</button>
     </div>
 
 

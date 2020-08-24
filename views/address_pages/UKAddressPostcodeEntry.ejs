@@ -10,17 +10,17 @@
 <h1 class="heading-xlarge">Add a return address</h1>
 
     <%if (error_report && error_report.length>0) {%>
-    <div class="error-summary column-two-thirds" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" >
+    <div class="govuk-error-summary column-two-thirds" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" >
 
 
         <h2 class="heading-medium error-summary-heading"  id="error-summary-heading-example-2">
             <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
             <%= error_heading %>
             <%}else{%>
-            Please check the form
+            There is a problem
             <%}%>
         </h2>
-        <ul class="error-summary-list nopadding">
+        <ul class="govuk-list govuk-error-summary__list">
             <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
             <li><a href="/api/user/your-address-manual"><%= error_report%></a></li>
             <%}else{%>
@@ -30,7 +30,7 @@
     </div>
     <%}%>
 
-    <div class="error-summary hide" id="postcode-error" role="group" tabindex="-1"></div>
+    <div class="govuk-error-summary hide" id="postcode-error" role="group" tabindex="-1"></div>
 
     <div id="sr-notification-container" class="visually-hidden"  aria-live="assertive" aria-atomic="true"></div>
 <div class="column-two-thirds">
@@ -146,7 +146,7 @@
         </div>
 
         <div class="form-group">
-            <button id="NextBtn" class="button">Continue</button>
+            <button id="NextBtn" class="govuk-button govuk-button--start">Continue</button>
         </div>
 
 

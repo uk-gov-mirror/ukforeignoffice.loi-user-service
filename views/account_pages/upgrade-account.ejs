@@ -5,10 +5,10 @@
     <h1 class="heading-xlarge">Upgrade your account</h1>
     <form action="/api/user/upgrade-account" method="post" id="upgrade-account">
 
-        <div class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
+        <div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
 
             <p class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
-                Please check the form
+                There is a problem
             </p>
 
             <div id="all-errors">
@@ -18,7 +18,7 @@
                 <% }) %>
                 <% } %>
 
-                <ul class="error-summary-list nopadding">
+                <ul class="govuk-list govuk-error-summary__list">
                     <% if (error_report) {  %>
                     <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
                     <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
@@ -46,7 +46,7 @@
             </legend>
             <input class="form-control" id="company-name" aria-required="true" type="text" autocomplete="off" name="company_name" value="<% if(form_values){%><%=form_values.company_name%><%} %>">
         </div>
-        <button class="button" type="submit">Upgrade</button>
+        <button class="govuk-button govuk-button--start" type="submit">Upgrade</button>
     </form>
 
 </div>
