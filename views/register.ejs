@@ -229,12 +229,15 @@
                     </span>
                     </legend>
 
-                    <label class="block-label" for="all_info_correct">
-                        <input type="hidden" name="all_info_correct" id="all_info_correct_hidden" value="-1">
-                        <input type="checkbox" name="all_info_correct" id="all_info_correct" <% if (form_values && form_values.all_info_correct &&
-                                form_values.all_info_correct===true) { %>checked
-                                <% } %>> I agree
+                    <div class="govuk-checkboxes__item">
+                    <input type="hidden" name="all_info_correct" id="all_info_correct_hidden" value="-1">
+                    <input class="govuk-checkboxes__input" type="checkbox" name="all_info_correct" id="all_info_correct" <% if (form_values && form_values.all_info_correct &&
+                            form_values.all_info_correct===true) { %>checked
+                            <% } %>>
+                    <label class="govuk-checkboxes__label" for="all_info_correct">
+                         I agree
                     </label>
+                    </div>
                 </fieldset>
             </div>
 
