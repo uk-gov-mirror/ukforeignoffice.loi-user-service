@@ -5,9 +5,9 @@
     <h1 class="heading-xlarge">Upgrade your account</h1>
     <form action="/api/user/upgrade-account" method="post" id="upgrade-account">
 
-        <div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
+        <div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" autofocus>
 
-            <p class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
+            <p class="govuk-error-summary__title" id="error-summary-heading-example-2">
                 There is a problem
             </p>
 

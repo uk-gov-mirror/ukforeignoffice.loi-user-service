@@ -21,9 +21,9 @@
         _paq.push(['trackEvent', 'Reg 04 - verify email address', 'Verification link expired']);
     </script>
     <%}%>
-    <div class="govuk-error-summary">
+    <div class="govuk-error-summary" autofocus>
 
-        <h2 class="heading-medium error-summary-heading">There is a problem</h2>
+        <h2 class="govuk-error-summary__title">There is a problem</h2>
 
         <ul class="govuk-list govuk-error-summary__list">
             <%if(error=='Missing email and password' || error=='Missing email'){var email_error=true;%><li><a href="#email">Enter your email</a></li><%}%>

@@ -5,9 +5,9 @@
     <h1 class="heading-xlarge">Change personal details</h1>
     <form action="/api/user/change-details" method="post" id="change-details">
 
-        <div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
+        <div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" autofocus>
 
-            <p class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
+            <p class="govuk-error-summary__title" id="error-summary-heading-example-2">
                 There is a problem
             </p>
 
@@ -96,6 +96,7 @@
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('feedback_consent')>-1) { %>error<% } %>" >
             <h2 class="form-label-bold">Feedback</h2>
             <p class="text">We welcome your views on the legalisation service. If you agree to be contacted by answering "Yes" below, you will be consenting to share your personal data - name, email address, telephone number and service received - with our independent partner research agency, IFF Research. You may withdraw your consent at any stage by emailing <a href="mailto:consular.research@fco.gov.uk">consular.research@fco.gov.uk<span class="visually-hidden"> opens in new window</span></a>. For more details on how your data will be handled in relation to feedback see the <a href="https://www.gov.uk/government/organisations/foreign-commonwealth-office/about/research" target="_blank">research privacy policy<span class="visually-hidden"> opens in new window</span></a>.<br></p>
+            <div class="govuk-radios govuk-radios--inline">
 
                 <p>Can our partner contact you for feedback to help improve this service?</p>
             <fieldset class="inline" id="legend-feedback" aria-required="true" role="radiogroup">
@@ -115,15 +116,20 @@
 
                 <span class="visually-hidden">Can we contact you for feedback to help improve this service?</span>
                 <%console.log(feedback_consent);%>
-                <label class="block-label <%if(typeof(feedback_consent)!='undefined' && feedback_consent && feedback_consent!= null){%>selected <%}%>" for="radio-feedback-yes" >
-                    <input id="radio-feedback-yes" type="radio"  name="feedback_consent" value=true <%if(typeof(feedback_consent)!='undefined' && feedback_consent && feedback_consent!= null){%>checked <%}%>>
+                <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="radio-feedback-yes" type="radio"  name="feedback_consent" value=true <%if(typeof(feedback_consent)!='undefined' && feedback_consent && feedback_consent!= null){%>checked <%}%>>
+                <label class="govuk-radios__label <%if(typeof(feedback_consent)!='undefined' && feedback_consent && feedback_consent!= null){%>selected <%}%>" for="radio-feedback-yes" >
                     Yes
                 </label>
-                <label class="block-label <%if(typeof(feedback_consent)!='undefined' && !feedback_consent && feedback_consent!= null){%>selected <%}%>" for="radio-feedback-no">
-                    <input id="radio-feedback-no"  type="radio" name="feedback_consent" value=false <%if(typeof(feedback_consent)!='undefined' && !feedback_consent && feedback_consent!= null){%>checked <%}%>>
+                </div>
+                <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="radio-feedback-no"  type="radio" name="feedback_consent" value=false <%if(typeof(feedback_consent)!='undefined' && !feedback_consent && feedback_consent!= null){%>checked <%}%>>
+                <label class="govuk-radios__label <%if(typeof(feedback_consent)!='undefined' && !feedback_consent && feedback_consent!= null){%>selected <%}%>" for="radio-feedback-no">
                     No
                 </label>
+                </div>
             </fieldset>
+            </div>
         </div>
 
         <button class="govuk-button govuk-button--start" type="submit">Save</button>

@@ -148,11 +148,11 @@ $('#find-address').click(function(event){
 function showPostCodeError(error){
     if (error === 'Enter your address manually instead'){
         var html = '<h2 class="heading-medium error-summary-heading" id="error-summary-heading">Postcode search is not available at the moment</h2>' +
-            '<ul class="error-summary-list nopadding"><li><a href="/api/user/your-address-manual">'+error+'</a></li></ul>';
+            '<ul class="govuk-list govuk-error-summary__list"><li><a href="/api/user/your-address-manual">'+error+'</a></li></ul>';
         $('#postcode-error').removeClass('hide').html(html);
     }else{
-        var html = '<h2 class="heading-medium error-summary-heading" id="error-summary-heading">Please check the form</h2>' +
-            '<ul class="error-summary-list nopadding"><li><a href="#find-postcode">'+error+'</a></li></ul>';
+        var html = '<h2 class="heading-medium error-summary-heading" id="error-summary-heading">There is a problem</h2>' +
+            '<ul class="govuk-list govuk-error-summary__list"><li><a href="#find-postcode">'+error+'</a></li></ul>';
         $('#postcode-error').removeClass('hide').html(html);
     }
 

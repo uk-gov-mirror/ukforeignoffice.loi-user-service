@@ -8,9 +8,9 @@
 <h1 class="heading-xlarge">Add a return address</h1>
 
 <%if (error_report && error_report.length>0) {%>
-<div class="govuk-error-summary" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" style="clear:left; width:100%">
+<div class="govuk-error-summary" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" style="clear:left; width:100%" autofocus>
 
-    <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
+    <h2 class="govuk-error-summary__title" id="error-summary-heading">
         <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
         <%= error_heading %>
         <%}else{%>
