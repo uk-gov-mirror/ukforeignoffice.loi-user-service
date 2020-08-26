@@ -9,13 +9,14 @@ function ShowHideContent() {
     };
 
     self.showHideRadioToggledContent = function () {
-        $(".block-label input[type='radio']").each(function () {
+        $("input.govuk-radios__input[type=radio]").each(function () {
 
             var $radio = $(this);
             var $radioGroupName = $radio.attr('name');
             var $radioLabel = $radio.parent('label');
 
-            var dataTarget = $radioLabel.attr('data-target');
+            //var dataTarget = $radioLabel.attr('data-target');
+            var dataTarget = $radio.attr('data-target');
 
             // Add ARIA attributes
 
@@ -24,14 +25,13 @@ function ShowHideContent() {
 
                 // Set aria-controls
                 $radio.attr('aria-controls', dataTarget);
-
                 $radio.on('click', function () {
 
                     // Select radio buttons in the same group
-                    $radio.closest('form').find(".block-label input[name=" + self.escapeElementName($radioGroupName) + "]").each(function () {
+                    $radio.closest('form').find("input.govuk-radios__input[name=" + self.escapeElementName($radioGroupName) + "]").each(function () {
                         var $this = $(this);
 
-                        var groupDataTarget = $this.parent('label').attr('data-target');
+                        var groupDataTarget = $this.parent('input').attr('data-target');
                         var $groupDataTarget = $('#' + groupDataTarget);
 
                         // Hide toggled content
@@ -47,6 +47,12 @@ function ShowHideContent() {
                     $radio.attr('aria-expanded', 'true');
                     $dataTarget.attr('aria-hidden', 'false');
 
+                    // added to handle /postage-return-options screen radio buttons with the new govuk-frontend buttons
+                    if(dataTarget === "business-info-hide") {
+                        $("#business-info").hide();
+                    }
+
+
                 });
 
             } else {
@@ -56,9 +62,9 @@ function ShowHideContent() {
                 $radio.on('click', function () {
 
                     // Select radio buttons in the same group
-                    $(".block-label input[name=" + self.escapeElementName($radioGroupName) + "]").each(function () {
+                    $("input.govuk-radios__input[name=" + self.escapeElementName($radioGroupName) + "]").each(function () {
 
-                        var groupDataTarget = $(this).parent('label').attr('data-target');
+                        var groupDataTarget = $(this).parent('input').attr('data-target');
                         var $groupDataTarget = $('#' + groupDataTarget);
 
                         // Hide toggled content
