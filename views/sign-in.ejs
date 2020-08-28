@@ -1,4 +1,7 @@
 <% pageTitle = "Sign in - Get a document legalised – GOV.UK" %>
+<%if(error && error.length>0){
+    pageTitle = "Error: Sign in - Get a document legalised – GOV.UK"
+} %>
 <% var hide_back_link = true%>
 <% include partials/header %>
 <% if (info.length > 0) { %>

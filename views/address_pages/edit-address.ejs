@@ -1,4 +1,7 @@
 <% pageTitle = "Edit address - Get a document legalised – GOV.UK" %>
+<%if(error_report && error_report.length>0){
+    pageTitle = "Error: Edit address - Get a document legalised – GOV.UK"
+} %>
 
 <% include ../partials/header.ejs %>
 

@@ -1,4 +1,8 @@
 <% pageTitle = "Upgrade to premium - Get a document legalised – GOV.UK" %>
+<%if(error_report && error_report.length>0){
+    pageTitle = "Error: Upgrade to premium - Get a document legalised – GOV.UK"
+} %>
+
 <% include ../partials/header.ejs %>
 <a href="/api/user/account" class="back_to_previous_button">Back</a>
 <div class="column-two-thirds">
