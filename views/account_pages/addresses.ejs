@@ -45,14 +45,14 @@
                     <%= address.country%>
                     <%if(contact_details != ""){%><br /><%= contact_details %><%}%>
                     <br/><br/>
-                    <a class="button-secondary button address-button" href="/api/user/edit-address?id=<%= address.id%>">Edit</a>
-                    <a class="delete-address button-delete button address-button" href="/api/user/delete-address?id=<%= address.id%>">Delete</a>
+                    <a class="govuk-button govuk-button--secondary" href="/api/user/edit-address?id=<%= address.id%>">Edit</a>
+                    <a class="govuk-button govuk-button--warning" href="/api/user/delete-address?id=<%= address.id%>">Delete</a>
                 </td>
             </tr>
             <% });%>
             </tbody></table>
     </div>
-    <a class="govuk-button govuk-button--start" href="/api/user/add-address">Add an address</a>
+    <a class="govuk-button" href="/api/user/add-address">Add an address</a>
 </div>
 
 
