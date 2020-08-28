@@ -815,6 +815,13 @@ td.summary-table-cell-link {
 .column-two-thirds .error-summary {
   margin-top: 0;
 }
+
+@media (min-width: 40.0625em) {
+  .govuk-header__link--service-name {
+    font-size: 24px !important;
+  }
+}
+
 .govuk-radios__item {
   font-family: "GDS Transport", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
