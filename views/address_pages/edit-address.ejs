@@ -10,11 +10,6 @@
 <%}else{%>
 <a href="/api/user/addresses" class="back_to_previous_button">Back</a>
 <%}%>
-<% if (require_contact_details === 'yes') {%>
-<h1 class="heading-xlarge">Update your saved address</h1>
-<%}else{%>
-<h1 class="heading-xlarge">Edit return address</h1>
-<%}%>
 
 
 <%
@@ -57,7 +52,8 @@ if (error_report) {
 
 }
 %>
-
+<%if(error_report.length>0){%><br>
+<%}%>
 <div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" autofocus>
 
     <p class="govuk-error-summary__title" id="error-summary-heading-example-2">
@@ -78,7 +74,11 @@ if (error_report) {
         </ul>
     </div>
 </div>
-
+<% if (require_contact_details === 'yes') {%>
+    <h1 class="heading-xlarge">Update your saved address</h1>
+<%}else{%>
+    <h1 class="heading-xlarge">Edit return address</h1>
+<%}%>
 <form id="edit_address_form" class="column-two-thirds" method="post" action="/api/user/edit-address">
     <div class=" form-group" id="address-details-group">
 

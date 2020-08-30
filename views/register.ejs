@@ -6,9 +6,9 @@
 <% include partials/header %>
 
 <%if(back_link){%><a href="<%= back_link%>" class="back-to-previous">Back</a><%}%>
-
+<%if(error){%><br>
+<%}%>
 <div class="col-sm-6 col-sm-offset-3">
-    <h1 class="heading-xlarge">Create an account</h1>
 
     <div class="column-two-thirds">
         <!-- show any messages that come back with authentication -->
@@ -64,7 +64,7 @@
 
         </div>
 
-
+        <h1 class="heading-xlarge">Create an account</h1>
 
 
         <div class="help-content-div">

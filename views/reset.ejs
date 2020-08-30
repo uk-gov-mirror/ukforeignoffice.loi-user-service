@@ -6,9 +6,8 @@
 <% include partials/header %>
 
 <a href="/api/user/sign-in" class="back_to_previous_button">Back</a>
-
-<h1 class="heading-xlarge">Reset password </h1>
-
+<%if(error){%><br>
+<%}%>
 <div class="govuk-error-summary <% if (error) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-summary-heading" tabindex="-1" autofocus>
     <h2 class="govuk-error-summary__title" id="error-summary-heading">
         There is a problem
@@ -29,6 +28,8 @@
     </ul>
 
 </div>
+
+<h1 class="heading-xlarge">Reset password </h1>
 
 <!-- LOGIN FORM -->
 <form action="/api/user/reset/<%= resetPasswordToken%>" method="post" id="password-reset" class="column-two-thirds">

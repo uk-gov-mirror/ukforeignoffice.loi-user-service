@@ -49,8 +49,8 @@ if (error_report) {
 
 
 <a href="/api/user/add-address" class="back_to_previous_button">Back</a>
-
-<h1 class="heading-xlarge">Add a return address</h1>
+<%if(error_report.length>0){%><br>
+<%}%>
 <div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" style="clear:left;" autofocus>
 
     <p class="govuk-error-summary__title" id="error-summary-heading">
@@ -67,6 +67,7 @@ if (error_report) {
         </ul>
     </div>
 </div>
+<h1 class="heading-xlarge">Add a return address</h1>
 
 <form id="address_form" class="column-two-thirds" method="post" action="/api/user/save-address">
     <div class="form-group address-form" id="address-details-group">

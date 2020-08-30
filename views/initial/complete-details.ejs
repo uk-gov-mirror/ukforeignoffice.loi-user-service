@@ -5,13 +5,14 @@
 
 <% include ../partials/header.ejs %>
 
-<h1 class="heading-xlarge">Finish setting up your account</h1>
-
 <% if (error.length > 0) { %>
+    <br>
 <div class="govuk-error-summary" style="width: 60%" autofocus>
     <h1 class="govuk-error-summary__title"><%= error %></h1>
 </div>
 <%}%>
+<h1 class="heading-xlarge">Finish setting up your account</h1>
+
 <div class="column-two-thirds">
     <p>We need a few more details to set your account up</p>
     <form action="/api/user/complete-registration" id="complete-registration-form" method="post">

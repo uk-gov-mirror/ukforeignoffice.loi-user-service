@@ -6,7 +6,8 @@
 <% include ../partials/header.ejs %>
 <a href="/api/user/account" class="back_to_previous_button">Back</a>
 <div class="column-two-thirds">
-    <h1 class="heading-xlarge">Upgrade your account</h1>
+    <%if(error_report.length>0){%><br>
+    <%}%>
     <form action="/api/user/upgrade-account" method="post" id="upgrade-account">
 
         <div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" autofocus>
@@ -31,6 +32,8 @@
                 </ul>
             </div>
         </div>
+        <h1 class="heading-xlarge">Upgrade your account</h1>
+
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('company_name')>-1) { %>error<% } %>">
 
             <label for="company-name" class="form-label-bold">Company name</label>

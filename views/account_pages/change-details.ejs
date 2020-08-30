@@ -6,9 +6,9 @@
 <% include ../partials/header.ejs %>
 <a href="/api/user/account" class="back_to_previous_button">Back</a>
 <div class="column-two-thirds">
-    <h1 class="heading-xlarge">Change personal details</h1>
     <form action="/api/user/change-details" method="post" id="change-details">
-
+        <%if(error_report.length>0){%><br>
+        <%}%>
         <div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" autofocus>
 
             <p class="govuk-error-summary__title" id="error-summary-heading-example-2">
@@ -18,13 +18,14 @@
             <div id="all-errors">
                 <ul class="govuk-list govuk-error-summary__list">
                     <% if (error_report) {  %>
-                    <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-                    <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
-                    <% }) %>
+                        <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
+                            <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+                        <% }) %>
                     <% } %>
                 </ul>
             </div>
         </div>
+        <h1 class="heading-xlarge">Change personal details</h1>
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('first_name')>-1) { %>error<% } %>">
             <label for="first-name" class="form-label-bold">First name</label>
             <fieldset class="inline">
