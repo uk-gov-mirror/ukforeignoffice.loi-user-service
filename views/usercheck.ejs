@@ -1,7 +1,10 @@
-<% var title='User check'; %>
+<% pageTitle = "Account check - Get a document legalised – GOV.UK" %>
+<%if(error && error.length>0){
+    pageTitle = "Error: Account check - Get a document legalised – GOV.UK"
+} %>
+
 <% include partials/header %>
 <a href="<%= applicationServiceURL%>start" class="back_to_previous_button">Back</a>
-<% pageTitle = "Account check - Get a document legalised – GOV.UK" %>
 <h1 class="heading-xlarge" style="margin-bottom: .75em;">Have you already got an online account for legalisation?</h1>
 
 <%if(error){%>
