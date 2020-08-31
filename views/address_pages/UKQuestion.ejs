@@ -5,7 +5,7 @@
 <%include ../partials/header.ejs %>
 
 
-<a href="<%= initial ? '/api/user/complete-registration' : '/api/user/addresses'%>" class="back_to_previous_button">Back</a>
+<a href="<%= initial ? '/api/user/complete-registration' : '/api/user/addresses'%>" class="back_to_previous_button govuk-link">Back</a>
 
 <%if (error_report && error_report.length>0 ) {%>
     <div class="govuk-error-summary" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1" autofocus style="clear:left; width:66.6%">
