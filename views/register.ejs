@@ -222,7 +222,6 @@
                     <li>the information you've given is correct</li>
                     <li>you agree to the <a href="<%= applicationServiceURL %>terms-and-conditions">terms and conditions</a></li>
                 </ul>
-                <fieldset class="inline" aria-required="true" role="radiogroup">
                     <legend class="<% if (erroneousFields && erroneousFields[0].all_info_correct) { %>show<% } else { %>hide<% } %>">
                             <span class="error-message">
                         Agree to the terms and conditions
@@ -233,9 +232,8 @@
                         <input type="hidden" name="all_info_correct" id="all_info_correct_hidden" value="-1">
                         <input type="checkbox" name="all_info_correct" id="all_info_correct" <% if (form_values && form_values.all_info_correct &&
                                 form_values.all_info_correct===true) { %>checked
-                                <% } %>> I agree
+                                <% } %>> I agree to the terms and conditions
                     </label>
-                </fieldset>
             </div>
 
 
