@@ -59,13 +59,13 @@
         <div class="form-group <%if(email_error){%>error<%}%>">
             <label for="email" class="form-label-bold">Email</label>
             <%if(error=='Missing email and password' || error=='Missing email'){%><span class="error-message">Enter your email</span><%}%>
-            <input class="form-control" id="email" name="email" aria-required="true" autocomplete="off" type="text"  <% if(typeof(email) !='undefined'){%>value = "<%= email%>"<%}%>>
+            <input class="govuk-input govuk-!-width-one-half" id="email" name="email" aria-required="true" autocomplete="off" type="text"  <% if(typeof(email) !='undefined'){%>value = "<%= email%>"<%}%>>
         </div>
 
         <div class="form-group <%if(password_error){%>error<%}%>">
             <label for="password" class="form-label-bold">Password</label>
             <%if(error=='Missing email and password' || error=='Missing password'){%><span class="error-message">Enter your password</span><%}%>
-            <input class="form-control" id="password" name="password" aria-required="true" autocomplete="off"  type="password" >
+            <input class="govuk-input govuk-!-width-one-half" id="password" name="password" aria-required="true" autocomplete="off"  type="password" >
         </div>
 
 

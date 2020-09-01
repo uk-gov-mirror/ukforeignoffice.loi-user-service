@@ -43,7 +43,7 @@
 
 
                 </legend>
-                <input class="form-control" id="first-name" type="text" autocomplete="off" name="first_name" aria-required="true"  value="<% if(form_values){%><%=form_values.first_name%><%} %>">
+                <input class="govuk-input govuk-!-width-one-half" id="first-name" type="text" autocomplete="off" name="first_name" aria-required="true"  value="<% if(form_values){%><%=form_values.first_name%><%} %>">
             </fieldset>
         </div>
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('last_name')>-1) { %>error<% } %>">
@@ -60,7 +60,7 @@
                     <% }) %>
                     <% } %>
                 </legend>
-                <input class="form-control" id="last-name" autocomplete="off" type="text" name="last_name" aria-required="true" value="<% if(form_values){%><%=form_values.last_name%><%} %>">
+                <input class="govuk-input govuk-!-width-one-half" id="last-name" autocomplete="off" type="text" name="last_name" aria-required="true" value="<% if(form_values){%><%=form_values.last_name%><%} %>">
             </fieldset>
         </div>
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>error<% } %>">
@@ -77,7 +77,7 @@
                     <% }) %>
                     <% } %>
                 </legend>
-                <input type="tel" id="telephone" class="form-control phone" autocomplete="off" name="telephone" aria-required="true" value="<% if(form_values){%><%=form_values.telephone%><%} %>">
+                <input type="tel" id="telephone" class="govuk-input govuk-!-width-one-half" autocomplete="off" name="telephone" aria-required="true" value="<% if(form_values){%><%=form_values.telephone%><%} %>">
             </fieldset>
         </div>
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>">
@@ -94,13 +94,13 @@
                     <% }) %>
                     <% } %>
                 </legend>
-                <input type="tel" id="mobileNo" class="form-control phone" autocomplete="off" name="mobileNo"  value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo%><%} %>">
+                <input type="tel" id="mobileNo" class="govuk-input govuk-!-width-one-half" autocomplete="off" name="mobileNo"  value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo%><%} %>">
             </fieldset>
         </div>
 
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('feedback_consent')>-1) { %>error<% } %>" >
             <h2 class="form-label-bold">Feedback</h2>
-            <p class="text">We welcome your views on the legalisation service. If you agree to be contacted by answering "Yes" below, you will be consenting to share your personal data - name, email address, telephone number and service received - with our independent partner research agency, IFF Research. You may withdraw your consent at any stage by emailing <a href="mailto:consular.research@fco.gov.uk">consular.research@fco.gov.uk<span class="visually-hidden"> opens in new window</span></a>. For more details on how your data will be handled in relation to feedback see the <a href="https://www.gov.uk/government/organisations/foreign-commonwealth-office/about/research" target="_blank">research privacy policy<span class="visually-hidden"> opens in new window</span></a>.<br></p>
+            <p class="text">We welcome your views on the legalisation service. If you agree to be contacted by answering "Yes" below, you will be consenting to share your personal data - name, email address, telephone number and service received - with our independent partner research agency, IFF Research. You may withdraw your consent at any stage by emailing <a href="mailto:consular.research@fco.gov.uk" class="govuk-link">consular.research@fco.gov.uk<span class="visually-hidden"> opens in new window</span></a>. For more details on how your data will be handled in relation to feedback see the <a href="https://www.gov.uk/government/organisations/foreign-commonwealth-office/about/research" target="_blank" class="govuk-link">research privacy policy<span class="visually-hidden"> opens in new window</span></a>.<br></p>
             <div class="govuk-radios govuk-radios--inline">
 
                 <p>Can our partner contact you for feedback to help improve this service?</p>
