@@ -15,17 +15,17 @@
             <tr>
                 <td class="summary-table-cell-label">First name</td>
                 <td class="summary-table-cell-content"><%= account.first_name%></td>
-                <td class="summary-table-cell-link"><a href="/api/user/change-details">Change<span class="visually-hidden"> first name</span></a></td>
+                <td class="summary-table-cell-link"><a class="govuk-link" href="/api/user/change-details">Change<span class="visually-hidden"> first name</span></a></td>
             </tr>
             <tr>
                 <td class="summary-table-cell-label">Last name</td>
                 <td class="summary-table-cell-content"><%= account.last_name%></td>
-                <td class="summary-table-cell-link"><a href="/api/user/change-details">Change<span class="visually-hidden"> last name</span></a></td>
+                <td class="summary-table-cell-link"><a class="govuk-link" href="/api/user/change-details">Change<span class="visually-hidden"> last name</span></a></td>
             </tr>
             <tr>
                 <td class="summary-table-cell-label">Telephone</td>
                 <td class="summary-table-cell-content"><%= account.telephone%></td>
-                <td class="summary-table-cell-link"><a href="/api/user/change-details">Change<span class="visually-hidden"> telephone number</span></a></td>
+                <td class="summary-table-cell-link"><a class="govuk-link" href="/api/user/change-details">Change<span class="visually-hidden"> telephone number</span></a></td>
             </tr>
             <tr>
                 <td class="summary-table-cell-label">Mobile No</td>
@@ -35,22 +35,22 @@
                     <% }else{ %>
                     None provided
                     <% } %></td>
-                <td class="summary-table-cell-link"><a href="/api/user/change-details">Change<span class="visually-hidden"> mobile number</span></a></td>
+                <td class="summary-table-cell-link"><a class="govuk-link" href="/api/user/change-details">Change<span class="visually-hidden"> mobile number</span></a></td>
             </tr>
             <tr>
                 <td class="summary-table-cell-label">Feedback consent</td>
                 <td class="summary-table-cell-content"><%= account.feedback_consent==null? 'Not set':account.feedback_consent ? 'Yes' : 'No'%></td>
-                <td class="summary-table-cell-link"><a href="/api/user/change-details">Change<span class="visually-hidden"> feedback consent</span></a></td>
+                <td class="summary-table-cell-link"><a class="govuk-link" href="/api/user/change-details">Change<span class="visually-hidden"> feedback consent</span></a></td>
             </tr>
             <tr>
                 <td class="summary-table-cell-label">Email</td>
                 <td class="summary-table-cell-content"><%= user.email%></td>
-                <td class="summary-table-cell-link"><a href="/api/user/change-email">Change <span class="visually-hidden"> email</span></a></td>
+                <td class="summary-table-cell-link"><a class="govuk-link" href="/api/user/change-email">Change <span class="visually-hidden"> email</span></a></td>
             </tr>
             <tr>
                 <td class="summary-table-cell-label">Password</td>
                 <td class="summary-table-cell-content">***********</td>
-                <td class="summary-table-cell-link"> <a href="/api/user/change-password">Change<span class="visually-hidden"> password</span></a></td>
+                <td class="summary-table-cell-link"> <a class="govuk-link" href="/api/user/change-password">Change<span class="visually-hidden"> password</span></a></td>
             </tr>
 
             </tbody>
@@ -58,9 +58,9 @@
 
 
       <div class="help-content-div">
-        <a href="#" class="help-content-link icon-toggle-right expandable">How to close your account <span class="visually-hidden noJs" > click to expand </span></a>
+        <a href="#" class="help-content-link icon-toggle-right expandable govuk-link">How to close your account <span class="visually-hidden noJs" > click to expand </span></a>
             <div class="panel panel-border-narrow help-content-body no-js-show">
-                <p>If you want to close your account please contact us at <a href="mailto:legalisationenquiries@fco.gov.uk">legalisationenquiries@fco.gov.uk</a></p>
+                <p>If you want to close your account please contact us at <a class="govuk-link" href="mailto:legalisationenquiries@fco.gov.uk">legalisationenquiries@fco.gov.uk</a></p>
             </div>
       </div>
     </div>
@@ -81,7 +81,7 @@
             <tr>
                 <td class="summary-table-cell-label">Company name</td>
                 <td class="summary-table-cell-content"><%= account.company_name%></td>
-                <td class="summary-table-cell-link"><a href="/api/user/change-company-details">Change <span class="visually-hidden"> company name</span></a></td>
+                <td class="summary-table-cell-link"><a class="govuk-link" href="/api/user/change-company-details">Change <span class="visually-hidden"> company name</span></a></td>
             </tr>
             </tbody>
         </table>
@@ -90,7 +90,7 @@
 </div>
 <%}else{%>
 <div class="column-two-thirds">
-   <p>If you represent a business you can <a href="/api/user/upgrade-account">register for the legalisation premium service</a></p>
+   <p>If you represent a business you can <a class="govuk-link" href="/api/user/upgrade-account">register for the legalisation premium service</a></p>
 </div>
 <%}%>
 <h1 class="heading-xlarge" style="margin-bottom: 25px">Saved payment details</h1>

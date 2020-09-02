@@ -1,16 +1,21 @@
+<% var title='User check'; %>
+<%if(error){
+    pageTitle = "Error: User check"
+} %>
+<% include partials/header %>
+<a href="<%= applicationServiceURL%>start" class="back_to_previous_button govuk-link">Back</a>
+
 <% pageTitle = "Account check - Get a document legalised – GOV.UK" %>
 <%if(error && error.length>0){
     pageTitle = "Error: Account check - Get a document legalised – GOV.UK"
 } %>
 
-<% include partials/header %>
-<a href="<%= applicationServiceURL%>start" class="back_to_previous_button">Back</a>
 <h1 class="heading-xlarge" style="margin-bottom: .75em;">Have you already got an online account for legalisation?</h1>
 
 <%if(error){%>
-<div class="error-summary" style="width: 60%">
-    <h2 class="heading-medium error-summary-heading">Please check the form</h2>
-    <ul class="error-summary-list nopadding">
+<div class="govuk-error-summary" style="width: 60%" autofocus>
+    <h2 class="govuk-error-summary__title">There is a problem</h2>
+    <ul class="govuk-list govuk-error-summary__list">
         <li><a href="#has-account-options">Confirm whether you already have an account</a></li>
     </ul>
 </div>
@@ -52,7 +57,7 @@
                 <li><i aria-hidden="true" class="flaticon-checked21 no-margin"></i>check the status of an application</li>
                 <li><i aria-hidden="true" class="flaticon-checked21 no-margin"></i>see your recent application history</li>
             </ul>
-            <button class="button" id="continue-button" type="submit">Continue</button>
+            <button class="govuk-button" id="continue-button" type="submit">Continue</button>
         </div>
 
     </form>

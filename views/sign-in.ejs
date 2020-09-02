@@ -1,4 +1,7 @@
 <% pageTitle = "Sign in - Get a document legalised – GOV.UK" %>
+<%if(error && error.length>0){
+    pageTitle = "Error: Sign in - Get a document legalised – GOV.UK"
+} %>
 <% var hide_back_link = true%>
 <% include partials/header %>
 <% if (info.length > 0) { %>
@@ -21,11 +24,11 @@
         _paq.push(['trackEvent', 'Reg 04 - verify email address', 'Verification link expired']);
     </script>
     <%}%>
-    <div class="error-summary">
+    <div class="govuk-error-summary" autofocus>
 
-        <h2 class="heading-medium error-summary-heading">Please check the form</h2>
+        <h2 class="govuk-error-summary__title">There is a problem</h2>
 
-        <ul class="error-summary-list nopadding">
+        <ul class="govuk-list govuk-error-summary__list">
             <%if(error=='Missing email and password' || error=='Missing email'){var email_error=true;%><li><a href="#email">Enter your email</a></li><%}%>
             <%if(error=='Missing email and password' || error=='Missing password'){var password_error=true; %><li><a href="#password">Enter your password</a></li><%}%>
             <%if(error!='Missing email and password' && error!='Missing email' && error!='Missing password'){ %><li><a href="#email"><%= error%></a></li><%}%>
@@ -56,18 +59,18 @@
         <div class="form-group <%if(email_error){%>error<%}%>">
             <label for="email" class="form-label-bold">Email</label>
             <%if(error=='Missing email and password' || error=='Missing email'){%><span class="error-message">Enter your email</span><%}%>
-            <input class="form-control" id="email" name="email" aria-required="true" autocomplete="off" type="text"  <% if(typeof(email) !='undefined'){%>value = "<%= email%>"<%}%>>
+            <input class="govuk-input govuk-!-width-one-half" id="email" name="email" aria-required="true" autocomplete="off" type="text"  <% if(typeof(email) !='undefined'){%>value = "<%= email%>"<%}%>>
         </div>
 
         <div class="form-group <%if(password_error){%>error<%}%>">
             <label for="password" class="form-label-bold">Password</label>
             <%if(error=='Missing email and password' || error=='Missing password'){%><span class="error-message">Enter your password</span><%}%>
-            <input class="form-control" id="password" name="password" aria-required="true" autocomplete="off"  type="password" >
+            <input class="govuk-input govuk-!-width-one-half" id="password" name="password" aria-required="true" autocomplete="off"  type="password" >
         </div>
 
 
-        <input type="submit" class="button" id="sign-in-button" value="Sign in">
-        <p><a href="/api/user/forgot">Forgotten your password?</a></p>
+        <input type="submit" class="govuk-button" id="sign-in-button" value="Sign in">
+        <p><a class="govuk-link" href="/api/user/forgot">Forgotten your password?</a></p>
 
 
     </form>

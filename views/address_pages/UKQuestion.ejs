@@ -1,23 +1,28 @@
-<% pageTitle ="Is return address UK - Get a document legalised – GOV.UK" %>
+<% pageTitle ="Is return address UKs - Get a document legalised – GOV.UK" %>
+<%if(error_report && error_report.length>0){
+    pageTitle = "Error: Is return address UK - Get a document legalised – GOV.UK"
+} %>
+
 <%include ../partials/header.ejs %>
 
 
-<a href="<%= initial ? '/api/user/complete-registration' : '/api/user/addresses'%>" class="back_to_previous_button">Back</a>
-
-
-<h1 class="heading-xlarge">Add a return address</h1>
+<a href="<%= initial ? '/api/user/complete-registration' : '/api/user/addresses'%>" class="back_to_previous_button govuk-link">Back</a>
 
 <%if (error_report && error_report.length>0 ) {%>
-<div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" style="clear:left; width:66.6%">
+    <div class="govuk-error-summary" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1" autofocus style="clear:left; width:66.6%">
 
-    <p class="heading-medium error-summary-heading" id="error-summary-heading">
-        Please check the form
-    </p>
-    <ul class="error-summary-list nopadding">
-       <li><a href="#is-uk">Confirm whether the return address is in the UK</a></li>
-    </ul>
-</div>
+        <p class="govuk-error-summary__title" id="error-summary-heading">
+            There is a problem 1
+        </p>
+        <div class="govuk-error-summary__body" id="all-errors">
+        <ul class="govuk-error-summary__list">
+            <li><a href="#is-uk">Confirm whether the return address is in the UK</a></li>
+        </ul>
+        </div>
+    </div>
 <%}%>
+
+<h1 class="heading-xlarge">Add a return address</h1>
 
 <div class="form-group">
     <form id="is-uk" method="post" action="<%= '/api/user/add-address-uk' %>">
@@ -27,21 +32,35 @@
             <%if (error_report && error_report.length>0 ) {%><span class="error-message">Confirm whether the return address is in the UK</span><%}%>
             <fieldset class="inline" aria-required="true" role="radiogroup">
                 <legend class="visually-hidden">Confirm whether the return address is in the UK</legend>
-                <label class="block-label <%if(typeof(uk)!='undefined' && uk){%>selected<%} %>" for="radio-yes">
-                    <input id="radio-yes"  type="radio" name="is_uk" value="true" <%if(typeof(uk)!='undefined' && uk){%>checked="checked"<%}%>>
-                    Yes
-                </label>
-                <label class="block-label <%if(typeof(uk)!='undefined' && !uk && uk!=null){%>selected<%}%>" for="radio-no">
-                    <input id="radio-no" type="radio" name="is_uk" value="false" <%if(typeof(uk)!='undefined'&& !uk && uk!=null ){%>checked="checked"<%}%>>
-                    No
-                </label>
+                <div class="govuk-radios govuk-radios--inline">
+                    <div class="govuk-radios__item">
+
+                        <input class="govuk-radios__input" id="radio-yes" type="radio" name="is_uk" value="true"
+                               <% if(typeof (uk) != 'undefined' && uk){ %>checked="checked"
+                                <% } %>>
+                        <label class="govuk-radios__label <% if(typeof (uk) != 'undefined' && uk){ %>selected<% } %>"
+                               for="radio-yes">
+                            Yes
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="radio-no" type="radio" name="is_uk" value="false"
+                               <% if(typeof (uk) != 'undefined' && !uk && uk != null ){ %>checked="checked"
+                                <% } %>>
+                        <label class="govuk-radios__label  <% if(typeof (uk) != 'undefined' && !uk && uk != null){ %>selected<% } %>"
+                               for="radio-no">
+
+                            No
+                        </label>
+                    </div>
+                </div>
             </fieldset>
         </div>
 
 
 
         <div class="form-group">
-            <button class="button" type="submit">Continue</button>
+            <button class="govuk-button" type="submit">Continue</button>
         </div>
 
 

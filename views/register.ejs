@@ -1,22 +1,25 @@
 <% pageTitle = "Create an account - Get a document legalised – GOV.UK" %>
+<%if(error){
+    pageTitle = "Error: Create an account - Get a document legalised – GOV.UK"
+} %>
 <% include partials/header %>
 
 <%if(back_link){%><a href="<%= back_link%>" class="back-to-previous">Back</a><%}%>
-
+<%if(error){%><br>
+<%}%>
 <div class="col-sm-6 col-sm-offset-3">
-    <h1 class="heading-xlarge">Create an account</h1>
 
     <div class="column-two-thirds">
         <!-- show any messages that come back with authentication -->
-        <div style=" margin-top: 0px; " class="error-summary  <% if (error) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-summary-heading"
-             tabindex="-1">
+        <div style=" margin-top: 0px; " class="govuk-error-summary  <% if (error) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-summary-heading"
+             tabindex="-1" autofocus>
 
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
-                Please check the form
+            <h2 class="govuk-error-summary__title" id="error-summary-heading">
+                There is a problem
 
             </h2>
 
-            <ul class="error-summary-list nopadding">
+            <ul class="govuk-list govuk-error-summary__list">
                 <%if (error) { %>
                 <%error.forEach(function(err){%>
                 <% if (err.email) { %>
@@ -60,11 +63,11 @@
 
         </div>
 
-
+        <h1 class="heading-xlarge">Create an account</h1>
 
 
         <div class="help-content-div">
-            <a href="#" class="help-content-link icon-toggle-right expandable">Benefits of creating an account<span class="visually-hidden noJs" > click to expand </span></a>
+            <a href="#" class="govuk-link">Benefits of creating an account<span class="visually-hidden noJs" > click to expand </span></a>
             <div class="panel panel-border-narrow  help-content-body no-js-show">
                 <p>Online accounts are required for our premium business service. For the standard postal service they're
                     optional. You'll get most benefit if you're a regular customer.</p>
@@ -90,7 +93,7 @@
                             </span>
                     </legend>
 
-                    <input class="form-control" id="email" name="email" autocomplete="off" aria-required="true" type="text" value="<% if (form_values && form_values.email!=='') { %><%=form_values.email%><% } %>">
+                    <input class="govuk-input govuk-!-width-one-half" id="email" name="email" autocomplete="off" aria-required="true" type="text" value="<% if (form_values && form_values.email!=='') { %><%=form_values.email%><% } %>">
                     <div id="email_hint" style="display: none;"></div>
                 </fieldset>
             </div>
@@ -103,7 +106,7 @@
                             </span>
                 </legend>
 
-                <input class="form-control" id="confirm_email" name="confirm_email" autocomplete="off" type="text" value="<%if (!erroneousFields || (erroneousFields && !erroneousFields[0].confirm_email&& !erroneousFields[0].email )){%><%=form_values.email%><%}%>">
+                <input class="govuk-input govuk-!-width-one-half" id="confirm_email" name="confirm_email" autocomplete="off" type="text" value="<%if (!erroneousFields || (erroneousFields && !erroneousFields[0].confirm_email&& !erroneousFields[0].email )){%><%=form_values.email%><%}%>">
             </div>
 
             <div class="form-group <% if (erroneousFields && erroneousFields[0].password == true && JSON.stringify(error).indexOf('password') > -1) { %>error<% } %>" id="legend_password">
@@ -124,7 +127,7 @@
                     </legend>
                 </fieldset>
 
-                    <input class="form-control" id="password" autocomplete="off" aria-required="true" name="password" type="password">
+                    <input class="govuk-input govuk-!-width-one-half" id="password" autocomplete="off" aria-required="true" name="password" type="password">
 
             </div>
 
@@ -145,14 +148,15 @@
                     </legend>
 
 
-                    <input class="form-control" id="confirm_password" autocomplete="off" aria-required="true" name="confirm_password" type="password">
+                    <input class="govuk-input govuk-!-width-one-half" id="confirm_password" autocomplete="off" aria-required="true" name="confirm_password" type="password">
                 </fieldset>
             </div>
 
 
             <div class="form-group <% if (erroneousFields && erroneousFields[0].business_yes_no) { %>error<% } %>">
                 <fieldset class="inline">
-                    <legend id="legend_business" class="form-label-bold">Are you registering on behalf of a business?</legend>
+                    <legend id="legend_business" class="form-label-bold">Are you registering on behalf of a business?
+                    </legend>
 
                     <span class="form-hint">Businesses can access our premium service</span>
 
@@ -164,47 +168,74 @@
                                         Confirm whether you are registering on behalf of a business
                                     </span>
                             </legend>
+                            <div class="govuk-radios govuk-radios--inline">
 
-                            <label class="block-label <% if (form_values && form_values.business_yes_no=='Yes'){%>selected<%}%>" data-target="business-info"
-                                   for="radio-indent-1">
-                                <input id="radio-indent-1" type="radio" name="business_yes_no" value="Yes" <% if (form_values && form_values.business_yes_no=='Yes'
-                                ){%>checked
-                                        <%}%>> Yes
-                            </label>
+                                <div class="govuk-radios__item">
 
-                            <label class="block-label <% if (form_values && form_values.business_yes_no=='No'){%>selected<%}%>" for="radio-indent-2">
-                                <input id="radio-indent-2" type="radio" name="business_yes_no" value="No" <% if (form_values && form_values.business_yes_no=='No'
-                                ){%>checked
-                                        <%}%>> No
-                            </label>
+                                    <input class="govuk-radios__input" id="radio-indent-1" type="radio"
+                                           name="business_yes_no" data-target="business-info" value="Yes"
+                                           <% if (form_values && form_values.business_yes_no == 'Yes'
+                                           ){ %>checked
+                                            <% } %>
+                                    >
+                                    <label class="govuk-radios__label <% if (form_values && form_values.business_yes_no == 'Yes'){ %>selected<% } %>"
+                                           data-target="business-info"
+                                           for="radio-indent-1">
+                                        Yes
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__item">
+
+                                    <input class="govuk-radios__input" id="radio-indent-2" type="radio"  data-target="business-info-hide"
+                                           name="business_yes_no" value="No"
+                                           <% if (form_values && form_values.business_yes_no == 'No'
+                                           ){ %>checked
+                                            <% } %>
+                                    >
+                                    <label class="govuk-radios__label <% if (form_values && form_values.business_yes_no == 'No'){ %>selected<% } %>"
+                                           for="radio-indent-2">
+                                        No
+                                    </label>
+                                </div>
+                            </div>
                         </fieldset>
-                        <div class="panel panel-border-narrow  <% if (erroneousFields && erroneousFields[0].company_name) { %>error<%}%> <% if (form_values && form_values.business_yes_no=='Yes'){%><%}else{%>js-hidden<%}%>"
+                        <div class="panel panel-border-narrow  <% if (erroneousFields && erroneousFields[0].company_name) { %>error<% } %> <% if (form_values && form_values.business_yes_no == 'Yes'){ %><% }else{ %>js-hidden<% } %>"
                              id="business-info">
 
                             <label class="form-label-bold" for="company_name">Company name</label>
                             <fieldset>
-                                <legend id="legend_company_name" class="<% if (erroneousFields && erroneousFields[0].company_name) { %>show<% } else { %>hide<% } %>">
+                                <legend id="legend_company_name"
+                                        class="<% if (erroneousFields && erroneousFields[0].company_name) { %>show<% } else { %>hide<% } %>">
                                     <span class="error-message">
                                         Please enter a valid company name
                                     </span>
                                 </legend>
 
-                                <input class="form-control" name="company_name" type="text" id="company_name" value="<% if (form_values && form_values.company_name!=='') { %><%=form_values.company_name%><% } %>">
+                                <input class="govuk-input govuk-!-width-one-half" name="company_name" type="text" id="company_name"
+                                       value="<% if (form_values && form_values.company_name !== '') { %><%= form_values.company_name %><% } %>">
                             </fieldset>
-                            <br />
+                            <br/>
                             <label class="form-label-bold" for="company_verification_check">Company verification</label>
                             <span class="form-hint">The premium service is a counter service for businesses only. The Legalisation Office may ask for evidence to verify your details eg company letter, VAT number, Companies House number</span>
                             <fieldset>
-                                <legend id="legend_company_verification_check" class="<% if (erroneousFields && erroneousFields[0].company_verification_check) { %>show<% } else { %>hide<% } %>">
+                                <legend id="legend_company_verification_check"
+                                        class="<% if (erroneousFields && erroneousFields[0].company_verification_check) { %>show<% } else { %>hide<% } %>">
                                     <span class="error-message">
                                         Confirm that you represent a business
                                     </span>
                                 </legend>
-                                <label class="block-label" for="company_verification_check">
-                                    <input type="checkbox" name="company_verification_check" id="company_verification_check"<% if (form_values && form_values.company_verification_check &&
-                                            form_values.company_verification_check===true) { %>checked
-                                            <% } %>>I confirm that I represent a business and will provide evidence when asked
+                                <div class="govuk-checkboxes__item">
+
+                                <input class="govuk-checkboxes__input" type="checkbox" name="company_verification_check"
+                                       id="company_verification_check"
+                                       <% if (form_values && form_values.company_verification_check &&
+                                               form_values.company_verification_check === true) { %>checked
+                                        <% } %>
+                                >
+                                <label class="govuk-checkboxes__label" for="company_verification_check">
+                                     I confirm that I represent a business and will provide evidence when asked
                                 </label>
+                                </div>
                             </fieldset>
 
                         </div>
@@ -219,7 +250,7 @@
 
                 <ul>
                     <li>the information you've given is correct</li>
-                    <li>you agree to the <a href="<%= applicationServiceURL %>terms-and-conditions">terms and conditions</a></li>
+                    <li>you agree to the <a class="govuk-link" href="<%= applicationServiceURL %>terms-and-conditions">terms and conditions</a></li>
                 </ul>
                     <legend class="<% if (erroneousFields && erroneousFields[0].all_info_correct) { %>show<% } else { %>hide<% } %>">
                             <span class="error-message">
@@ -227,12 +258,17 @@
                     </span>
                     </legend>
 
-                    <label class="block-label" for="all_info_correct">
-                        <input type="hidden" name="all_info_correct" id="all_info_correct_hidden" value="-1">
-                        <input type="checkbox" name="all_info_correct" id="all_info_correct" <% if (form_values && form_values.all_info_correct &&
-                                form_values.all_info_correct===true) { %>checked
-                                <% } %>> I agree to the terms and conditions
+                    <div class="govuk-checkboxes__item">
+                    <input type="hidden" name="all_info_correct" id="all_info_correct_hidden" value="-1">
+                    <input class="govuk-checkboxes__input" type="checkbox" name="all_info_correct" id="all_info_correct" <% if (form_values && form_values.all_info_correct &&
+                            form_values.all_info_correct===true) { %>checked
+                            <% } %>>
+                    <label class="govuk-checkboxes__label" for="all_info_correct">
+                         I agree
                     </label>
+                    </div>
+                </fieldset>
+
             </div>
 
 
@@ -241,7 +277,7 @@
 
         <hr>
 
-        <p>Already got an account? <a href="/api/user/sign-in?from=/api/user/register">Sign in</a></p>
+        <p>Already got an account? <a class="govuk-link" href="/api/user/sign-in?from=/api/user/register">Sign in</a></p>
     </div>
 
 </div>

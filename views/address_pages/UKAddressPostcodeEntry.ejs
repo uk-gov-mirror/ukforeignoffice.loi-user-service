@@ -1,26 +1,25 @@
-<% pageTitle ="Add a return address from postcode - Get a document legalised – GOV.UK" %>
+<% pageTitle ="Add a return address - Get a document legalised – GOV.UK" %>
+<%if(error_report && error_report.length>0){
+    pageTitle = "Error: Add a return address - Get a document legalised – GOV.UK"
+} %>
+
 <%include ../partials/header.ejs %>
 
-
-
-<a href="/api/user/add-address" class="back_to_previous_button">Back</a>
-
-
-
-<h1 class="heading-xlarge">Add a return address</h1>
-
+<a href="/api/user/add-address" class="back_to_previous_button govuk-link">Back</a>
+<%if(error_report.length>0){%><br>
+<%}%>
     <%if (error_report && error_report.length>0) {%>
-    <div class="error-summary column-two-thirds" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" >
+    <div class="govuk-error-summary column-two-thirds" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" autofocus >
 
 
-        <h2 class="heading-medium error-summary-heading"  id="error-summary-heading-example-2">
+        <h2 class="govuk-error-summary__title"  id="error-summary-heading-example-2">
             <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
             <%= error_heading %>
             <%}else{%>
-            Please check the form
+            There is a problem
             <%}%>
         </h2>
-        <ul class="error-summary-list nopadding">
+        <ul class="govuk-list govuk-error-summary__list">
             <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
             <li><a href="/api/user/your-address-manual"><%= error_report%></a></li>
             <%}else{%>
@@ -29,8 +28,8 @@
         </ul>
     </div>
     <%}%>
-
-    <div class="error-summary hide" id="postcode-error" role="group" tabindex="-1"></div>
+    <div class="govuk-error-summary hide" id="postcode-error" role="group" tabindex="-1" autofocus></div>
+<h1 class="heading-xlarge">Add a return address</h1>
 
     <div id="sr-notification-container" class="visually-hidden"  aria-live="assertive" aria-atomic="true"></div>
 <div class="column-two-thirds">
@@ -39,7 +38,7 @@
             <label class="form-label-bold"  for="find-postcode">Enter postcode</label>
             <% if(typeof(error_report)!='undefined'){%><span class="error-message"><%= error_report%></span><%}%>
 
-            <input class="form-control form-control-1-4 postcode"  aria-required="true" id="find-postcode" type="text"
+            <input class="govuk-input govuk-!-width-one-quarter"  aria-required="true" id="find-postcode" type="text"
                    name="find-postcode">
             <button class="button find-address button-secondary" type="submit" id="find-address">Find UK address</button>
 
@@ -55,7 +54,7 @@
     <input type="hidden" name="postcode" value="">
     <div class="hide" id="address-list-group">
         <label class="form-label visuallyhidden" for="address-list-box">Pick an address</label>
-        <select class="form-control" id="address-list-box" name="address" form="select-address-form" aria-required="true"
+        <select class="govuk-input govuk-!-width-one-half" id="address-list-box" name="address" form="select-address-form" aria-required="true"
                 onchange="">
             <option disabled selected>Pick an address</option>
         </select>
@@ -75,61 +74,61 @@
             <div class="form-group " id="legend_full_name">
                 <label class="form-label-bold" for="full-name">Full name</label>
                 <span class="form-hint">Name of the person you would like the documents returned to</span>
-                <input class="form-control" id="full-name" type="text" aria-required="true" name="full_name" value="">
+                <input class="govuk-input govuk-!-width-one-half" id="full-name" type="text" aria-required="true" name="full_name" value="">
 
             </div>
             <div class="form-group" id="legend_organisation">
                 <label class="form-label-bold" for="organisation">Company or organisation (optional)</label>
                 <legend class="visuallyhidden">Company or organisation</legend>
 
-                <input class="form-control" id="organisation" type="text" name="organisation" aria-required="false" value="" >
+                <input class="govuk-input govuk-!-width-one-half" id="organisation" type="text" name="organisation" aria-required="false" value="" >
             </div>
 
             <div class="form-group" id="legend_house_name">
                 <label class="form-label-bold" for="house_name">House name or number</label>
 
 
-                <input class="form-control" id="house_name" type="text" aria-required="true" name="house_name" value="" >
+                <input class="govuk-input govuk-!-width-one-half" id="house_name" type="text" aria-required="true" name="house_name" value="" >
             </div>
 
             <div class="form-group" id="legend_street">
                 <label class="form-label-bold" for="street">Street</label>
 
 
-                <input class="form-control" type="text" id="street" aria-required="true" name="street" value="" >
+                <input class="govuk-input govuk-!-width-one-half" type="text" id="street" aria-required="true" name="street" value="" >
             </div>
 
             <div class="form-group" id="legend_town">
                 <label class="form-label-bold" for="town">Town</label>
 
-                <input class="form-control" type="text" id="town" aria-required="true" name="town" value="" >
+                <input class="govuk-input govuk-!-width-one-half" type="text" id="town" aria-required="true" name="town" value="" >
             </div>
 
             <div class="form-group" id="legend_county">
                 <label class="form-label-bold" for="county">County <span>(optional)</span></label>
 
 
-                <input class="form-control" type="text" id="county" name="county" value="">
+                <input class="govuk-input govuk-!-width-one-half" type="text" id="county" name="county" value="">
             </div>
 
             <div class="form-group" id="legend_postcode">
                 <label class="form-label-bold" for="postcode">Postcode</label>
 
-                <input class="form-control form-control-1-4 postcode" id="postcode" aria-required="true" name="postcode" type="text" value="" >
+                <input class="govuk-input govuk-!-width-one-quarter" id="postcode" aria-required="true" name="postcode" type="text" value="" >
             </div>
 
             <div class="form-group" id="legend_telephone">
                 <label class="form-label-bold" for="telephone">Primary number</label>
                 <span class="form-hint">Contact telephone number for this address for delivery questions or updates</span>
 
-                <input class="form-control" type="tel" id="telephone" aria-required="true" name="telephone" value="<% if (contact_telephone) { %><%= contact_telephone %><% } %>">
+                <input class="govuk-input govuk-!-width-one-half" type="tel" id="telephone" aria-required="true" name="telephone" value="<% if (contact_telephone) { %><%= contact_telephone %><% } %>">
             </div>
 
             <div class="form-group" id="legend_mobileNo">
                     <label class="form-label-bold" for="telephone">Mobile number</label>
                     <span class="form-hint">Contact mobile number for this address for delivery questions or updates</span>
 
-                <input class="form-control" type="tel" id="mobileNo" aria-required="true" name="mobileNo" value="<% if (contact_mobileNo) { %><%= contact_mobileNo %><% } %>">
+                <input class="govuk-input govuk-!-width-one-half" type="tel" id="mobileNo" aria-required="true" name="mobileNo" value="<% if (contact_mobileNo) { %><%= contact_mobileNo %><% } %>">
             </div>
 
             <div class="form-group" id="legend_email">
@@ -137,7 +136,7 @@
                 <span class="form-hint">Contact email for this address for delivery questions or updates</span>
 
 
-                <input class="form-control" type="text" id="email" name="email" value="<% if (contact_email) { %><%= contact_email %><% } %>">
+                <input class="govuk-input govuk-!-width-one-half" type="text" id="email" name="email" value="<% if (contact_email) { %><%= contact_email %><% } %>">
             </div>
 
             <input type="hidden" name="country" value="United Kingdom">
@@ -146,7 +145,7 @@
         </div>
 
         <div class="form-group">
-            <button id="NextBtn" class="button">Continue</button>
+            <button id="NextBtn" class="govuk-button">Continue</button>
         </div>
 
 

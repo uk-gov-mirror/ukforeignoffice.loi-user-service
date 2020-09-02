@@ -722,3 +722,8 @@ button:focus,
 @media (min-width: 641px) {
   #footer .footer-meta .copyright a {
     text-align: right; } }
+
+.govuk-link {
+  font-family: "GDS Transport", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; }
