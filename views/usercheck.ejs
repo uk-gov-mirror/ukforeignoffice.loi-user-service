@@ -36,15 +36,20 @@
                     </span>
                 </legend>
                 <%}%>
-
-                <label class="block-label " for="radio-yes">
-                    <input id="radio-yes" type="radio" name="has-account" value="true"  <%if(typeof(form_value)!='undefined' && form_value){%>selected<%}%>>
-                    Yes
-                </label>
-                <label class="block-label " for="radio-no">
-                    <input id="radio-no" type="radio" name="has-account" value="false"  <%if(typeof(form_value)!='undefined' && !form_value){%>selected<%}%>>
+                <div class="govuk-radios govuk-radios--inline">
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="radio-yes" type="radio" name="has-account" value="true"  <%if(typeof(form_value)!='undefined' && form_value){%>selected<%}%>>
+                    <label class="govuk-radios__label" for="radio-yes">
+                        Yes
+                    </label>
+                </div>
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="radio-no" type="radio" name="has-account" value="false"  <%if(typeof(form_value)!='undefined' && !form_value){%>selected<%}%>>
+                    <label class="govuk-radios__label" for="radio-no">
                     No
                 </label>
+                </div>
+                </div>
             </fieldset>
         </div>
 
