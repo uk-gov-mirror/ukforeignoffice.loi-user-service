@@ -80,33 +80,33 @@ if (error_report) {
             <span class="form-hint">Name of the person you would like the documents returned to</span>
             <fieldset>
                 <legend class="visuallyhidden"> Full name
-                    <span class="error-message">
-                        <% if (error_report && primaryAddressErrors.length>0) { %>
-                        <% primaryAddressErrors.forEach( function(errorItem) { %>
-                        <% if (errorItem.questionId == "full_name") { %>
-                        <%= errorItem.fieldError %>
-                        <% } %>
-                        <% }) %>
-                        <% } %>
-                    </span>
                 </legend>
-
+                <span class="error-message">
+                    <% if (error_report && primaryAddressErrors.length>0) { %>
+                        <% primaryAddressErrors.forEach( function(errorItem) { %>
+                            <% if (errorItem.questionId == "full_name") { %>
+                                <%= errorItem.fieldError %>
+                            <% } %>
+                        <% }) %>
+                    <% } %>
+                </span>
                 <input class="govuk-input govuk-!-width-one-half" id="full-name" type="text" aria-required="true" name="full_name" value="<%if (form_values) { %><%= form_values.full_name %><%}else{%><%= account.first_name+' '+account.last_name%><%}%>">
             </fieldset>
         </div>
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('organisation')>-1) { %>error<% } %>" id="legend_organisation">
             <label class="form-label-bold" for="organisation">Company or organisation (optional)</label>
             <legend class="visuallyhidden"> Company or organisation
-                    <span class="error-message">
-                        <% if (error_report && primaryAddressErrors.length>0) { %>
-                        <% primaryAddressErrors.forEach( function(errorItem) { %>
-                        <% if (errorItem.questionId == "organisation") { %>
-                        <%= errorItem.fieldSolution %>
-                        <% } %>
-                        <% }) %>
-                        <% } %>
-                    </span>
+
             </legend>
+            <span class="error-message">
+                <% if (error_report && primaryAddressErrors.length>0) { %>
+                    <% primaryAddressErrors.forEach( function(errorItem) { %>
+                        <% if (errorItem.questionId == "organisation") { %>
+                            <%= errorItem.fieldSolution %>
+                        <% } %>
+                    <% }) %>
+                <% } %>
+            </span>
 
             <input class="govuk-input govuk-!-width-one-half" id="organisation" type="text" name="organisation" aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].organisation%><%} else if (form_values) { %><%= form_values.organisation %><% } %>" >
         </div>
@@ -115,16 +115,16 @@ if (error_report) {
             <label class="form-label-bold" for="house_name">House name or number</label>
             <fieldset>
                 <legend class="visuallyhidden"> House name or number
-                    <span class="error-message">
-                        <% if (error_report && primaryAddressErrors.length>0) { %>
-                        <% primaryAddressErrors.forEach( function(errorItem) { %>
-                        <% if (errorItem.questionId == "house_name") { %>
-                        <%= errorItem.fieldError %>
-                        <% } %>
-                        <% }) %>
-                        <% } %>
-                    </span>
                 </legend>
+                <span class="error-message">
+                    <% if (error_report && primaryAddressErrors.length>0) { %>
+                        <% primaryAddressErrors.forEach( function(errorItem) { %>
+                            <% if (errorItem.questionId == "house_name") { %>
+                                <%= errorItem.fieldError %>
+                            <% } %>
+                        <% }) %>
+                    <% } %>
+                </span>
                 <input class="govuk-input govuk-!-width-one-half" id="house_name" type="text" aria-required="true" name="house_name" value="<%if(form_values && form_values.house_name && form_values.house_name != 'N/A') { %><%= form_values.house_name %><% } %>" >
             </fieldset>
         </div>
@@ -133,16 +133,16 @@ if (error_report) {
             <label class="form-label-bold" for="street">Street</label>
             <fieldset>
                 <legend class="visuallyhidden"> Street
-                    <span class="error-message">
-                        <% if (error_report && primaryAddressErrors.length>0) { %>
-                        <% primaryAddressErrors.forEach( function(errorItem) { %>
-                        <% if (errorItem.questionId == "street") { %>
-                        <%= errorItem.fieldError %>
-                        <% } %>
-                        <% }) %>
-                        <% } %>
-                    </span>
                 </legend>
+                <span class="error-message">
+                    <% if (error_report && primaryAddressErrors.length>0) { %>
+                        <% primaryAddressErrors.forEach( function(errorItem) { %>
+                            <% if (errorItem.questionId == "street") { %>
+                                <%= errorItem.fieldError %>
+                            <% } %>
+                        <% }) %>
+                    <% } %>
+                </span>
 
                 <input class="govuk-input govuk-!-width-one-half" type="text" id="street" aria-required="true" name="street" value="<%if(form_values[0]){%><%= form_values[0].street%><%} else if (form_values) { %><%= form_values.street %><% } %>" >
             </fieldset>
@@ -151,17 +151,16 @@ if (error_report) {
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('town')>-1) { %>error<% } %>" id="legend_town">
             <label class="form-label-bold" for="town">Town</label>
             <fieldset>
-                <legend class="visuallyhidden"> Town
-                    <span class="error-message">
-                        <% if (error_report && primaryAddressErrors.length>0) { %>
+                <legend class="visuallyhidden"> Town</legend>
+                <span class="error-message">
+                    <% if (error_report && primaryAddressErrors.length>0) { %>
                         <% primaryAddressErrors.forEach( function(errorItem) { %>
-                        <% if (errorItem.questionId == "town") { %>
-                        <%= errorItem.fieldError %>
-                        <% } %>
+                            <% if (errorItem.questionId == "town") { %>
+                                <%= errorItem.fieldError %>
+                            <% } %>
                         <% }) %>
-                        <% } %>
-                    </span>
-                </>
+                    <% } %>
+                </span>
                 <input class="govuk-input govuk-!-width-one-half" type="text" id="town" aria-required="true" name="town" value="<%if(form_values[0]){%><%= form_values[0].town%><%} else if (form_values) { %><%= form_values.town %><% } %>" >
             </fieldset>
         </div>
@@ -170,16 +169,17 @@ if (error_report) {
             <label class="form-label-bold" for="county">County <span>(optional)</span></label>
             <fieldset>
                 <legend class="visuallyhidden"> County
-                    <span class="error-message">
-                        <% if (error_report && primaryAddressErrors.length>0) { %>
-                        <% primaryAddressErrors.forEach( function(errorItem) { %>
-                        <% if (errorItem.questionId == "county") { %>
-                        <%= errorItem.fieldError %>
-                        <% } %>
-                        <% }) %>
-                        <% } %>
-                    </span>
+
                 </legend>
+                <span class="error-message">
+                    <% if (error_report && primaryAddressErrors.length>0) { %>
+                        <% primaryAddressErrors.forEach( function(errorItem) { %>
+                            <% if (errorItem.questionId == "county") { %>
+                                <%= errorItem.fieldError %>
+                            <% } %>
+                        <% }) %>
+                    <% } %>
+                </span>
 
                 <input class="govuk-input govuk-!-width-one-half" type="text" id="county" aria-required="true" name="county" value="<%if(form_values[0]){%><%= form_values[0].county%><%} else if (form_values) { %><%= form_values.county %><% } %>">
             </fieldset>
@@ -189,16 +189,16 @@ if (error_report) {
             <label class="form-label-bold" for="postcode">Postcode</label>
             <fieldset>
                 <legend class="visuallyhidden"> Postcode
-                    <span class="error-message">
-                        <% if (error_report && primaryAddressErrors.length>0) { %>
-                        <% primaryAddressErrors.forEach( function(errorItem) { %>
-                        <% if (errorItem.questionId == "postcode") { %>
-                        <%= errorItem.fieldError %>
-                        <% } %>
-                        <% }) %>
-                        <% } %>
-                    </span>
                 </legend>
+                <span class="error-message">
+                    <% if (error_report && primaryAddressErrors.length>0) { %>
+                        <% primaryAddressErrors.forEach( function(errorItem) { %>
+                            <% if (errorItem.questionId == "postcode") { %>
+                                <%= errorItem.fieldError %>
+                            <% } %>
+                        <% }) %>
+                    <% } %>
+                </span>
 
                 <input class="govuk-input govuk-!-width-one-quarter" id="postcode" aria-required="true" name="postcode" type="text" value="<%if(form_values[0]){%><%= form_values[0].postcode%><%} else if (form_values) { %><%= form_values.postcode %><% } %>" >
             </fieldset>
@@ -209,17 +209,16 @@ if (error_report) {
             <span class="form-hint">Contact number for this address for delivery questions or updates</span>
             <fieldset>
                 <legend class="visuallyhidden">Primary phone number
-                    <span class="error-message">
-                        <% if (error_report && primaryAddressErrors.length>0) { %>
-                        <% primaryAddressErrors.forEach( function(errorItem) { %>
-                        <% if (errorItem.questionId == "telephone") { %>
-                        <%= errorItem.fieldError %>
-                        <% } %>
-                        <% }) %>
-                        <% } %>
-                    </span>
                 </legend>
-
+                <span class="error-message">
+                    <% if (error_report && primaryAddressErrors.length>0) { %>
+                        <% primaryAddressErrors.forEach( function(errorItem) { %>
+                            <% if (errorItem.questionId == "telephone") { %>
+                                <%= errorItem.fieldError %>
+                            <% } %>
+                        <% }) %>
+                    <% } %>
+                </span>
                 <input class="govuk-input govuk-!-width-one-half" type="tel" id="telephone" aria-required="true" name="telephone" value="<%if(form_values[0]){%><%= form_values[0].telephone%><%} else if (form_values) { %><%= form_values.telephone %><% } else {%><%= contact_telephone %><%}%>">
             </fieldset>
         </div>
@@ -229,16 +228,16 @@ if (error_report) {
             <span class="form-hint">Mobile number for this address for delivery questions or updates</span>
             <fieldset>
                 <legend class="visuallyhidden"> Mobile number
-                    <span class="error-message">
-                        <% if (error_report && primaryAddressErrors.length>0) { %>
-                        <% primaryAddressErrors.forEach( function(errorItem) { %>
-                        <% if (errorItem.questionId == "mobileNo") { %>
-                        <%= errorItem.fieldError %>
-                        <% } %>
-                        <% }) %>
-                        <% } %>
-                    </span>
                 </legend>
+                <span class="error-message">
+                    <% if (error_report && primaryAddressErrors.length>0) { %>
+                        <% primaryAddressErrors.forEach( function(errorItem) { %>
+                            <% if (errorItem.questionId == "mobileNo") { %>
+                                <%= errorItem.fieldError %>
+                            <% } %>
+                        <% }) %>
+                    <% } %>
+                </span>
 
                 <input class="govuk-input govuk-!-width-one-half" type="tel" id="mobileNo"  name="mobileNo" value="<%if(form_values[0]){%><%= form_values[0].mobileNo || ''%><%} else if (form_values) { %><%= form_values.mobileNo || '' %><% } else {%><%= contact_mobileNo%><%}%>">
             </fieldset>
@@ -249,16 +248,16 @@ if (error_report) {
             <span class="form-hint">Contact email for this address for delivery questions or updates</span>
             <fieldset>
                 <legend class="visuallyhidden"> Email address
-                    <span class="error-message">
-                        <% if (error_report && primaryAddressErrors.length>0) { %>
-                        <% primaryAddressErrors.forEach( function(errorItem) { %>
-                        <% if (errorItem.questionId == "email") { %>
-                        <%= errorItem.fieldError %>
-                        <% } %>
-                        <% }) %>
-                        <% } %>
-                    </span>
                 </legend>
+                <span class="error-message">
+                    <% if (error_report && primaryAddressErrors.length>0) { %>
+                        <% primaryAddressErrors.forEach( function(errorItem) { %>
+                            <% if (errorItem.questionId == "email") { %>
+                                <%= errorItem.fieldError %>
+                            <% } %>
+                        <% }) %>
+                    <% } %>
+                </span>
 
                 <input class="govuk-input govuk-!-width-one-half" type="text" id="email" name="email" value="<%if(form_values[0]){%><%= form_values[0].email || ''%><%} else if (form_values) { %><%= form_values.email || ''%><% } else {%><%= contact_email %><%}%>">
             </fieldset>

@@ -4,7 +4,7 @@
 } %>
 <% include partials/header %>
 
-<%if(back_link){%><a href="<%= back_link%>" class="govuk-back-link">Back</a><%}%>
+<%if(back_link){%><a href="<%= back_link%>" class="back_to_previous_button govuk-link">Back</a><%}%>
 <%if(error){%><br>
 <%}%>
 <div class="col-sm-6 col-sm-offset-3">
@@ -85,13 +85,17 @@
         <!-- REGISTER FORM -->
         <form action="/api/user/register" method="post" id="register-form">
             <div class="form-group <% if ((erroneousFields && erroneousFields[0].email == true)) { %>error<% } %>" id="legend_email">
-                <label for="email" class="form-label-bold">Email</label>
+                <legend for="email" class="form-label-bold">Email</legend>
                 <fieldset>
-                    <legend class="<% if (erroneousFields && erroneousFields[0].email == true) { %>show<% } else { %>hide<% } %>">
-                            <span class="error-message">
-                                Enter your email
-                            </span>
-                    </legend>
+                    <span class="error-message">
+                        <%if (error) { %>
+                        <%error.forEach(function(err){%>
+                            <% if (err.email) { %>
+                                <%= err.email %>
+                            <% } %>
+                        <% }) %>
+                        <%}%>
+                    </span>
 
                     <input class="govuk-input govuk-!-width-one-half" id="email" name="email" autocomplete="off" aria-required="true" type="text" value="<% if (form_values && form_values.email!=='') { %><%=form_values.email%><% } %>">
                     <div id="email_hint" style="display: none;"></div>
@@ -99,13 +103,16 @@
             </div>
 
             <div class="form-group <% if (erroneousFields && (erroneousFields[0].email == true || erroneousFields[0].confirm_email == true)) { %>error<% } %>" id="legend_confirm_email">
-                <label for="confirm_email" class="form-label-bold">Confirm email</label>
-                <legend class="<% if (erroneousFields && (erroneousFields[0].email == true || erroneousFields[0].confirm_email == true)) { %>show<% } else { %>hide<% } %>">
-                            <span class="error-message">
-                                Confirm your email
-                            </span>
-                </legend>
-
+                <legend for="confirm_email" class="form-label-bold">Confirm email</legend>
+                <span class="error-message">
+                    <%if (error) { %>
+                    <%error.forEach(function(err){%>
+                        <% if (err.confirm_email) { %>
+                            <%= err.confirm_email %>
+                        <% } %>
+                    <% }) %>
+                    <%}%>
+                </span>
                 <input class="govuk-input govuk-!-width-one-half" id="confirm_email" name="confirm_email" autocomplete="off" type="text" value="<%if (!erroneousFields || (erroneousFields && !erroneousFields[0].confirm_email&& !erroneousFields[0].email )){%><%=form_values.email%><%}%>">
             </div>
 
@@ -114,17 +121,18 @@
 
                     <span class="form-hint">Minimum 8 characters long with at least 1 capital letter and 1 number</span>
                 <fieldset>
-                    <legend class="<% if (erroneousFields && erroneousFields[0].password == true) { %>show<% } else { %>hide<% } %>">
-                            <span class="error-message">
-                                <%if (error) { %>
-                                <%error.forEach(function(err){%>
-                                <% if (err.password) { %>
-                                <%= err.password %>
-                                <% } %>
-                                <% }) %>
-                                <%}%>
-                            </span>
+                    <legend class="visuallyhidden">Password
+
                     </legend>
+                    <span class="error-message">
+                        <%if (error) { %>
+                        <%error.forEach(function(err){%>
+                            <% if (err.password) { %>
+                                <%= err.password %>
+                            <% } %>
+                        <% }) %>
+                        <%}%>
+                    </span>
                 </fieldset>
 
                     <input class="govuk-input govuk-!-width-one-half" id="password" autocomplete="off" aria-required="true" name="password" type="password">
@@ -135,17 +143,18 @@
                  id="legend_confirm_password">
                 <label for="confirm_password" class="form-label-bold">Confirm password</label>
                 <fieldset>
-                    <legend class="<% if (erroneousFields && (erroneousFields[0].password == true || erroneousFields[0].confirm_password == true) && JSON.stringify(error).indexOf('confirm_password') > -1) { %>show<% } else { %>hide<% } %>">
-                            <span class="error-message">
-                                <%if (error) { %>
-                                <%error.forEach(function(err){%>
-                                <% if (err.confirm_password) { %>
-                                <%= err.confirm_password %>
-                                <% } %>
-                                <% }) %>
-                                <%}%>
-                            </span>
+                    <legend class="visuallyhidden">Confirm password
+
                     </legend>
+                    <span class="error-message">
+                        <%if (error) { %>
+                        <%error.forEach(function(err){%>
+                            <% if (err.confirm_password) { %>
+                                <%= err.confirm_password %>
+                            <% } %>
+                        <% }) %>
+                        <%}%>
+                    </span>
 
 
                     <input class="govuk-input govuk-!-width-one-half" id="confirm_password" autocomplete="off" aria-required="true" name="confirm_password" type="password">
@@ -163,11 +172,18 @@
                     <div class="" id="business-question">
 
                         <fieldset class="inline" aria-required="true" role="radiogroup">
-                            <legend class="<% if (erroneousFields && erroneousFields[0].business_yes_no) { %>show<% } else { %>hide<% } %>">
-                                    <span class="error-message">
-                                        Confirm whether you are registering on behalf of a business
-                                    </span>
+                            <legend class="visuallyhidden">Confirm whether you are registering on behalf of a business
+
                             </legend>
+                            <span class="error-message">
+                                <%if (error) { %>
+                                <%error.forEach(function(err){%>
+                                    <% if (err.business) { %>
+                                        <%= err.business %>
+                                    <% } %>
+                                <% }) %>
+                                <%}%>
+                            </span>
                             <div class="govuk-radios govuk-radios--inline">
 
                                 <div class="govuk-radios__item">
@@ -202,14 +218,17 @@
                         <div class="panel panel-border-narrow  <% if (erroneousFields && erroneousFields[0].company_name) { %>error<% } %> <% if (form_values && form_values.business_yes_no == 'Yes'){ %><% }else{ %>js-hidden<% } %>"
                              id="business-info">
 
-                            <label class="form-label-bold" for="company_name">Company name</label>
+                            <legend class="form-label-bold" for="company_name">Company name</legend>
                             <fieldset>
-                                <legend id="legend_company_name"
-                                        class="<% if (erroneousFields && erroneousFields[0].company_name) { %>show<% } else { %>hide<% } %>">
-                                    <span class="error-message">
-                                        Please enter a valid company name
-                                    </span>
-                                </legend>
+                                        <span class="error-message">
+                                            <%if (error) { %>
+                                            <%error.forEach(function(err){%>
+                                                <% if (err.company_name) { %>
+                                                    <%= err.company_name %>
+                                                <% } %>
+                                            <% }) %>
+                                            <%}%>
+                                        </span>
 
                                 <input class="govuk-input govuk-!-width-one-half" name="company_name" type="text" id="company_name"
                                        value="<% if (form_values && form_values.company_name !== '') { %><%= form_values.company_name %><% } %>">
@@ -219,11 +238,17 @@
                             <span class="form-hint">The premium service is a counter service for businesses only. The Legalisation Office may ask for evidence to verify your details eg company letter, VAT number, Companies House number</span>
                             <fieldset>
                                 <legend id="legend_company_verification_check"
-                                        class="<% if (erroneousFields && erroneousFields[0].company_verification_check) { %>show<% } else { %>hide<% } %>">
-                                    <span class="error-message">
-                                        Confirm that you represent a business
-                                    </span>
+                                        class="visuallyhidden">Company verification
                                 </legend>
+                                <span class="error-message">
+                                    <%if (error) { %>
+                                    <%error.forEach(function(err){%>
+                                        <% if (err.company_verification_check) { %>
+                                            <%= err.company_verification_check %>
+                                        <% } %>
+                                    <% }) %>
+                                    <%}%>
+                                </span>
                                 <div class="govuk-checkboxes__item">
 
                                 <input class="govuk-checkboxes__input" type="checkbox" name="company_verification_check"
@@ -252,11 +277,17 @@
                     <li>the information you've given is correct</li>
                     <li>you agree to the <a class="govuk-link" href="<%= applicationServiceURL %>terms-and-conditions">terms and conditions</a></li>
                 </ul>
-                    <legend class="<% if (erroneousFields && erroneousFields[0].all_info_correct) { %>show<% } else { %>hide<% } %>">
-                            <span class="error-message">
-                        Agree to the terms and conditions
-                    </span>
+                    <legend class="visuallyhidden">Agree terms and conditions
                     </legend>
+                <span class="error-message">
+                    <%if (error) { %>
+                    <%error.forEach(function(err){%>
+                        <% if (err.agree) { %>
+                            <%= err.agree %>
+                        <% } %>
+                    <% }) %>
+                    <%}%>
+                </span>
 
                     <div class="govuk-checkboxes__item">
                     <input type="hidden" name="all_info_correct" id="all_info_correct_hidden" value="-1">
