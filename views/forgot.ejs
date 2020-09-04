@@ -6,20 +6,22 @@
 
 <a href="/api/user/sign-in" class="back_to_previous_button govuk-link">Back</a>
 
+<% if (message.length > 0) { %>
+    <br>
+    <div class="govuk-error-summary" style="width: 60%" autofocus>
+        <h2 class="govuk-error-summary__title" id="error-summary-heading-example-2">
+            There is a problem
+        </h2>
+        <div class="govuk-error-summary__body" id="all-errors">
+            <ul class="govuk-list govuk-error-summary__list">
+                <%= message %>
+            </ul>
+        </div>
+    </div>
+<% } %>
 <h1 class="heading-xlarge">Forgot password </h1>
 
-<% if (message.length > 0) { %>
-<div class="govuk-error-summary" style="width: 60%" autofocus>
-    <h2 class="govuk-error-summary__title" id="error-summary-heading-example-2">
-        There is a problem
-    </h2>
-    <div class="govuk-error-summary__body" id="all-errors">
-    <ul class="govuk-list govuk-error-summary__list">
-        <%= message %>
-    </ul>
-    </div>
-</div>
-<% } %>
+
 <script>var _paq = _paq || [];</script>
 <%if(typeof(locked)!='undefined' && locked==true){%>
 <script>
