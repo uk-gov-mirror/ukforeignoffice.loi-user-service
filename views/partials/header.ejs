@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="govuk-template ">
 <head>
     <title><% if (typeof pageTitle != 'undefined' && pageTitle) { %><%=pageTitle%><%}%></title>
 
@@ -52,7 +52,7 @@
 </head>
 
 
-<body class="">
+<body class="govuk-template__body ">
 <script src="/api/user/js/cookie-functions.js"></script>
 <script type="text/javascript">document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
 
@@ -110,7 +110,8 @@
 </header>
 <!--end header-->
 
-<main id="content" role="main">
+<div class="govuk-width-container ">
+<main id="content" role="main" class="govuk-main-wrapper ">
 
     <div class="govuk-phase-banner">
         <p class="govuk-phase-banner__content">

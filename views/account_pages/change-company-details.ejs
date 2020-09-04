@@ -6,16 +6,16 @@
 
 <% include ../partials/header.ejs %>
 <a href="/api/user/account" class="back_to_previous_button govuk-link">Back</a>
-<div class="column-two-thirds">
-    <%if(error_report.length>0){%><br>
-    <%}%>
-    <form action="/api/user/change-company-details" method="post" id="change-company-details">
 
+<h1 class="heading-xlarge">Change company details</h1>
+
+<div class="column-two-thirds">
+    <form action="/api/user/change-company-details" method="post" id="change-company-details">
         <div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" autofocus>
 
-            <p class="govuk-error-summary__title" id="error-summary-heading-example-2" autofocus>
+            <h2 class="govuk-error-summary__title" id="error-summary-heading-example-2" autofocus>
                 There is a problem
-            </p>
+            </h2>
 
             <div id="all-errors">
                 <% if (error_report) { console.log(error_report);%>
@@ -27,32 +27,27 @@
                 <ul class="govuk-list govuk-error-summary__list">
                     <% if (error_report) {  %>
                     <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-                    <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+                    <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
                     <% }) %>
                     <% } %>
                 </ul>
             </div>
         </div>
-        <h1 class="heading-xlarge">Change company details</h1>
 
-        <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('company_name')>-1) { %>error<% } %>">
+        <div class="govuk-form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('company_name')>-1) { %>govuk-form-group--error<% } %>">
 
-            <legend for="company-name" class="form-label-bold">Company name</legend>
-            <fieldset>
-
-                    <% if (error_report) { %>
-                    <% error_report[0][0].errMsgs.forEach( function(error) { %>
-                    <% if (error.questionId=="company_name") { %>
-                    <span class="error-message">
-                       <%= error.fieldSolution %>
-                    </span>
-                    <% } %>
-                    <% }) %>
-                    <% } %>
-
-
-                <input class="govuk-input govuk-!-width-one-half" id="company-name" type="text" autocomplete="off" aria-required="true"  name="company_name" value="<% if(form_values){%><%=form_values.company_name%><%} %>">
-            </fieldset>
+                <label id="legend_company_name" for="company-name" class="govuk-label">Company name</label>
+                <% if (error_report) { %>
+                <% error_report[0][0].errMsgs.forEach( function(error) { %>
+                <% if (error.questionId=="company_name") { %>
+                <span id="company-name-error" class="govuk-error-message">
+                    <span class="govuk-visually-hidden">Error: </span>
+                    <%= error.fieldSolution %>
+                </span>
+                <% } %>
+                <% }) %>
+                <% } %>
+                <input class="govuk-input govuk-!-width-one-half <% if (error_report) { %>govuk-input--error<% } %>" <% if (error_report) { %>aria-describedby="company-name-error"<% } %> id="company_name" type="text" autocomplete="off" aria-required="true"  name="company_name" value="<% if(form_values){%><%=form_values.company_name%><%} %>">
         </div>
         <button class="govuk-button" type="submit">Save</button>
     </form>
