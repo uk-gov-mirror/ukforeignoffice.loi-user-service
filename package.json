@@ -24,7 +24,7 @@
     "jshint": "^2.9.1",
     "mocha": "5.0.0",
     "moment": "^2.16.0",
-    "mongodb": "^2.0.52",
+    "mongodb": "^3.6.1",
     "node-sass": "^3.7.0",
     "node-sass-middleware": "^0.9.8",
     "node-schedule": "^1.1.1",
