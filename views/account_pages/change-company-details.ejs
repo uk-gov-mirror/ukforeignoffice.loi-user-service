@@ -37,9 +37,8 @@
 
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('company_name')>-1) { %>error<% } %>">
 
-            <label for="company-name" class="form-label-bold">Company name</label>
+            <legend for="company-name" class="form-label-bold">Company name</legend>
             <fieldset>
-                <legend id="legend_compnay_name" class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('company_name')>-1) { %>show<% } else { %>hide<% } %>">
 
                     <% if (error_report) { %>
                     <% error_report[0][0].errMsgs.forEach( function(error) { %>
@@ -52,7 +51,6 @@
                     <% } %>
 
 
-                </legend>
                 <input class="govuk-input govuk-!-width-one-half" id="company-name" type="text" autocomplete="off" aria-required="true"  name="company_name" value="<% if(form_values){%><%=form_values.company_name%><%} %>">
             </fieldset>
         </div>

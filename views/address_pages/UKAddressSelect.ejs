@@ -37,7 +37,7 @@
         <% if(typeof(error_report)!='undefined'){%><span class="error-message"><%= error_report%></span><%}%>
 
         <input class="govuk-input govuk-!-width-one-quarter" id="find-postcode" aria-required="true" type="text" value="<%= postcode%>" name="find-postcode">
-        <button class="button find-address button-secondary" type="submit" id="find-address">Find UK address</button>
+        <button class="govuk-button govuk-button--secondary" type="submit" id="find-address">Find UK address</button>
     </form>
     <a class="link address-manual" id="address-manual" href="<%= '/api/user/your-address-manual'%>" >Enter address manually</a>
 
