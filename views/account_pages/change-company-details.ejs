@@ -36,7 +36,7 @@
 
         <div class="govuk-form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('company_name')>-1) { %>govuk-form-group--error<% } %>">
 
-                <label id="legend_company_name" for="company-name" class="govuk-label">Company name</label>
+                <label id="legend_company_name" for="company_name" class="govuk-label">Company name</label>
                 <% if (error_report) { %>
                 <% error_report[0][0].errMsgs.forEach( function(error) { %>
                 <% if (error.questionId=="company_name") { %>
