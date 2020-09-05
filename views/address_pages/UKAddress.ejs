@@ -46,7 +46,7 @@ if (error_report) {
 <a href="/api/user/add-address-uk" class="back_to_previous_button govuk-link">Back</a>
 <%if(error_report.length>0){%><br>
 <%}%>
-<div autofocus class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" style="clear:left;">
+<div autofocus class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1" style="clear:left;">
 
     <h2 class="govuk-error-summary__title" id="error-summary-heading">
         There is a problem

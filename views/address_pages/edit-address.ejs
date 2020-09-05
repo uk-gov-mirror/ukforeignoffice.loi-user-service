@@ -54,7 +54,7 @@ if (error_report) {
 %>
 <%if(error_report.length>0){%><br>
 <%}%>
-<div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" autofocus>
+<div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1" autofocus>
 
     <p class="govuk-error-summary__title" id="error-summary-heading-example-2">
         There is a problem
