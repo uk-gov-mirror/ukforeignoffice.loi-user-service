@@ -8,35 +8,36 @@
 
 <a href="/api/user/add-address" class="back_to_previous_button govuk-link">Back</a>
 
-
-<h1 class="heading-xlarge">Add a return address</h1>
-
 <%if (error_report && error_report.length>0) {%>
+<br>
 <div class="govuk-error-summary" role="group" aria-labelledby="error-summary-heading-example-2" tabindex="-1" style="clear:left; width:100%" autofocus>
 
     <h2 class="govuk-error-summary__title" id="error-summary-heading">
         <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
-        <%= error_heading %>
+            <%= error_heading %>
         <%}else{%>
-        There is a problem
+            There is a problem
         <%}%>
     </h2>
     <ul class="govuk-list govuk-error-summary__list">
         <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
-        <li><a href="/api/user/your-address-manual"><%= error_report%></a></li>
+            <li><a href="/api/user/your-address-manual"><%= error_report%></a></li>
         <%}else{%>
-        <li><a><%= error_report%></a></li>
+            <li><a><%= error_report%></a></li>
         <%}%>
     </ul>
 </div>
 <%}%>
+<h1 class="heading-xlarge">Add a return address</h1>
+
+
 <div class="form-group <%if (error_report && error_report.length>0) {%>error<%}%>">
     <form id="find-address-form"  method="post" action="<%= '/api/user/find-your-address'%>">
         <label class="form-label-bold" for="find-postcode">Enter postcode</label>
         <% if(typeof(error_report)!='undefined'){%><span class="error-message"><%= error_report%></span><%}%>
 
         <input class="govuk-input govuk-!-width-one-quarter" id="find-postcode" aria-required="true" type="text" value="<%= postcode%>" name="find-postcode">
-        <button class="button find-address button-secondary" type="submit" id="find-address">Find UK address</button>
+        <button class="govuk-button govuk-button--secondary" type="submit" id="find-address">Find UK address</button>
     </form>
     <a class="link address-manual" id="address-manual" href="<%= '/api/user/your-address-manual'%>" >Enter address manually</a>
 
