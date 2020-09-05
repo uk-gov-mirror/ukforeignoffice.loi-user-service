@@ -5,8 +5,8 @@
 
 <% include ../partials/header.ejs %>
 <a href="/api/user/account" class="back_to_previous_button govuk-link">Back</a>
-
-<h1 class="heading-xlarge">Upgrade your account</h1>
+<%if(error_report.length>0){%><br>
+<%}%>
 
 <div class="column-two-thirds">
     <form action="/api/user/upgrade-account" method="post" id="upgrade-account">
@@ -32,6 +32,8 @@
                 </ul>
             </div>
         </div>
+
+        <h1 class="heading-xlarge">Upgrade your account</h1>
 
         <div class="govuk-form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('company_name')>-1) { %>govuk-form-group--error<% } %>">
 

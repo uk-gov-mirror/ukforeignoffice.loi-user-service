@@ -4,9 +4,10 @@
 } %>
 
 <% include ../partials/header.ejs %>
-<a href="/api/user/account" class="back_to_previous_button govuk-link">Back</a>
 
-<h1 class="heading-xlarge">Change personal details</h1>
+<a href="/api/user/account" class="back_to_previous_button govuk-link">Back</a>
+<%if(error_report.length>0){%><br>
+<%}%>
 
 <div class="column-two-thirds">
     <form action="/api/user/change-details" method="post" id="change-details">
@@ -26,6 +27,9 @@
                 </ul>
             </div>
         </div>
+
+        <h1 class="heading-xlarge">Change personal details</h1>
+
         <div class="govuk-form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('first_name')>-1) { %>govuk-form-group--error<% } %>">
             <label for="first_name" class="govuk-label">First name</label>
             <% if (error_report) { %>
