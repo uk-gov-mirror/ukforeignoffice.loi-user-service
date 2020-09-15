@@ -223,23 +223,11 @@ module.exports.register = function(req, res) {
         .then(function (user) {
             if (user) {
                 //user already exists
-                messages.push({user_exists: 'Check or amend your details and try again.\n'});
-                return res.render('register.ejs', {
-                    errorHeader: 'There was a problem creating your account.',
-                    error:  messages,
-                    error_description: errorDescription,
-                    passwordErrorType: passwordErrorType,
-                    error_report:false,
-                    email: req.body.email,
-                    form_values: req.body,
-                    back_link: req.session.back_link ?  req.session.back_link : '/api/user/usercheck',
-                    applicationServiceURL: envVariables.applicationServiceURL,
-                    erroneousFields:false
-
+                return res.render('emailconfirm.ejs',{
+                    email: req.body.email
                 });
             }
             else {
-                //console.log('Pass');
                 req.session.email = req.body.email;
 
                 var email = req.body.email;
