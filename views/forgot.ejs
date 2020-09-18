@@ -1,13 +1,28 @@
 <% pageTitle = "Forgot password - Get a document legalised – GOV.UK" %>
+
+<%if(message.length > 0){
+    pageTitle = "Error: Forgot password - Get a document legalised – GOV.UK"
+} %>
 <%- include ('partials/header.ejs') %>
 
-<a href="/api/user/sign-in" class="back_to_previous_button">Back</a>
-
-<h1 class="heading-xlarge">Forgot password </h1>
+<a href="/api/user/sign-in" class="back_to_previous_button govuk-link">Back</a>
 
 <% if (message.length > 0) { %>
-<div class="error-summary" style="width: 60%"><h1 class="heading-medium error-summary-heading"><%= message %></h1></div>
+    <br>
+    <div class="govuk-error-summary" role="alert" style="width: 60%" autofocus>
+        <h2 class="govuk-error-summary__title" id="error-summary-heading-example-2">
+            There is a problem
+        </h2>
+        <div class="govuk-error-summary__body" id="all-errors">
+            <ul class="govuk-list govuk-error-summary__list">
+                <%= message %>
+            </ul>
+        </div>
+    </div>
 <% } %>
+<h1 class="heading-xlarge">Forgot password </h1>
+
+
 <script>var _paq = _paq || [];</script>
 <%if(typeof(locked)!='undefined' && locked==true){%>
 <script>
@@ -23,7 +38,7 @@
 
     <div class="form-group">
         <label for="email" class="form-label-bold">Email</label>
-        <input class="form-control" aria-required="true"  id="email" name="email" autocomplete="off" type="text"  <% if(typeof(email) !='undefined'){%>value = "<%= email%>"<%}%>>
+        <input class="govuk-input govuk-!-width-one-half" aria-required="true"  id="email" name="email" autocomplete="off" type="text"  <% if(typeof(email) !='undefined'){%>value = "<%= email%>"<%}%>>
     </div>
 
     <input type="submit" class="button" value="Reset password">
@@ -32,6 +47,5 @@
 </form>
 
 <p>Need an account? <a href="/api/user/register">Register</a></p>
-
 
 <%- include ('partials/footer.ejs') %>
