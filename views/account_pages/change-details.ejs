@@ -27,7 +27,7 @@
         </div>
         <h1 class="heading-xlarge">Change personal details</h1>
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('first_name')>-1) { %>error<% } %>">
-            <legend for="first-name" class="form-label-bold">First name</legend>
+            <label for="first-name" class="form-label-bold">First name</label>
             <fieldset class="inline">
 
                     <% if (error_report) { %>
@@ -45,7 +45,7 @@
             </fieldset>
         </div>
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('last_name')>-1) { %>error<% } %>">
-            <legend for="last-name"  class="form-label-bold">Last name</legend>
+            <label for="last-name"  class="form-label-bold">Last name</label>
             <fieldset>
                     <% if (error_report) { %>
                     <% error_report[0][0].errMsgs.forEach( function(error) { %>
@@ -60,7 +60,7 @@
             </fieldset>
         </div>
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>error<% } %>">
-            <legend for="telephone" class="form-label-bold">Primary number</legend>
+            <label for="telephone" class="form-label-bold">Primary number</label>
             <fieldset>
                     <% if (error_report) { %>
                     <% error_report[0][0].errMsgs.forEach( function(error) { %>
@@ -75,7 +75,7 @@
             </fieldset>
         </div>
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>">
-            <legend for="mobileNo" class="form-label-bold">Mobile number </legend>
+            <label for="mobileNo" class="form-label-bold">Mobile number </label>
             <fieldset>
                     <% if (error_report) { %>
                     <% error_report[0][0].errMsgs.forEach( function(error) { %>
