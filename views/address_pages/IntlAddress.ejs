@@ -61,7 +61,7 @@ if (error_report) {
         <ul class="govuk-list govuk-error-summary__list">
             <% if (error_report) {  %>
             <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-            <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution.replace('postcode','zip code') %></a></li>
+            <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution.replace('postcode','zip code') %></a></li>
             <% }) %>
             <% } %>
         </ul>
@@ -87,7 +87,7 @@ if (error_report) {
                         <% }) %>
                     <% } %>
                 </span>
-                <input class="govuk-input govuk-!-width-one-half" id="full-name" type="text" aria-required="true" name="full_name" value="<%if(form_values[0]){%><%= form_values[0].full_name%><%} else if (form_values) { %><%= form_values.full_name %><%
+                <input class="govuk-input govuk-!-width-one-half" id="full_name" type="text" aria-required="true" name="full_name" value="<%if(form_values[0]){%><%= form_values[0].full_name%><%} else if (form_values) { %><%= form_values.full_name %><%
                 }else{%><%= account.first_name+' '+account.last_name%><%} %>">
             </fieldset>
         </div>

@@ -28,7 +28,7 @@
                 <ul class="govuk-list govuk-error-summary__list">
                     <% if (error_report) {  %>
                     <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-                    <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+                    <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
                     <% }) %>
                     <% } %>
                 </ul>
@@ -50,7 +50,7 @@
                 <% } %>
 
 
-            <input class="govuk-input govuk-!-width-one-half" id="company-name" aria-required="true" type="text" autocomplete="off" name="company_name" value="<% if(form_values){%><%=form_values.company_name%><%} %>">
+            <input class="govuk-input govuk-!-width-one-half" id="company_name" aria-required="true" type="text" autocomplete="off" name="company_name" value="<% if(form_values){%><%=form_values.company_name%><%} %>">
         </div>
         <button class="govuk-button" type="submit">Upgrade</button>
     </form>
