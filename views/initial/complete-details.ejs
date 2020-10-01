@@ -1,9 +1,10 @@
 <% pageTitle = "Finish setting up your account - Get a document legalised – GOV.UK" %>
+
 <%if(error){
     pageTitle = "Error: Finish setting up your account - Get a document legalised – GOV.UK"
 } %>
 
-<% include ../partials/header.ejs %>
+<%- include ('../partials/header.ejs') %>
 
 <% if (error.length > 0) { %>
     <br>
@@ -21,7 +22,7 @@
         <ul class="govuk-list govuk-error-summary__list">
             <% if (error_report) {  %>
                 <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-                    <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+                    <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
                 <% }) %>
             <% } %>
         </ul>
@@ -36,7 +37,6 @@
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('first_name')>-1) { %>error<% } %>">
 
             <label for="first-name" class="form-label-bold">First name</label>
-            <fieldset>
 
                     <% if (error_report) { %>
                     <% error_report[0][0].errMsgs.forEach( function(error) { %>
@@ -48,12 +48,11 @@
                     <% }) %>
                     <% } %>
 
-                <input class="govuk-input govuk-!-width-one-half" id="first-name" aria-required="true" type="text" autocomplete="off" name="first_name" value="<% if(form_values){%><%=form_values.first_name%><%} %>">
-            </fieldset>
+                <input class="govuk-input govuk-!-width-one-half" id="first-name" aria-required="true" type="text" autocomplete="on" name="first_name" value="<% if(form_values){%><%=form_values.first_name%><%} %>">
         </div>
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('last_name')>-1) { %>error<% } %>">
             <label for="last-name"  class="form-label-bold">Last name</label>
-            <fieldset>
+            
                     <% if (error_report) { %>
                     <% error_report[0][0].errMsgs.forEach( function(error) { %>
                     <% if (error.questionId=="last_name") { %>
@@ -63,9 +62,10 @@
                     <% } %>
                     <% }) %>
                     <% } %>
-                <input class="govuk-input govuk-!-width-one-half" id="last-name" autocomplete="off" type="text" aria-required="true" name="last_name" value="<% if(form_values){%><%=form_values.last_name%><%} %>">
-            </fieldset>
-        </div>
+
+                <input class="govuk-input govuk-!-width-one-half" id="last-name" autocomplete="on" type="text" aria-required="true" name="last_name" value="<% if(form_values){%><%=form_values.last_name%><%} %>">
+
+</div>
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>error<% } %>">
             <label for="phone" class="form-label-bold">Telephone number</label>
             <fieldset>
@@ -78,12 +78,11 @@
                     <% } %>
                     <% }) %>
                     <% } %>
-                <input type="tel" id="phone" class="govuk-input govuk-!-width-one-half" autocomplete="off" aria-required="true" name="telephone" value="<% if(form_values){%><%=form_values.telephone%><%} %>">
+                <input type="tel" id="phone" class="govuk-input govuk-!-width-one-half" autocomplete="on" aria-required="true" name="telephone" value="<% if(form_values){%><%=form_values.telephone%><%} %>">
             </fieldset>
         </div>
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>">
             <label for="mobileNo" class="form-label-bold">Mobile number</label>
-            <fieldset>
                     <% if (error_report) { %>
                     <% error_report[0][0].errMsgs.forEach( function(error) { %>
                     <% if (error.questionId=="mobileNo") { %>
@@ -93,8 +92,7 @@
                     <% } %>
                     <% }) %>
                     <% } %>
-                <input type="tel" id="mobileNo" class="govuk-input govuk-!-width-one-half" autocomplete="off"  name="mobileNo" value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo%><%} %>">
-            </fieldset>
+                <input type="tel" id="mobileNo" class="govuk-input govuk-!-width-one-half" autocomplete="on"  name="mobileNo" value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo%><%} %>">
         </div>
 
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('feedback_consent')>-1) { %>error<% } %>" >
@@ -109,8 +107,8 @@
 
             </span>
             <fieldset class="inline" aria-required="true" role="radiogroup">
-                <legend id="legend_feedback_consent" class="visuallyhidden">Can our partner contact you for feedback to help improve this service?
-                </legend>
+                <label id="legend_feedback_consent" class="visuallyhidden">Can our partner contact you for feedback to help improve this service?
+                </label>
                 <% if (error_report) { %>
                     <% error_report[0][0].errMsgs.forEach( function(error) { %>
                         <% if (error.questionId=="feedback_consent") { %>
@@ -123,7 +121,7 @@
                 <% } %>
 
                 <fieldset class="inline">
-                    <legend class="visually-hidden">Feedback consent</legend>
+                    <label class="visually-hidden">Feedback consent</label>
                     <div class="govuk-radios govuk-radios--inline">
 
                     <div class="govuk-radios__item">
@@ -151,4 +149,4 @@
 
 </div>
 
-<% include ../partials/footer.ejs %>
+<%- include ('../partials/footer.ejs') %>

@@ -11,6 +11,8 @@ var async = require('async'),
     validator = require('validator'),
     ValidationService = require('../services/ValidationService.js');
 
+const { Op } = require("sequelize");
+
 module.exports.forgotPassword =  function(req, res) {
     async.waterfall([
         function(done) {
@@ -132,7 +134,9 @@ module.exports.resetPassword = function(req, res) {
                 var where = reset ?
                 { where: {
                     resetPasswordToken: req.params.token,
-                    resetPasswordExpires: {$gt: new Date()}
+                    resetPasswordExpires: {
+                        [Op.gt]: new Date()
+                    }
                 }}
                     :
                 {where: {

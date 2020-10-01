@@ -1,5 +1,5 @@
 <% pageTitle = "Activate your account - Get a document legalised – GOV.UK" %>
-<% include partials/header %>
+<%- include ('partials/header')%>
 
 <a href="/api/user/sign-in" class="back_to_previous_button govuk-link">Back</a>
 
@@ -13,12 +13,11 @@
         <ul>
             <li>check your junk or spam folder</li>
             <li>search for an email from the Legalisation Office</li>
+            <li>check you haven't already registered</li>
             <li><input type="submit" class="linkButton"  value="resend the confirmation email"></li>
         </ul>
         <input type="hidden" name="email" value="<%= email%>">
     </form>
 </div>
 
-
-
-<% include partials/footer %>
+<%- include ('partials/footer') %>
