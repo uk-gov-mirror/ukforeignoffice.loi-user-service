@@ -5,19 +5,20 @@ var express = require('express'),
     common = require('./config/common.js'),
     environmentVariables = common.config(),
     session = require('express-session'),
-    MongoDBStore = require('connect-mongo')(session),
+    RedisStore = require('connect-redis')(session),
     passport = require('passport'),
     passportConfig = require('./app/passportConfig'),
     flash = require('connect-flash'),
     appRouter = require('./app/routes.js')(express,environmentVariables),
     bodyParser = require('body-parser'),
     jsonParser = bodyParser.json(),
-    dotenv = require('dotenv'),
-    env = dotenv.config({path: process.env.DOTENV || '.env'}),
     cookieParser = require('cookie-parser'),
     sass = require('node-sass');
 
 require('./config/logs');
+require('dotenv').config();
+
+var sessionSettings = JSON.parse(process.env.THESESSION);
 
 app.use(cookieParser());
 
@@ -29,19 +30,22 @@ app.use(function(req, res, next) {
 
 app.use(function(req, res, next) {
     if (req.cookies['LoggedIn']){
-        res.cookie('LoggedIn',true,{ maxAge: 1800000, httpOnly: true });
+        res.cookie('LoggedIn',true,{ maxAge: sessionSettings.cookieMaxAge, httpOnly: true });
     }
     return next();
 });
 
 var port = (process.argv[2] && !isNaN(process.argv[2])  ? process.argv[2] : (process.env.PORT || 8080));
-var store = new MongoDBStore(
+
+var store = new RedisStore(
     {
-        uri: environmentVariables.mongoURL,
-        url: environmentVariables.mongoURL,
-        db: 'User_Service',
-        collection: 'sessions'
+        host: sessionSettings.host,
+        port: sessionSettings.port,
+        prefix: sessionSettings.prefix,
+        pass: sessionSettings.password,
+        tls: {}
     });
+
 app.set('view engine', 'ejs');
 
 var cookie_domain = null;
@@ -63,14 +67,14 @@ app.use(function (req, res, next) {
 
 
 app.use(session({
-    secret: '6542356733921bb813d3ca61002410fe',
-    key: 'express.sid',
+    secret: sessionSettings.secret,
+    key: sessionSettings.key,
     store: store,
     resave: false,
     saveUninitialized: false,
     cookie: {
         domain: cookie_domain ,//environmentVariables.cookieDomain,
-        maxAge: 30 * 60 * 1000  //30 minutes
+        maxAge: sessionSettings.cookieMaxAge  //30 minutes
     }
 }));
 app.use(flash()); //use connect-flash for flash messages stored in session

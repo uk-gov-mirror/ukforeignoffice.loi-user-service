@@ -16,6 +16,9 @@ var bcrypt = require('bcryptjs'),
     envVariables = common.config(),
     validator = require('validator'),
     dbConnection = require('../sequelize.js');
+    moment = require('moment')
+
+    const { Op } = require("sequelize");
 
 
 var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
@@ -220,23 +223,11 @@ module.exports.register = function(req, res) {
         .then(function (user) {
             if (user) {
                 //user already exists
-                messages.push({user_exists: 'Check or amend your details and try again.\n'});
-                return res.render('register.ejs', {
-                    errorHeader: 'There was a problem creating your account.',
-                    error:  messages,
-                    error_description: errorDescription,
-                    passwordErrorType: passwordErrorType,
-                    error_report:false,
-                    email: req.body.email,
-                    form_values: req.body,
-                    back_link: req.session.back_link ?  req.session.back_link : '/api/user/usercheck',
-                    applicationServiceURL: envVariables.applicationServiceURL,
-                    erroneousFields:false
-
+                return res.render('emailconfirm.ejs',{
+                    email: req.body.email
                 });
             }
             else {
-                //console.log('Pass');
                 req.session.email = req.body.email;
 
                 var email = req.body.email;
@@ -461,8 +452,8 @@ module.exports.completeRegistration =function(req,res){
                             },
                             url: config.accountManagementApiUrl,
                             agentOptions: config.certPath ? {
-                                cert: fs.readFileSync(config.certPath),
-                                key: fs.readFileSync(config.keyPath)
+                                cert: config.certPath,
+                                key: config.keyPath
                             } : null,
                             json: true,
                             body: accountManagementObject
@@ -625,10 +616,13 @@ module.exports.activate = function(req, res) {
     async.waterfall([
         function (done) {
             //Find User with the password token which has not expired
+
             Model.User.findOne({
                 where: {
                     activationToken: req.params.token,
-                    activationTokenExpires: {$gt: new Date()}
+                    activationTokenExpires: {
+                        [Op.gt]: new Date()
+                    }
                 }
             })
                 .then(function (user, error) {

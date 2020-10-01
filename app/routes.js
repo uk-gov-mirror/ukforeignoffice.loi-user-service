@@ -8,6 +8,8 @@ var passport = require('passport'),
     Model = require('./model/models.js'),
     nextpage;
 
+const { Op } = require("sequelize");
+
 module.exports = function(express,envVariables) {
     var router = express.Router();
 
@@ -194,7 +196,7 @@ module.exports = function(express,envVariables) {
     router.post('/forgot', passwordController.forgotPassword);
 
     router.get('/reset/:token', function(req, res) {
-        Model.User.findOne({where:{ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: new Date() } }})
+        Model.User.findOne({where:{ resetPasswordToken: req.params.token, resetPasswordExpires: { [Op.gt]: new Date()} }})
             .then( function(user) {
                 if (!user) {
                     req.flash('info', 'The link for resetting your password has expired. Enter your email to get sent a new link.');

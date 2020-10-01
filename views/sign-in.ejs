@@ -3,7 +3,7 @@
     pageTitle = "Error: Sign in - Get a document legalised – GOV.UK"
 } %>
 <% var hide_back_link = true%>
-<% include partials/header %>
+<%- include ('partials/header') %>
 <% if (info.length > 0) { %>
 <%if(info.toString().substring(0,21)=="If an account matches"){
     hide_back_link = true;
@@ -76,7 +76,6 @@
     </form>
 </div>
     <hr>
-<!--    <p><a href="/api/user/register?from=/api/user/sign-in">Create an account</a></p>-->
+    <p><a href="/api/user/register?from=/api/user/sign-in">Create an account</a></p>
 
-
-<% include partials/footer %>
+<%- include ('partials/footer') %>
