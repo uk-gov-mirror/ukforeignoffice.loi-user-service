@@ -85,7 +85,7 @@
         <!-- REGISTER FORM -->
         <form action="/api/user/register" method="post" id="register-form">
             <div class="form-group <% if ((erroneousFields && erroneousFields[0].email == true)) { %>error<% } %>" id="legend_email">
-                <legend for="email" class="form-label-bold">Email</legend>
+                <label for="email" class="form-label-bold">Email</label>
                     <span class="error-message">
                         <%if (error) { %>
                         <%error.forEach(function(err){%>
@@ -101,7 +101,7 @@
             </div>
 
             <div class="form-group <% if (erroneousFields && (erroneousFields[0].email == true || erroneousFields[0].confirm_email == true)) { %>error<% } %>" id="legend_confirm_email">
-                <legend for="confirm_email" class="form-label-bold">Confirm email</legend>
+                <label for="confirm_email" class="form-label-bold">Confirm email</label>
                 <span class="error-message">
                     <%if (error) { %>
                     <%error.forEach(function(err){%>
