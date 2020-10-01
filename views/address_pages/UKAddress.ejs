@@ -37,10 +37,11 @@ if (error_report) {
 
 }%>
 <% pageTitle ="Add a return address - Get a document legalised – GOV.UK" %>
+
 <%if(error_report && error_report.length>0){
     pageTitle = "Error: Add a return address - Get a document legalised – GOV.UK"
 } %>
-<%include ../partials/header.ejs %>
+<%- include ('../partials/header.ejs') %>
 
 
 <a href="/api/user/add-address-uk" class="back_to_previous_button govuk-link">Back</a>
@@ -56,7 +57,7 @@ if (error_report) {
           <ul class="govuk-list govuk-error-summary__list">
             <% if (error_report) {  %>
             <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-            <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+            <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
             <% }) %>
             <% } %>
         </ul>
@@ -113,7 +114,7 @@ if (error_report) {
                     <% } %>
                 </span>
             </fieldset>
-            <input class="govuk-input govuk-!-width-one-half" id="full-name" type="text" aria-required="true" name="full_name" value="<%if(form_values[0]){%><%= form_values[0].full_name%><%} else if (form_values) { %><%= form_values.full_name %><% } %>">
+            <input class="govuk-input govuk-!-width-one-half" id="full_name" type="text" aria-required="true" name="full_name" value="<%if(form_values[0]){%><%= form_values[0].full_name%><%} else if (form_values) { %><%= form_values.full_name %><% } %>">
 
         </div>
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('organisation')>-1) { %>error<% } %>" id="legend_organisation">
@@ -285,6 +286,4 @@ if (error_report) {
 
 </form>
 
-
-
-<% include ../partials/footer.ejs %>
+<%- include ('../partials/footer.ejs') %>

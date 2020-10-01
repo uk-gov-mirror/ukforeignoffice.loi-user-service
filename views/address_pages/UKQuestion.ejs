@@ -1,9 +1,10 @@
+
 <% pageTitle ="Is return address UKs - Get a document legalised – GOV.UK" %>
 <%if(error_report && error_report.length>0){
     pageTitle = "Error: Is return address UK - Get a document legalised – GOV.UK"
 } %>
 
-<%include ../partials/header.ejs %>
+<%- include ('../partials/header.ejs') %>
 
 
 <a href="<%= initial ? '/api/user/complete-registration' : '/api/user/addresses'%>" class="back_to_previous_button govuk-link">Back</a>
@@ -17,7 +18,7 @@
         </p>
         <div class="govuk-error-summary__body" id="all-errors">
         <ul class="govuk-error-summary__list">
-            <li><a href="#is-uk">Confirm whether the return address is in the UK</a></li>
+            <li><a href="#radio-yes">Confirm whether the return address is in the UK</a></li>
         </ul>
         </div>
     </div>
@@ -68,4 +69,4 @@
     </form>
 </div>
 
-<% include ../partials/footer.ejs %>
+<%- include ('../partials/footer.ejs') %>

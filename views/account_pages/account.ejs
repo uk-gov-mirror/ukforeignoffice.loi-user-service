@@ -1,8 +1,8 @@
 <% pageTitle = "Your account - Get a document legalised – GOV.UK" %>
 
-<% include ../partials/header.ejs %>
+<%- include ('../partials/header.ejs') %>
 
-<% include ../partials/inner-header.ejs %>
+<%- include ('../partials/inner-header.ejs') %>
 <div class="column-two-thirds">
     <h1 class="heading-xlarge" style="margin-bottom: 25px">Personal details</h1>
     <% if (info.length > 0) { %>
@@ -109,5 +109,4 @@
 
 </div>
 
-
-<% include ../partials/footer.ejs %>
+<%- include ('../partials/footer.ejs') %>

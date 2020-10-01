@@ -1,8 +1,10 @@
 <% pageTitle = "Create an account - Get a document legalised – GOV.UK" %>
+
 <%if(error){
     pageTitle = "Error: Create an account - Get a document legalised – GOV.UK"
 } %>
-<% include partials/header %>
+
+<%- include ('partials/header') %>
 
 <%if(back_link){%><a href="<%= back_link%>" class="back_to_previous_button govuk-link">Back</a><%}%>
 <%if(error){%><br>
@@ -23,10 +25,10 @@
                 <%if (error) { %>
                 <%error.forEach(function(err){%>
                 <% if (err.email) { %>
-                <li><a href="#legend_email"><%= err.email %></a></li>
+                <li><a href="#email"><%= err.email %></a></li>
                 <% } %>
                 <% if (err.confirm_email) { %>
-                <li><a href="#legend_confirm_email"><%= err.confirm_email %></a></li>
+                <li><a href="#confirm_email"><%= err.confirm_email %></a></li>
                 <% } %>
                 <% if (err.password) { %>
                 <% if (passwordErrorType.toString().includes("blacklist") && (passwordErrorType.toString().includes("phraselist"))){%>
@@ -36,23 +38,23 @@
                 <% } else if (passwordErrorType.toString().includes("blacklist")){%>
                     <li><a id="blacklist" href="#legend_password"><%= err.password %></a></li>
                 <% } else { %>
-                    <li><a href="#legend_password"><%= err.password %></a></li>
+                    <li><a href="#password"><%= err.password %></a></li>
                 <% } %>
                 <% } %>
                 <% if (err.confirm_password) { %>
-                <li><a href="#legend_confirm_password"><%= err.confirm_password %></a></li>
+                <li><a href="#confirm_password"><%= err.confirm_password %></a></li>
                 <% } %>
                 <% if (err.business) { %>
-                <li><a href="#legend_business"><%= err.business %></a></li>
+                <li><a href="#radio-indent-1"><%= err.business %></a></li>
                 <% } %>
                 <% if (err.company_name) { %>
-                <li><a href="#business-info"><%= err.company_name %></a></li>
+                <li><a href="#company_name"><%= err.company_name %></a></li>
                 <% } %>
                 <% if (err.company_verification_check) { %>
-                <li><a href="#business-info"><%= err.company_verification_check %></a></li>
+                <li><a href="#company_verification_check"><%= err.company_verification_check %></a></li>
                 <% } %>
                 <% if (err.agree) { %>
-                <li><a href="#legend_agree_terms"><%= err.agree %></a></li>
+                <li><a href="#all_info_correct"><%= err.agree %></a></li>
                 <% } %>
                 <% if (err.user_exists) { %>
                 <li class="error-no-link"><%= err.user_exists %></li>
@@ -312,4 +314,5 @@
     </div>
 
 </div>
-<% include partials/footer %>
+
+<%- include ('partials/footer') %>
