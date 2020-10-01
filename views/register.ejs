@@ -87,8 +87,7 @@
         <!-- REGISTER FORM -->
         <form action="/api/user/register" method="post" id="register-form">
             <div class="form-group <% if ((erroneousFields && erroneousFields[0].email == true)) { %>error<% } %>" id="legend_email">
-                <legend for="email" class="form-label-bold">Email</legend>
-                <fieldset>
+                <label for="email" class="form-label-bold">Email</label>
                     <span class="error-message">
                         <%if (error) { %>
                         <%error.forEach(function(err){%>
@@ -101,11 +100,10 @@
 
                     <input class="govuk-input govuk-!-width-one-half" id="email" name="email" autocomplete="off" aria-required="true" type="text" value="<% if (form_values && form_values.email!=='') { %><%=form_values.email%><% } %>">
                     <div id="email_hint" style="display: none;"></div>
-                </fieldset>
             </div>
 
             <div class="form-group <% if (erroneousFields && (erroneousFields[0].email == true || erroneousFields[0].confirm_email == true)) { %>error<% } %>" id="legend_confirm_email">
-                <legend for="confirm_email" class="form-label-bold">Confirm email</legend>
+                <label for="confirm_email" class="form-label-bold">Confirm email</label>
                 <span class="error-message">
                     <%if (error) { %>
                     <%error.forEach(function(err){%>
@@ -122,7 +120,6 @@
                 <label for="password" class="form-label-bold">Password</label>
 
                     <span class="form-hint">Minimum 8 characters long with at least 1 capital letter and 1 number</span>
-                <fieldset>
                     <legend class="visuallyhidden">Password
 
                     </legend>
@@ -135,7 +132,6 @@
                         <% }) %>
                         <%}%>
                     </span>
-                </fieldset>
 
                     <input class="govuk-input govuk-!-width-one-half" id="password" autocomplete="off" aria-required="true" name="password" type="password">
 
@@ -144,7 +140,6 @@
             <div class="form-group <% if (erroneousFields && (erroneousFields[0].password == true || erroneousFields[0].confirm_password == true) && JSON.stringify(error).indexOf('confirm_password') > -1)  { %>error<% } %>"
                  id="legend_confirm_password">
                 <label for="confirm_password" class="form-label-bold">Confirm password</label>
-                <fieldset>
                     <legend class="visuallyhidden">Confirm password
 
                     </legend>
@@ -160,23 +155,21 @@
 
 
                     <input class="govuk-input govuk-!-width-one-half" id="confirm_password" autocomplete="off" aria-required="true" name="confirm_password" type="password">
-                </fieldset>
             </div>
 
 
             <div class="form-group <% if (erroneousFields && erroneousFields[0].business_yes_no) { %>error<% } %>">
-                <fieldset class="inline">
-                    <legend id="legend_business" class="form-label-bold">Are you registering on behalf of a business?
-                    </legend>
+                    <label id="legend_business" class="form-label-bold">Are you registering on behalf of a business?
+                    </label>
 
                     <span class="form-hint">Businesses can access our premium service</span>
 
                     <div class="" id="business-question">
 
                         <fieldset class="inline" aria-required="true" role="radiogroup">
-                            <legend class="visuallyhidden">Confirm whether you are registering on behalf of a business
+                            <label class="visuallyhidden">Confirm whether you are registering on behalf of a business
 
-                            </legend>
+                            </label>
                             <span class="error-message">
                                 <%if (error) { %>
                                 <%error.forEach(function(err){%>
@@ -220,8 +213,7 @@
                         <div class="panel panel-border-narrow  <% if (erroneousFields && erroneousFields[0].company_name) { %>error<% } %> <% if (form_values && form_values.business_yes_no == 'Yes'){ %><% }else{ %>js-hidden<% } %>"
                              id="business-info">
 
-                            <legend class="form-label-bold" for="company_name">Company name</legend>
-                            <fieldset>
+                            <label class="form-label-bold" for="company_name">Company name</label>
                                         <span class="error-message">
                                             <%if (error) { %>
                                             <%error.forEach(function(err){%>
@@ -234,11 +226,9 @@
 
                                 <input class="govuk-input govuk-!-width-one-half" name="company_name" type="text" id="company_name"
                                        value="<% if (form_values && form_values.company_name !== '') { %><%= form_values.company_name %><% } %>">
-                            </fieldset>
                             <br/>
                             <label class="form-label-bold" for="company_verification_check">Company verification</label>
                             <span class="form-hint">The premium service is a counter service for businesses only. The Legalisation Office may ask for evidence to verify your details eg company letter, VAT number, Companies House number</span>
-                            <fieldset>
                                 <legend id="legend_company_verification_check"
                                         class="visuallyhidden">Company verification
                                 </legend>
@@ -263,12 +253,10 @@
                                      I confirm that I represent a business and will provide evidence when asked
                                 </label>
                                 </div>
-                            </fieldset>
 
                         </div>
                     </div>
 
-                </fieldset>
 
             </div>
 
@@ -300,7 +288,6 @@
                          I agree
                     </label>
                     </div>
-                </fieldset>
 
             </div>
 
