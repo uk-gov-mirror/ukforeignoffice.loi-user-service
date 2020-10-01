@@ -157,8 +157,8 @@
 
 
             <div class="form-group <% if (erroneousFields && erroneousFields[0].business_yes_no) { %>error<% } %>">
-                    <legend id="legend_business" class="form-label-bold">Are you registering on behalf of a business?
-                    </legend>
+                    <label id="legend_business" class="form-label-bold">Are you registering on behalf of a business?
+                    </label>
 
                     <span class="form-hint">Businesses can access our premium service</span>
 
@@ -211,7 +211,7 @@
                         <div class="panel panel-border-narrow  <% if (erroneousFields && erroneousFields[0].company_name) { %>error<% } %> <% if (form_values && form_values.business_yes_no == 'Yes'){ %><% }else{ %>js-hidden<% } %>"
                              id="business-info">
 
-                            <legend class="form-label-bold" for="company_name">Company name</legend>
+                            <label class="form-label-bold" for="company_name">Company name</label>
                                         <span class="error-message">
                                             <%if (error) { %>
                                             <%error.forEach(function(err){%>

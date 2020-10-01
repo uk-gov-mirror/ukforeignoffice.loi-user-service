@@ -36,7 +36,7 @@
 
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('company_name')>-1) { %>error<% } %>">
 
-            <legend for="company-name" class="form-label-bold">Company name</legend>
+            <label for="company-name" class="form-label-bold">Company name</label>
                 <% if (error_report) { %>
                 <% error_report[0][0].errMsgs.forEach( function(error) { %>
                 <% if (error.questionId=="company_name") { %>
