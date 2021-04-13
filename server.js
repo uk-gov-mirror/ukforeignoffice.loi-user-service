@@ -98,7 +98,7 @@ var jobs = require('./config/jobs.js');
 // As there are 2 instances running, we need a random time, or two emails will be sent
 // for accounts nearing expiration. (Flag will be set by time of 2nd job execution to stop duplicate)
 var randomMin = Math.floor(Math.random() * 60);
-var randomHour = Math.floor(Math.random() * 8);
+var randomHour = Math.floor(Math.random() * 6);
 var jobScheduleRandom = "0 " + randomMin + " " + randomHour + " * * *";
 
 var ExpiryJob = schedule.scheduleJob(jobScheduleRandom, function(){jobs.accountExpiryCheck()});
