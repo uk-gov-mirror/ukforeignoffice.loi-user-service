@@ -99,7 +99,8 @@ var jobs = require('./config/jobs.js');
 // for accounts nearing expiration. (Flag will be set by time of 2nd job execution to stop duplicate)
 var randomSecond = Math.floor(Math.random() * 60);
 var randomMin = Math.floor(Math.random() * 10);
-var jobScheduleRandom = randomSecond + " " + randomMin + " * * * *";
+var jobScheduleRandom = randomSecond + " " + randomMin + " " + 
+    environmentVariables.userAccountSettings.jobScheduleHour + " * * *";
 
 var ExpiryJob = schedule.scheduleJob(jobScheduleRandom, function(){jobs.accountExpiryCheck()});
 
