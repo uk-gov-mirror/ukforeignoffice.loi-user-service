@@ -393,7 +393,7 @@ module.exports.showEditAddress= function(req,res) {
 
                 // if the user has been sent here from the application
                 // service because they need to update their telephone
-                // numnber and email address, set some flags
+                // number and email address, set some flags
                 if (req.session.require_contact_details === 'yes'){
                     require_contact_details = 'yes';
                     back_link = req.session.require_contact_details_back_link;
