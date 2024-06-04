@@ -63,13 +63,15 @@ if (error_report) {
     <div id="all-errors">
         <ul class="govuk-list govuk-error-summary__list">
             <% if (error_report) {  %>
-            <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-            <li>
-                <a href="#<%= errorMsgs.questionId %>">
-                    <%= errorMsgs.fieldSolution %>
-                </a>
-            </li>
-            <% }) %>
+                <% error_report[0][0].errMsgs.forEach(function(errorMsgs) { %>
+                    <li>
+                        <!--  if the validation error is for both town and county fields i.e. town-county-->
+                        <!--  then ensure the hyperlink still works-->
+                        <a href="<%= errorMsgs.questionId === 'town-county' ? '#town' : '#' + errorMsgs.questionId %>">
+                            <%= errorMsgs.questionId === 'town-county' ? errorMsgs.fieldSolution.replace('county', 'region') : errorMsgs.fieldSolution.replace('postcode', 'zip code') %>
+                        </a>
+                    </li>
+                <% }) %>
             <% } %>
         </ul>
     </div>
@@ -165,6 +167,7 @@ if (error_report) {
             </fieldset>
         </div>
 
+        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('town-county')>-1) { %>error<% }%>">
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('town')>-1) { %>error<% } %>">
             <label class="form-label-bold" for="town">Town</label>
             <fieldset>
@@ -185,9 +188,24 @@ if (error_report) {
             </fieldset>
         </div>
 
-        <div class="form-group">
+        <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('county')>-1) { %>error<% } %>">
             <label class="form-label-bold" for="county"><%if(uk){%>County<%}else{%>Region <span>(optional)</span><%}%></label>
-            <input class="govuk-input govuk-!-width-one-half" type="text" id="county" name="county" maxlength="255" value="<%if(form_values){%><%= form_values.county%><%}%>">
+            <fieldset>
+                <legend id="legend_county"
+                    class="visuallyhidden">County
+                </legend>
+                <span class="error-message">
+                <% if (error_report && primaryAddressErrors.length>0) { %>
+                    <% primaryAddressErrors.forEach( function(errorItem) { %>
+                        <% if (errorItem.questionId == "county") { %>
+                            <%= errorItem.fieldError %>
+                        <% } %>
+                    <% }) %>
+                <% } %>
+                </span>
+                <input class="govuk-input govuk-!-width-one-half" type="text" id="county" name="county" maxlength="255" value="<%if(form_values){%><%= form_values.county%><%}%>">
+            </fieldset>
+        </div>
         </div>
 
         <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('postcode')>-1) { %>error<% } %>">

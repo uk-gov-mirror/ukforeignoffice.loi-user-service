@@ -90,13 +90,41 @@ var attributes = {
                     "errSoltn": 'Enter the town',
                     "questionId": 'town'
                 }])
+            },
+            len: {
+                args: [0, 40],
+                msg: JSON.stringify([{
+                    "errSoltn": 'The town must not exceed 40 characters',
+                    "errInfo": 'Enter a shorter town name',
+                    "questionId": 'town'
+                }])
             }
         }
     },
     county: {
         type: Sequelize.STRING,
-        allowNull: true
-
+        allowNull: true,
+        validate: {
+            len: {
+                args: [0, 40],
+                msg: JSON.stringify([{
+                    "errSoltn": 'The county must not exceed 40 characters',
+                    "errInfo": 'Enter a shorter county name',
+                    "questionId": 'county'
+                }])
+            },
+            combinedLength(value) {
+                if (value && this.town) {
+                    if ((value.length + this.town.length) > 40) {
+                        throw new Error(JSON.stringify([{
+                            "errSoltn": 'The combined length of town and county cannot exceed 40 characters',
+                            "errInfo": 'Reduce the length of town and/or county',
+                            "questionId": 'town-county'
+                        }]));
+                    }
+                }
+            }
+        }
     },
     country: {
         type: Sequelize.STRING,

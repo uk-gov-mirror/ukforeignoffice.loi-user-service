@@ -127,6 +127,14 @@ var ValidationService = {
             postcode =  (postcodeObject) ? postcodeObject : ''
         }
         erroneousFields = [];
+
+        error.errors.forEach(error => {
+            const parsedMessage = JSON.parse(error.message);
+            parsedMessage.forEach(errDetail => {
+                erroneousFields.push(errDetail.questionId);
+            });
+        });
+
         if (req.body.full_name === '' || req.body.full_name.length <2) {
             erroneousFields.push('full_name');
         }

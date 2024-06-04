@@ -7,9 +7,7 @@ const logger = createLogger({
             format: format.combine(
                 format.timestamp(),
                 format.printf(info => {
-                    return `${info.timestamp} ${info.level}: ${info.message} ${
-                        info.meta && Object.keys(info.meta).length ? JSON.stringify(info.meta) : ''
-                    }`;
+                    return `${info.level.toUpperCase()}: ${info.message}`;
                 }),
             ),
             level: 'info',
@@ -21,9 +19,7 @@ const logger = createLogger({
             format: format.combine(
                 format.timestamp(),
                 format.printf(info => {
-                    return `${info.timestamp} ${info.level}: ${info.message} ${
-                        info.meta && Object.keys(info.meta).length ? JSON.stringify(info.meta) : ''
-                    }`;
+                    return `${info.level.toUpperCase()}: ${info.message}`;
                 }),
             ),
             level: 'error',
