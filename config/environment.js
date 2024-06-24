@@ -10,10 +10,6 @@ const live_variables = JSON.parse(process.env.LIVEVARIABLES);
 const userAccountSettings = JSON.parse(process.env.USERACCOUNTSETTINGS);
 const pgPassword = process.env.PGPASSWORD;
 const Sequelize = require('sequelize');
-const accountManagementApiUrl = process.env.ACCOUNTMANAGEMENTAPIURL;
-const certPath = process.env.NODE_ENV !== 'development' ? process.env.CASEBOOKCERTIFICATE : process.env.CASEBOOKCERTIFICATE.replace(/\\n/gm, '\n');
-const keyPath = process.env.NODE_ENV !== 'development' ? process.env.CASEBOOKKEY : process.env.CASEBOOKKEY.replace(/\\n/gm, '\n');
-const hmacKey = process.env.HMACKEY;
 const edmsHost = process.env.EDMS_HOST;
 const edmsBearerToken = JSON.parse(process.env.EDMS_BEARER_TOKEN);
 const edmsAuthHost = process.env.EDMS_AUTH_HOST;
@@ -85,10 +81,6 @@ const config = {
     "pgpassword": pgPassword,
     "userAccountSettings": userAccountSettings,
     "live_variables": live_variables,
-    "accountManagementApiUrl": accountManagementApiUrl,
-    "certPath": certPath,
-    "keyPath": keyPath,
-    "hmacKey": hmacKey,
     edmsHost,
     edmsBearerToken,
     edmsAuthHost,

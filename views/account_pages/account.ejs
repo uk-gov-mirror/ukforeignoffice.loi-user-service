@@ -35,7 +35,8 @@
             </tr>
             <tr>
                 <td class="summary-table-cell-label">Secondary No</td>
-                <td class="summary-table-cell-content"><% if(account.telephone != null){ %>
+                <td class="summary-table-cell-content">
+                    <% if(account.telephone !== null && account.telephone !== ''){ %>
                         <%= account.telephone %>
                     <% }else{ %>
                         None provided
