@@ -1,171 +1,143 @@
-/**
- * Created by preciousr on 21/01/2016.
- */
-var request = require('request'),
-    common = require('../../config/common.js'),
-    envVariables = common.config();
+const axios = require('axios');
+const common = require('../../config/common.js');
+const envVariables = common.config();
 
+const emailService = {
+    sendOneTimePasscodeEmail: async function(oneTimePasscode, email, userId) {
+        const url = '/one_time_passcode_email';
+        const postData = { to: email, oneTimePasscode: oneTimePasscode };
+        const options = setOptions(postData, url);
 
-emailService = {
-    sendOneTimePasscodeEmail: function(oneTimePasscode, email, userId){
-
-        var url = '/one_time_passcode_email';
-        var postData= {to: email, oneTimePasscode: oneTimePasscode};
-
-        request(setOptions(postData, url), function (err, res) {
-            if(err) {
-                console.log(err);
-            } else {
-                console.log(`${res.statusCode} - One time passcode email sent for user ${userId}`);
-            }
-        });
-
+        try {
+            const response = await axios.post(options.url, options.body, { headers: options.headers });
+            console.log(`${response.status} - One time passcode email sent for user ${userId}`);
+        } catch (err) {
+            console.log(err);
+        }
     },
-    sendOneTimePasscodeSMS: function(oneTimePasscode, phoneNumber, userId){
+    sendOneTimePasscodeSMS: async function(oneTimePasscode, phoneNumber, userId) {
+        const url = '/one_time_passcode_sms';
+        const postData = { to: phoneNumber, oneTimePasscode: oneTimePasscode };
+        const options = setOptions(postData, url);
 
-        var url = '/one_time_passcode_sms';
-        var postData= {to: phoneNumber, oneTimePasscode: oneTimePasscode};
-
-        request(setOptions(postData, url), function (err, res) {
-            if(err) {
-                console.log(err);
-            } else {
-                console.log(`${res.statusCode} - One time passcode sms sent for user ${userId}`);
-            }
-        });
-
+        try {
+            const response = await axios.post(options.url, options.body, { headers: options.headers });
+            console.log(`${response.status} - One time passcode SMS sent for user ${userId}`);
+        } catch (err) {
+            console.log(err);
+        }
     },
-    lockedOut: function(name,email){
+    lockedOut: async function(name, email) {
+        const url = '/account_locked';
+        const postData = { to: email, name: name };
+        const options = setOptions(postData, url);
 
-        var url = '/account_locked';
-        var postData= {to: email, name: name};
-
-        // send request to notification service
-        request(setOptions(postData, url), function (err, res) {
-            if(err) {
-                console.log(err);
-            } else {
-                console.log(`${res.statusCode} - lockedOut email sent`);
-            }
-        });
+        try {
+            const response = await axios.post(options.url, options.body, { headers: options.headers });
+            console.log(`${response.status} - lockedOut email sent`);
+        } catch (err) {
+            console.log(err);
+        }
     },
-    resetPassword: function(email,token){
+    resetPassword: async function(email, token) {
+        const url = '/reset-password';
+        const postData = { to: email, token: token };
+        const options = setOptions(postData, url);
 
-        var url = '/reset-password';
-        var postData= {to: email, token: token};
-
-        // send request to notification service
-        request(setOptions(postData, url), function (err, res) {
-            if(err) {
-                console.log(err);
-            } else {
-                console.log(`${res.statusCode} - reset password email sent`);
-            }
-        });
+        try {
+            const response = await axios.post(options.url, options.body, { headers: options.headers });
+            console.log(`${response.status} - reset password email sent`);
+        } catch (err) {
+            console.log(err);
+        }
     },
-    confirmPasswordChange: function(name,email){
+    confirmPasswordChange: async function(name, email) {
+        const url = '/password-updated';
+        const postData = { to: email, name: name };
+        const options = setOptions(postData, url);
 
-        var url = '/password-updated';
-        var postData= {to: email, name: name};
-
-        // send request to notification service
-        request(setOptions(postData, url), function (err, res) {
-            if(err) {
-                console.log(err);
-            } else {
-                console.log(`${res.statusCode} - confirm password email sent`);
-            }
-        });
+        try {
+            const response = await axios.post(options.url, options.body, { headers: options.headers });
+            console.log(`${response.status} - confirm password email sent`);
+        } catch (err) {
+            console.log(err);
+        }
     },
-    emailConfirmation: function(email,token){
+    emailConfirmation: async function(email, token) {
+        const url = '/confirm-email';
+        const postData = { to: email, token: token };
+        const options = setOptions(postData, url);
 
-        var url = '/confirm-email';
-        var postData= {to: email, token: token};
-
-        // send request to notification service
-        request(setOptions(postData, url), function (err, res) {
-            if(err) {
-                console.log(err);
-            } else {
-                console.log(`${res.statusCode} - activation email sent`);
-            }
-        });
+        try {
+            const response = await axios.post(options.url, options.body, { headers: options.headers });
+            console.log(`${response.status} - activation email sent`);
+        } catch (err) {
+            console.log(err);
+        }
     },
-    expiryWarning: async function(email, accountExpiryDateText, dayAndMonthText, userID){
-        
-        var url = '/expiry_warning';
-        var postData= {to: email, accountExpiryDateText: accountExpiryDateText, dayAndMonthText: dayAndMonthText};
-        
-        // send request to notification service
-        request(setOptions(postData, url), function (err) {
-            if(err) {
-                console.log(err);
-            } else {
-                console.log('[USER CLEANUP JOB] WARNING EMAIL SENT SUCCESSFULLY FOR USER ' + userID);
-            }
-        });
+    expiryWarning: async function(email, accountExpiryDateText, dayAndMonthText, userID) {
+        const url = '/expiry_warning';
+        const postData = { to: email, accountExpiryDateText: accountExpiryDateText, dayAndMonthText: dayAndMonthText };
+        const options = setOptions(postData, url);
+
+        try {
+            const response = await axios.post(options.url, options.body, { headers: options.headers });
+            console.log('[USER CLEANUP JOB] WARNING EMAIL SENT SUCCESSFULLY FOR USER ' + userID);
+        } catch (err) {
+            console.log(err);
+        }
     },
-    expiryConfirmation: async function(email, userID){
-    
-        var url = '/expiry_confirmation';
-        var postData= {to: email};
-    
-        // send request to notification service
-        request(setOptions(postData, url), function (err) {
-            if(err) {
-                console.log(err);
-            } else {
-                console.log('[USER CLEANUP JOB] EXPIRY EMAIL SENT SUCCESSFULLY FOR USER ' + userID);
-            }
-        });
+    expiryConfirmation: async function(email, userID) {
+        const url = '/expiry_confirmation';
+        const postData = { to: email };
+        const options = setOptions(postData, url);
+
+        try {
+            const response = await axios.post(options.url, options.body, { headers: options.headers });
+            console.log('[USER CLEANUP JOB] EXPIRY EMAIL SENT SUCCESSFULLY FOR USER ' + userID);
+        } catch (err) {
+            console.log(err);
+        }
     },
-    requestBusinessAccess: async function(emailData){
+    requestBusinessAccess: async function(emailData) {
+        const url = '/request-business-access';
+        const options = setOptions(emailData, url);
 
-        var url = '/request-business-access';
-
-        // send request to notification service
-        request(setOptions(emailData, url), function (err) {
-            if(err) {
-                console.log(err);
-            } else {
-                console.log('BUSINESS SERVICE APPLICATION REQUEST SENT SUCCESSFULLY FOR USER ' + emailData.userID);
-            }
-        });
+        try {
+            const response = await axios.post(options.url, options.body, { headers: options.headers });
+            console.log('BUSINESS SERVICE APPLICATION REQUEST SENT SUCCESSFULLY FOR USER ' + emailData.userID);
+        } catch (err) {
+            console.log(err);
+        }
     },
-    businessServiceDecision: async function(emailData, decision){
+    businessServiceDecision: async function(emailData, decision) {
+        const url = '/business-service-decision';
+        const postData = { to: emailData.email, decision: decision };
+        const options = setOptions(postData, url);
 
-        var url = '/business-service-decision';
-        var postData = {to: emailData.email, decision: decision};
-
-        // send request to notification service
-        request(setOptions(postData, url), function (err) {
-            if(err) {
-                console.log(err);
+        try {
+            const response = await axios.post(options.url, options.body, { headers: options.headers });
+            if (decision === 'approve') {
+                console.log('BUSINESS SERVICE ACCESS APPROVAL EMAIL SENT SUCCESSFULLY FOR USER ' + emailData.id);
             } else {
-                if (decision === 'approve') {
-                    console.log('BUSINESS SERVICE ACCESS APPROVAL EMAIL SENT SUCCESSFULLY FOR USER ' + emailData.id);
-                } else {
-                    console.log('BUSINESS SERVICE ACCESS REJECTION EMAIL SENT SUCCESSFULLY FOR USER ' + emailData.id);
-                }
-
+                console.log('BUSINESS SERVICE ACCESS REJECTION EMAIL SENT SUCCESSFULLY FOR USER ' + emailData.id);
             }
-        });
+        } catch (err) {
+            console.log(err);
+        }
     }
 };
 
 module.exports = emailService;
 
-function setOptions(postData, url){
-    var options = {
-        url: envVariables.notificationServiceURL+url,
-        headers:
-        {
+function setOptions(postData, url) {
+    return {
+        url: envVariables.notificationServiceURL + url,
+        headers: {
             'cache-control': 'no-cache',
             'content-type': 'application/json'
         },
         method: 'POST',
-        json: true,
         body: postData
     };
-    return options;
 }

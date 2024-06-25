@@ -3,9 +3,9 @@ const crypto = require("crypto");
 const common = require('../../config/common.js');
 const emailService = require("../services/emailService");
 const envVariables = common.config();
-const request = require('request');
 const config = require("../../config/environment");
 const HelperService = require("../services/HelperService");
+const axios = require("axios");
 
 module.exports.showRequestBusinessServiceAccess = async function(req, res) {
 
@@ -300,10 +300,7 @@ module.exports.approve = async function(req, res) {
             let userAccountDetails = await findAccountDetails(userAccountMatchingToken.id)
             await grantPermissionsToUserAccount(userAccountMatchingToken)
             await emailService.businessServiceDecision(userAccountMatchingToken, 'approve')
-
-            config.live_variables.caseManagementSystem === 'ORBIT' ?
-                await sendAccountUpdateToOrbit(userAccountMatchingToken, userAccountDetails) :
-                await sendAccountUpdateToCASEBOOK(userAccountMatchingToken, userAccountDetails)
+            await sendAccountUpdateToOrbit(userAccountMatchingToken, userAccountDetails)
 
             return res.render('account_pages/approve-reject-business-service-access.ejs', {
                 userEmail: userAccountMatchingToken.email,
@@ -351,63 +348,6 @@ module.exports.approve = async function(req, res) {
             }
         }
 
-        async function sendAccountUpdateToCASEBOOK(userAccountMatchingToken, userAccountDetails) {
-            try {
-
-                let accountManagementObject = {
-                    "portalCustomerUpdate": {
-                        "userId": "legalisation",
-                        "timestamp": (new Date()).getTime().toString(),
-                        "portalCustomer": {
-                            "portalCustomerId": userAccountMatchingToken.id,
-                            "forenames": userAccountDetails.first_name,
-                            "surname": userAccountDetails.last_name,
-                            "primaryTelephone": userAccountDetails.telephone,
-                            "mobileTelephone": (userAccountDetails.mobileNo !== null) ? userAccountDetails.mobileNo : "",
-                            "eveningTelephone": "",
-                            "email": userAccountMatchingToken.email,
-                            "companyName": userAccountDetails.company_name,
-                            "companyRegistrationNumber": ''
-                        }
-                    }
-                }
-
-                // calculate HMAC string and encode in base64
-                let objectString = JSON.stringify(accountManagementObject, null, 0);
-                let hash = crypto.createHmac('sha512', config.hmacKey).update(new Buffer.from(objectString, 'utf-8')).digest('hex').toUpperCase();
-
-                request.post({
-                    headers: {
-                        "accept": "application/json",
-                        "hash": hash,
-                        "content-type": "application/json; charset=utf-8",
-                        "api-version": "3"
-                    },
-                    url: envVariables.accountManagementApiUrl,
-                    agentOptions: envVariables.certPath ? {
-                        cert: envVariables.certPath,
-                        key: envVariables.keyPath
-                    } : null,
-                    json: true,
-                    body: accountManagementObject
-                }, function (error, response, body) {
-                    if (error) {
-                        console.log(JSON.stringify(error));
-                    } else if (response.statusCode === 200) {
-                        console.log('[ACCOUNT MANAGEMENT] ACCOUNT UPDATE SENT TO CASEBOOK SUCCESSFULLY FOR USER_ID ' + userAccountMatchingToken.id);
-                    } else {
-                        console.error('[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO CASEBOOK FOR USER_ID ' + userAccountMatchingToken.id);
-                        console.error('response code: ' + response.code);
-                        console.error(body);
-                    }
-                });
-
-            } catch (error) {
-                console.log('approve.sendAccountUpdateToCASEBOOK', error)
-            }
-
-        }
-
         async function sendAccountUpdateToOrbit(userAccountMatchingToken, userAccountDetails) {
             try {
                 const edmsManagePortalCustomerUrl = config.edmsHost + '/api/v1/managePortalCustomer';
@@ -432,39 +372,42 @@ module.exports.approve = async function(req, res) {
                     },
                 };
 
-                request.post(
-                    {
+                try {
+                    const response = await axios.post(edmsManagePortalCustomerUrl, accountManagementObject, {
                         headers: {
-                            'content-type': 'application/json',
+                            'Content-Type': 'application/json',
                             Authorization: `Bearer ${edmsBearerToken}`,
                         },
-                        url: edmsManagePortalCustomerUrl,
-                        json: true,
-                        body: accountManagementObject,
-                    },
-                    function (error, response, body) {
-                        const endTime = new Date();
-                        const elapsedTime = endTime - startTime;
+                    });
 
-                        if (error) {
-                            console.log(JSON.stringify(error));
-                        } else if (response.statusCode === 200) {
-                            console.log(
-                                '[ACCOUNT MANAGEMENT] ACCOUNT UPDATE SENT TO ORBIT SUCCESSFULLY FOR USER_ID ' +
-                                userAccountMatchingToken.id
-                            );
-                        } else {
-                            console.error(
-                                '[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ' +
-                                userAccountMatchingToken.id
-                            );
-                            console.error('response code: ' + response.code);
-                            console.error(body);
-                        }
+                    const endTime = new Date();
+                    const elapsedTime = endTime - startTime;
 
-                        console.log(`Orbit account management request response time: ${elapsedTime}ms`);
+                    if (response.status === 200) {
+                        console.log(
+                            '[ACCOUNT MANAGEMENT] ACCOUNT UPDATE SENT TO ORBIT SUCCESSFULLY FOR USER_ID ' +
+                            userAccountMatchingToken.id
+                        );
+                    } else {
+                        console.error(
+                            '[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ' +
+                            userAccountMatchingToken.id
+                        );
+                        console.error('response code: ' + response.status);
+                        console.error(response.data);
                     }
-                );
+
+                    console.log(`Orbit account management request response time: ${elapsedTime}ms`);
+                } catch (error) {
+                    const endTime = new Date();
+                    const elapsedTime = endTime - startTime;
+                    console.error(
+                        '[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ' +
+                        userAccountMatchingToken.id
+                    );
+                    console.error(error.response ? error.response.data : error.message);
+                    console.log(`Orbit account management request response time: ${elapsedTime}ms`);
+                }
             } catch (error) {
                 console.log('approve.sendAccountUpdateToOrbit', error);
             }
@@ -527,63 +470,6 @@ module.exports.reject = async function(req, res) {
             }
         }
 
-        async function sendAccountUpdateToCASEBOOK(userAccountMatchingToken, userAccountDetails) {
-            try {
-
-                let accountManagementObject = {
-                    "portalCustomerUpdate": {
-                        "userId": "legalisation",
-                        "timestamp": (new Date()).getTime().toString(),
-                        "portalCustomer": {
-                            "portalCustomerId": userAccountMatchingToken.id,
-                            "forenames": userAccountDetails.first_name,
-                            "surname": userAccountDetails.last_name,
-                            "primaryTelephone": userAccountDetails.telephone,
-                            "mobileTelephone": (userAccountDetails.mobileNo !== null) ? userAccountDetails.mobileNo : "",
-                            "eveningTelephone": "",
-                            "email": userAccountMatchingToken.email,
-                            "companyName": "",
-                            "companyRegistrationNumber": ""
-                        }
-                    }
-                }
-
-                // calculate HMAC string and encode in base64
-                let objectString = JSON.stringify(accountManagementObject, null, 0);
-                let hash = crypto.createHmac('sha512', config.hmacKey).update(new Buffer.from(objectString, 'utf-8')).digest('hex').toUpperCase();
-
-                request.post({
-                    headers: {
-                        "accept": "application/json",
-                        "hash": hash,
-                        "content-type": "application/json; charset=utf-8",
-                        "api-version": "3"
-                    },
-                    url: envVariables.accountManagementApiUrl,
-                    agentOptions: envVariables.certPath ? {
-                        cert: envVariables.certPath,
-                        key: envVariables.keyPath
-                    } : null,
-                    json: true,
-                    body: accountManagementObject
-                }, function (error, response, body) {
-                    if (error) {
-                        console.log(JSON.stringify(error));
-                    } else if (response.statusCode === 200) {
-                        console.log('[ACCOUNT MANAGEMENT] ACCOUNT UPDATE SENT TO CASEBOOK SUCCESSFULLY FOR USER_ID ' + userAccountMatchingToken.id);
-                    } else {
-                        console.error('[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO CASEBOOK FOR USER_ID ' + userAccountMatchingToken.id);
-                        console.error('response code: ' + response.code);
-                        console.error(body);
-                    }
-                });
-
-            } catch (error) {
-                console.log('reject.sendAccountUpdateToCASEBOOK', error)
-            }
-
-        }
-
         async function sendAccountUpdateToOrbit(userAccountMatchingToken, userAccountDetails) {
             try {
                 const edmsManagePortalCustomerUrl = config.edmsHost + '/api/v1/managePortalCustomer';
@@ -599,50 +485,49 @@ module.exports.reject = async function(req, res) {
                             forenames: userAccountDetails.first_name,
                             surname: userAccountDetails.last_name,
                             primaryTelephone: userAccountDetails.telephone,
-                            mobileTelephone:
-                                userAccountDetails.mobileNo !== null ? userAccountDetails.mobileNo : '',
+                            mobileTelephone: userAccountDetails.mobileNo !== null ? userAccountDetails.mobileNo : '',
                             eveningTelephone: '',
                             email: userAccountMatchingToken.email,
-                            companyName: '',
+                            companyName: userAccountDetails.company_name,
                             companyRegistrationNumber: '',
                         },
                     },
                 };
 
-                request.post(
-                    {
-                        headers: {
-                            'content-type': 'application/json',
-                            Authorization: `Bearer ${edmsBearerToken}`,
-                        },
-                        url: edmsManagePortalCustomerUrl,
-                        json: true,
-                        body: accountManagementObject,
+                const response = await axios.post(edmsManagePortalCustomerUrl, accountManagementObject, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${edmsBearerToken}`,
                     },
-                    function (error, response, body) {
-                        const endTime = new Date();
-                        const elapsedTime = endTime - startTime;
+                });
 
-                        if (error) {
-                            console.log(JSON.stringify(error));
-                        } else if (response.statusCode === 200) {
-                            console.log(
-                                '[ACCOUNT MANAGEMENT] ACCOUNT UPDATE SENT TO ORBIT SUCCESSFULLY FOR USER_ID ' +
-                                userAccountMatchingToken.id
-                            );
-                        } else {
-                            console.error(
-                                '[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ' +
-                                userAccountMatchingToken.id
-                            );
-                            console.error('response code: ' + response.code);
-                            console.error(body);
-                        }
+                const endTime = new Date();
+                const elapsedTime = endTime - startTime;
 
-                        console.log(`Orbit account management request response time: ${elapsedTime}ms`);
-                    }
-                );
+                if (response.status === 200) {
+                    console.log(
+                        '[ACCOUNT MANAGEMENT] ACCOUNT UPDATE SENT TO ORBIT SUCCESSFULLY FOR USER_ID ' +
+                        userAccountMatchingToken.id
+                    );
+                } else {
+                    console.error(
+                        '[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ' +
+                        userAccountMatchingToken.id
+                    );
+                    console.error('response code: ' + response.status);
+                    console.error(response.data);
+                }
+
+                console.log(`Orbit account management request response time: ${elapsedTime}ms`);
             } catch (error) {
+                const endTime = new Date();
+                const elapsedTime = endTime - startTime;
+                console.error(
+                    '[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ' +
+                    userAccountMatchingToken.id
+                );
+                console.error(error.response ? error.response.data : error.message);
+                console.log(`Orbit account management request response time: ${elapsedTime}ms`);
                 console.log('reject.sendAccountUpdateToOrbit', error);
             }
         }
@@ -673,10 +558,7 @@ module.exports.reject = async function(req, res) {
             await rejectPermissionsToUserAccount(userAccountMatchingToken)
             await clearCompanyName(userAccountMatchingToken)
             await emailService.businessServiceDecision(userAccountMatchingToken, 'reject')
-
-            config.live_variables.caseManagementSystem === 'ORBIT' ?
-                await sendAccountUpdateToOrbit(userAccountMatchingToken, userAccountDetails) :
-                await sendAccountUpdateToCASEBOOK(userAccountMatchingToken, userAccountDetails);
+            await sendAccountUpdateToOrbit(userAccountMatchingToken, userAccountDetails)
 
             return res.render('account_pages/approve-reject-business-service-access.ejs', {
                 userEmail: userAccountMatchingToken.email,

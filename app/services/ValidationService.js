@@ -112,10 +112,17 @@ var ValidationService = {
 
 
     buildAddressErrorArray: function (error, req, res, countries,user, account,edit) {
+
+        function isValidPhoneInput(input) {
+            if (input.length < 6 || input.length > 25) {
+                return false;
+            }
+
+            return phonePattern.test(input);
+        }
+
         var country = req.body.country || '';
-        var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){6,25}$/;
-        var phonePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){6,25}$/;
-            //old phone pattern /([0-9]|[\-+#() ]){6,}/;
+        var phonePattern = /^[0-9\+\(\)\# \-]+$/;
         var isemail = require('isemail');
         var Postcode = require("postcode");
         var postcodeObject = Postcode.toNormalised(req.body.postcode);
@@ -153,11 +160,15 @@ var ValidationService = {
         if (req.body.country === '' || typeof(req.body.country)=='undefined') {
             erroneousFields.push('country');
         }
-        if (req.body.mobileNo === '' || req.body.mobileNo.length < 6 || req.body.mobileNo.length > 25 || !mobilePattern.test(req.body.mobileNo)) {
+
+        const mobileNo = req.body.mobileNo;
+        if (!mobileNo || !isValidPhoneInput(mobileNo)) {
             erroneousFields.push('mobileNo');
         }
-        if (req.body.telephone !== null && req.body.telephone !== '') {
-            if (req.body.telephone.length < 6 || req.body.telephone.length > 25 || !phonePattern.test(req.body.telephone)) {
+
+        const telephone = req.body.telephone;
+        if (telephone){
+            if (!isValidPhoneInput(telephone)){
                 erroneousFields.push('telephone');
             }
         }

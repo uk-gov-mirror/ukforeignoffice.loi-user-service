@@ -1,15 +1,8 @@
-/**
- * FCO LOI User Management
- * Registration Controller
- *
- *
- */
-
 const Model = require('../model/models.js'),
     ValidationService = require('../services/ValidationService.js'),
     common = require('../../config/common.js'),
     envVariables = common.config(),
-    rp = require('request-promise');
+    axios = require('axios');
 
 const mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){6,25}$/;
 const phonePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){6,25}$/;
@@ -110,13 +103,12 @@ module.exports.findAddress= function(req,res) {
             }else {
                 postcodeLookup(postcode).then(function (results) {
                     var addresses = [];
-                    if (JSON.parse(results).message === 'No matching address found: no response') {
+                    if (results.message === 'No matching address found: no response') {
                         req.flash('error', 'No addresses found');
                         addresses = false;
                     } else {
-                        var jsonResults = JSON.parse(results);
                         addresses = [];
-                        jsonResults.forEach(function (address) {
+                        results.forEach(function (address) {
 
 
                             var fullAddress = '';
@@ -204,13 +196,13 @@ module.exports.ajaxFindPostcode = function(req,res) {
         postcodeLookup(postcode).then(function (results) {
             var return_error = false;
             var addresses = [];
-            if (JSON.parse(results).message === 'No matching address found: no response') {
+            if (results.message === 'No matching address found: no response') {
                 req.flash('error', 'No addresses found');
                 addresses = false;
             } else {
-                var jsonResults = JSON.parse(results);
+
                 addresses = [];
-                jsonResults.forEach(function (address) {
+                results.forEach(function (address) {
 
 
                     var fullAddress = '';
@@ -539,14 +531,19 @@ module.exports.deleteAddress= function(req,res) {
 
 };
 
-function postcodeLookup(normalisedPostcode) {
+async function postcodeLookup(normalisedPostcode) {
     const postcode = normalisedPostcode.replace(/ /g, '');
-    const options = { ...envVariables.postcodeLookUpApiOptions, uri: envVariables.postcodeLookUpApiOptions.uri + postcode };
+    const options = {
+        ...envVariables.postcodeLookUpApiOptions,
+        url: envVariables.postcodeLookUpApiOptions.uri + postcode
+    };
 
-    return rp(options)
-        .catch(err => {
-            console.error(err);
-        });
+    try {
+        const response = await axios(options);
+        return response.data;
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 function getCountries() {

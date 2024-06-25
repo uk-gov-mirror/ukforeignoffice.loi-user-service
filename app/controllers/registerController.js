@@ -1,12 +1,5 @@
-/**
- * FCO LOI User Management
- * Registration Controller
- *
- *
- */
-
 const bcrypt = require('bcryptjs'),
-    request = require('request'),
+    axios = require('axios'),
     async = require('async'),
     config = require('../../config/environment'),
     crypto = require('crypto'),
@@ -27,37 +20,6 @@ var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
 var phonePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
 //old pattern /([0-9]|[\-+#() ]){6,}/;
 
-function sendToCasebook(objectString, accountManagementObject, user) {
-
-    var hash = crypto.createHmac('sha512', config.hmacKey).update(new Buffer.from(objectString, 'utf-8')).digest('hex').toUpperCase();
-
-    request.post({
-        headers: {
-            "accept": "application/json",
-            "hash": hash,
-            "content-type": "application/json; charset=utf-8",
-            "api-version": "3"
-        },
-        url: config.accountManagementApiUrl,
-        agentOptions: config.certPath ? {
-            cert: config.certPath,
-            key: config.keyPath
-        } : null,
-        json: true,
-        body: accountManagementObject
-    }, function (error, response, body) {
-        if (error) {
-            console.log(JSON.stringify(error));
-        } else if (response.statusCode === 200) {
-            console.log('[ACCOUNT MANAGEMENT] ACCOUNT CREATION SENT TO CASEBOOK SUCCESSFULLY FOR USER_ID ' + user.id);
-        } else {
-            console.error('[ACCOUNT MANAGEMENT] ACCOUNT CREATION FAILED SENDING TO CASEBOOK FOR USER_ID ' + user.id);
-            console.error('response code: ' + response.code);
-            console.error(body);
-        }
-    })
-
-}
 
 async function sendToOrbit(accountManagementObject, user) {
     try {
@@ -65,40 +27,40 @@ async function sendToOrbit(accountManagementObject, user) {
         const edmsBearerToken = await HelperService.getEdmsAccessToken();
         const startTime = new Date();
 
-        request.post(
-            {
-                headers: {
-                    'content-type': 'application/json',
-                    Authorization: `Bearer ${edmsBearerToken}`,
-                },
-                url: edmsManagePortalCustomerUrl,
-                json: true,
-                body: accountManagementObject,
+        const response = await axios.post(edmsManagePortalCustomerUrl, accountManagementObject, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${edmsBearerToken}`,
             },
-            function (error, response, body) {
-                const endTime = new Date();
-                const elapsedTime = endTime - startTime;
+        });
 
-                if (error) {
-                    console.log(JSON.stringify(error));
-                } else if (response.statusCode === 200) {
-                    console.log(
-                        '[ACCOUNT MANAGEMENT] ACCOUNT CREATION SENT TO ORBIT SUCCESSFULLY FOR USER_ID ' +
-                        user.id
-                    );
-                } else {
-                    console.error(
-                        '[ACCOUNT MANAGEMENT] ACCOUNT CREATION FAILED SENDING TO ORBIT FOR USER_ID ' +
-                        user.id
-                    );
-                    console.error('response code: ' + response.code);
-                    console.error(body);
-                }
+        const endTime = new Date();
+        const elapsedTime = endTime - startTime;
 
-                console.log(`Orbit account management request response time: ${elapsedTime}ms`);
-            }
-        );
+        if (response.status === 200) {
+            console.log(
+                '[ACCOUNT MANAGEMENT] ACCOUNT CREATION SENT TO ORBIT SUCCESSFULLY FOR USER_ID ' +
+                user.id
+            );
+        } else {
+            console.error(
+                '[ACCOUNT MANAGEMENT] ACCOUNT CREATION FAILED SENDING TO ORBIT FOR USER_ID ' +
+                user.id
+            );
+            console.error('response code: ' + response.status);
+            console.error(response.data);
+        }
+
+        console.log(`Orbit account management request response time: ${elapsedTime}ms`);
     } catch (error) {
+        const endTime = new Date();
+        const elapsedTime = endTime - startTime;
+        console.error(
+            '[ACCOUNT MANAGEMENT] ACCOUNT CREATION FAILED SENDING TO ORBIT FOR USER_ID ' +
+            user.id
+        );
+        console.error(error.response ? error.response.data : error.message);
+        console.log(`Orbit account management request response time: ${elapsedTime}ms`);
         console.error(`sendToOrbit: ${error}`);
     }
 }
@@ -456,13 +418,7 @@ module.exports.completeRegistration =function(req,res){
                         }
                     };
 
-
-                    // calculate HMAC string and encode in base64
-                    var objectString = JSON.stringify(accountManagementObject, null, 0);
-
-                    config.live_variables.caseManagementSystem === 'ORBIT' ?
-                        sendToOrbit(accountManagementObject, user) :
-                        sendToCasebook(objectString, accountManagementObject, user);
+                    sendToOrbit(accountManagementObject, user)
 
                 })
                     .catch(function (error) {
@@ -535,8 +491,8 @@ module.exports.completeRegistration =function(req,res){
                         if (req.body.last_name === '') {
                             erroneousFields.push('last_name');
                         }
-                        if (req.body.telephone === '') {
-                            erroneousFields.push('telephone');
+                        if (req.body.mobileNo === '') {
+                            erroneousFields.push('mobileNo');
                         }
                         dataValues = [];
                         dataValues.push({

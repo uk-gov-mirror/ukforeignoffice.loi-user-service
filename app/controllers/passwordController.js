@@ -1,15 +1,8 @@
-/**
- * Created by preciousr on 07/01/2016.
- */
-
-var async = require('async'),
-    crypto = require('crypto'),
-    unirest = require('unirest'),
+var crypto = require('crypto'),
     Model = require('../model/models.js'),
     common = require('../../config/common.js'),
     envVariables = common.config(),
-    validator = require('validator'),
-    ValidationService = require('../services/ValidationService.js');
+    validator = require('validator');
 
 const { Op } = require("sequelize");
 const emailService = require("../services/emailService");
