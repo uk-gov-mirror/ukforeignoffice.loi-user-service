@@ -116,7 +116,7 @@ module.exports.register = function(req, res) {
 
     var patt = new RegExp(envVariables.password_settings.passwordPattern);
     var isemail = require('isemail');
-    var emailValid =isemail.validate(req.body.email);
+    var emailValid = isemail.validate(req.body.email);
 
     var messages=[];
     var passwordErrorType=[];
@@ -144,11 +144,15 @@ module.exports.register = function(req, res) {
     var normalisedPassword = validator.blacklist(req.body.password, ' ').trim().toLowerCase();
     // check to see if a word in the phraselist appears in the normalised password
     var passwordInPhraselist = false;
-    if (new RegExp(phraselist.join("|")).test(normalisedPassword)) {
-        passwordInPhraselist = true;
+
+    for (var phrase of phraselist) {
+        if (normalisedPassword.includes(phrase.toLowerCase())) {
+            passwordInPhraselist = true;
+            break;
+        }
     }
 
-    if (passwordInBlacklist | passwordInPhraselist) {
+    if (passwordInBlacklist || passwordInPhraselist) {
         errorDescription.push("Change the words in your password - don't include any commonly used words that are easy to guess. \n");
         messages.push({password:"Change the words in your password - don't include any commonly used words that are easy to guess. \n"});
         erroneousFields[0].password=true;
@@ -250,10 +254,6 @@ module.exports.register = function(req, res) {
             applicationServiceURL: envVariables.applicationServiceURL
         });
     }
-
-
-
-
     //check to see if the email address has already been used
     Model.User.findOne({
         where: {

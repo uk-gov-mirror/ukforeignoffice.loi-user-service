@@ -1,11 +1,11 @@
-var crypto = require('crypto'),
+const crypto = require('crypto'),
     Model = require('../model/models.js'),
     common = require('../../config/common.js'),
     envVariables = common.config(),
-    validator = require('validator');
-
-const { Op } = require("sequelize");
-const emailService = require("../services/emailService");
+    validator = require('validator'),
+    { Op } = require("sequelize"),
+    emailService = require("../services/emailService"),
+    isEmail = require('isemail');
 
 module.exports.forgotPassword = async function(req, res) {
     try {
@@ -24,9 +24,9 @@ module.exports.forgotPassword = async function(req, res) {
         // Find User
         const email = req.body.email.toLowerCase();
         const user = await Model.User.findOne({ where: { email } });
-        const emailPattern = /\S+@\S+\.\S+/;
+        let emailValid = isEmail.validate(email);
 
-        if (!emailPattern.test(email)) {
+        if (!emailValid) {
             console.info('Password reset requested. Invalid email pattern.');
             return res.render('forgot', {message: "Please enter a valid email address."});
         } else {
@@ -70,25 +70,22 @@ module.exports.forgotPassword = async function(req, res) {
 module.exports.resetPassword = async function (req, res) {
     var reset = req.path != '/set-new-password';
     var patt = new RegExp(envVariables.password_settings.passwordPattern);
-
     var messages = [];
     var passwordErrorType = [];
-
-    // check the password against the blacklists
-    // location of the password blacklist and phraselist
     var blackList = require('../../config/blacklist.js');
     var phraselist = require('../../config/phraselist.js');
-    //return true if password is in the blacklist
     var passwordInBlacklist = validator.isIn(req.body.password, blackList);
-    // normalise the password by removing all spaces and converting to lower case
     var normalisedPassword = validator.blacklist(req.body.password, ' ').trim().toLowerCase();
-    // check to see if a word in the phraselist appears in the normalised password
     var passwordInPhraselist = false;
-    if (new RegExp(phraselist.join("|")).test(normalisedPassword)) {
-        passwordInPhraselist = true;
+
+    for (var phrase of phraselist) {
+        if (normalisedPassword.includes(phrase.toLowerCase())) {
+            passwordInPhraselist = true;
+            break;
+        }
     }
 
-    if (passwordInBlacklist | passwordInPhraselist) {
+    if (passwordInBlacklist || passwordInPhraselist) {
         messages.push("Change the words in your password - don't include any commonly used words that are easy to guess. \n");
     }
 
