@@ -30,7 +30,13 @@
 <div class="column-two-thirds">
     <h1 class="heading-xlarge">Apply to register as a Next-Day service provider</h1>
 
-    <p>The Next-Day service is a bulk processing service for pre-approved businesses only, who can demonstrate a genuine need for access.</p>
+    <p>To apply for this service, businesses must be able to meet the following requirements:</p>
+    <ul>
+            <li>Submit a minimum of five (5) documents per visit</li>
+            <li>Submit applications on a frequent basis</li>
+            <li>Submit applications in secure packaging with clear company branding</li>
+            <li>Submit and pick up applications in-person at our remote address near Milton Keynes</li>
+        </ul>
     <p>You can choose to <a href="<%= back_link%>" class="govuk-link">skip this process</a> and apply at a later time.</p>
 
 <form action="/api/user/request-business-service-access?_csrf=<%=_csrf%>" method="post" id="request-business-service-access">
@@ -92,7 +98,7 @@
 <div class="govuk-form-group <% if(error){errorsArray.forEach(function(err){if(err.fieldName==='justification'){%>error<%}})} %>">
     <label class="form-label-bold" for="justification">Justification</label>
     <span id="justification-form-hint" class="form-hint">Please provide evidence to support your request, such as your recent volume of Legalisation applications along with any additional information you feel will support your request.
-    Please note the Next-Day service requires documents to be dropped-off and collected in person at our remote address near Milton Keynes. This is for regular, high-volume users and cannot be used as a one-off service.</span>
+    Please note the Next-Day service requires documents to be dropped-off and collected in person at our remote address near Milton Keynes.</span>
     <span class="error-message">
         <%if (error) { %>
             <%errorsArray.forEach(function(err){%>
