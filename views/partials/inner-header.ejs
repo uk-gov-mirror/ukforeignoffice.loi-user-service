@@ -2,13 +2,18 @@
     <div class="inner-header-content">
 
     <span class="email-logout-text">
-        <%if(typeof(account)!='undefined' && account!=null && account.first_name.length>0){%><%= (account.first_name+' '+account.last_name).substr(0,50)%><%}else{%><%= user.email%><%}%>
+        <% if (account?.first_name?.length > 0) { %>
+            <%= (account.first_name + ' ' + (account.last_name || '')).trim().slice(0, 50) %>
+        <% } else { %>
+            <%= user.email || 'Unknown User' %>
+        <% } %>
     </span>
         <span class="email-logout-text">
-        <a id="Applications-Link" href="<%= url.applicationServiceURL%>dashboard" class="govuk-link">Applications</a>
-        <a id="Account-Link" href="/api/user/account" class="govuk-link">Account</a>
-        <a id="Addresses-Link" href="/api/user/addresses" class="govuk-link">Addresses</a>
-        <a href="<%= url.applicationServiceURL%>sign-out" id="sign-out-link" class="govuk-link">Sign out</a>
+            <% if (user.isAdmin) { %><a id="Admin-Link" href="/api/user/admin" class="govuk-link">Admin</a><% } %>
+            <a id="Applications-Link" href="<%= url.applicationServiceURL%>dashboard" class="govuk-link">Applications</a>
+            <a id="Account-Link" href="/api/user/account" class="govuk-link">Account</a>
+            <a id="Addresses-Link" href="/api/user/addresses" class="govuk-link">Addresses</a>
+            <a href="<%= url.applicationServiceURL%>sign-out" id="sign-out-link" class="govuk-link">Sign out</a>
     </span>
 
     </div>

@@ -151,6 +151,10 @@ var attributes = {
     },
     mfaPreference: {
         type: 'string'
+    },
+    isAdmin: {
+        type: 'boolean',
+        default: false
     }
 };
 

@@ -1,0 +1,53 @@
+<% pageTitle = "Manage user permissions - Get a document legalised – GOV.UK" %>
+
+<%if(error){
+    pageTitle = "Error: Manage user permissions - Get a document legalised – GOV.UK"
+} %>
+
+<%- include ('../partials/header.ejs') %>
+<%- include ('../partials/inner-header.ejs') %>
+
+<% if (info.length > 0) { %>
+    <div class="alert alert--success" role="alert"><p class="alert__message"><%= info %></p></div>
+<% } %>
+
+<div class="column-two-thirds">
+
+    <%if(error){%><br>
+    <%}%>
+    <div class="govuk-error-summary <% if (error) { %>show<% } else { %>hide<% } %>" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1" autofocus>
+
+        <p class="govuk-error-summary__title" id="error-summary-heading-example-2">
+            There is a problem
+        </p>
+
+        <div id="all-errors">
+            <ul class="govuk-list govuk-error-summary__list">
+                <% if (error) {  %>
+                    <li><a href="#search-email"><%= error %></a></li>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+
+    <h1 class="heading-xlarge">Manage user permissions</h1>
+
+    <form action="/api/user/admin-search-email?_csrf=<%=_csrf%>" method="post">
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-fieldset__heading">
+                    Find a user by email
+                </h1>
+            </legend>
+            <div class="govuk-form-group">
+                <label class="govuk-visually-hidden" for="search-email">
+                    Enter email address
+                </label>
+                <input class="govuk-input" id="search-email" name="searchEmail" type="email" autocomplete="email" aria-describedby="search-email-hint">
+            </div>
+            <button class="govuk-button" type="submit">Search user</button>
+        </fieldset>
+    </form>
+</div>
+
+<%- include ('../partials/footer.ejs') %>
