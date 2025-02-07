@@ -13,14 +13,10 @@
 
 <div class="column-two-thirds">
 
-    <%if(error){%><br>
-    <%}%>
+    <%if(error){%><br><%}%>
+
     <div class="govuk-error-summary <% if (error) { %>show<% } else { %>hide<% } %>" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1" autofocus>
-
-        <p class="govuk-error-summary__title" id="error-summary-heading-example-2">
-            There is a problem
-        </p>
-
+        <p class="govuk-error-summary__title" id="error-summary-heading-example-2">There is a problem</p>
         <div id="all-errors">
             <ul class="govuk-list govuk-error-summary__list">
                 <% if (error) {  %>
@@ -32,22 +28,22 @@
 
     <h1 class="heading-xlarge">Manage user permissions</h1>
 
-    <form action="/api/user/admin-search-email?_csrf=<%=_csrf%>" method="post">
+    <form action="/api/user/admin-search-email?_csrf=<%=_csrf%>" method="post" id="search-form">
         <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                <h1 class="govuk-fieldset__heading">
-                    Find a user by email
-                </h1>
+                <h1 class="govuk-fieldset__heading">Find a user by email</h1>
             </legend>
-            <div class="govuk-form-group">
-                <label class="govuk-visually-hidden" for="search-email">
-                    Enter email address
-                </label>
-                <input class="govuk-input" id="search-email" name="searchEmail" type="email" autocomplete="email" aria-describedby="search-email-hint">
+            <div class="govuk-form-group" style="position: relative;">
+                <label class="govuk-visually-hidden" for="search-email">Enter email address</label>
+                <input class="govuk-input" id="search-email" name="searchEmail" type="email" autocomplete="off" aria-describedby="search-email-hint">
+
+                <!-- Custom styled dropdown instead of <datalist> -->
+                <div id="email-suggestions-container"></div>
             </div>
             <button class="govuk-button" type="submit">Search user</button>
         </fieldset>
     </form>
 </div>
 
+<script src="/api/user/js/admin-section.js"></script>
 <%- include ('../partials/footer.ejs') %>

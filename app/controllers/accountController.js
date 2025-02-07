@@ -11,6 +11,7 @@ const mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/
 const phonePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
 const crypto = require('crypto');
 const util = require('util');
+const {Op} = require("sequelize");
 const randomBytes = util.promisify(crypto.randomBytes);
 
 async function sendToOrbit(accountManagementObject, user) {
@@ -111,6 +112,29 @@ module.exports.showAdminSearchEmail = async function(req, res) {
             backLink: '#',
             error
         })
+    }
+};
+
+module.exports.ajaxSearchEmail = async function(req, res) {
+    try {
+        const emailQuery = req.query.email;
+
+        if (!emailQuery || emailQuery.length < 3) {
+            return res.json([]);
+        }
+
+        const users = await Model.User.findAll({
+            where: {
+                email: { [Op.like]: `%${emailQuery}%` }
+            },
+            attributes: ["id", "email"],
+            order: [["email", "ASC"]]
+        });
+
+        res.json(users);
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
 };
 

@@ -491,6 +491,7 @@ module.exports = function(express,envVariables) {
     router.get('/admin',sessionValid, isSecondFactorAuthenticated, isAdmin, accountController.showAdminSection);
     router.get('/admin-search-email',sessionValid, isSecondFactorAuthenticated, isAdmin, accountController.showAdminSearchEmail);
     router.post('/admin-search-email',sessionValid, isSecondFactorAuthenticated, isAdmin, accountController.adminSearchEmail);
+    router.get('/ajax-search-email',sessionValid, isSecondFactorAuthenticated, isAdmin, accountController.ajaxSearchEmail);
     router.post('/update-permissions',sessionValid, isSecondFactorAuthenticated, isAdmin, accountController.updatePermissions);
     router.get('/update-permissions',sessionValid, isSecondFactorAuthenticated, isAdmin, accountController.showUpdatePermissions);
     router.get('/change-details',sessionValid, isSecondFactorAuthenticated, accountController.showChangeDetails);
