@@ -923,8 +923,38 @@ govuk-checkboxes__item {
   font-size: 19px;
 }
 
+//Admin section styling
+/* Style for the dropdown results */
+#email-suggestions-container {
+  position: absolute;
+  width: 100%; /* Match input width */
+  background: #fff;
+  border: 1px solid #b1b4b6;
+  border-top: none;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  display: none; /* Hidden initially */
+}
 
+/* Individual suggestion styles */
+.email-suggestion {
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #e0e0e0;
+}
 
+/* Alternate background color */
+.email-suggestion:nth-child(odd) {
+  background-color: #f3f2f1; /* Light grey */
+}
 
+.email-suggestion:nth-child(even) {
+  background-color: #ffffff; /* White */
+}
 
-
+/* Highlight on hover */
+.email-suggestion:hover {
+  background-color: #f3f2f1 !important;
+}

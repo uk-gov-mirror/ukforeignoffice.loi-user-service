@@ -48,6 +48,18 @@ module.exports = function(express,envVariables) {
         }
     };
 
+    var isAdmin = function (req, res, next) {
+
+        if (req?.session?.user?.isAdmin) {
+            return next();
+        } else {
+            req.flash('error', 'You do not have permission to access the page.');
+            req.session.appId = false;
+            res.clearCookie('LoggedIn');
+            res.redirect('/api/user/sign-in');
+        }
+    }
+
     router.get('/', function(req, res) {
         res.redirect(envVariables.applicationServiceURL);
     });
@@ -476,6 +488,12 @@ module.exports = function(express,envVariables) {
     router.post('/complete-registration',sessionValid, isSecondFactorAuthenticated, registerController.completeRegistration);
     
     router.get('/account',sessionValid, isSecondFactorAuthenticated, accountController.showAccount);
+    router.get('/admin',sessionValid, isSecondFactorAuthenticated, isAdmin, accountController.showAdminSection);
+    router.get('/admin-search-email',sessionValid, isSecondFactorAuthenticated, isAdmin, accountController.showAdminSearchEmail);
+    router.post('/admin-search-email',sessionValid, isSecondFactorAuthenticated, isAdmin, accountController.adminSearchEmail);
+    router.get('/ajax-search-email',sessionValid, isSecondFactorAuthenticated, isAdmin, accountController.ajaxSearchEmail);
+    router.post('/update-permissions',sessionValid, isSecondFactorAuthenticated, isAdmin, accountController.updatePermissions);
+    router.get('/update-permissions',sessionValid, isSecondFactorAuthenticated, isAdmin, accountController.showUpdatePermissions);
     router.get('/change-details',sessionValid, isSecondFactorAuthenticated, accountController.showChangeDetails);
     router.post('/change-details',sessionValid, isSecondFactorAuthenticated, accountController.changeDetails);
     router.get('/change-password',sessionValid, isSecondFactorAuthenticated, accountController.showChangePassword);
