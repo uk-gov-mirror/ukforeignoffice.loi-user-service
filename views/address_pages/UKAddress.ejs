@@ -87,7 +87,7 @@ if (error_report) {
                     onchange="document.getElementById('select-address-form').submit();">
                 <option disabled selected>Pick an address</option>
                 <%for(var a=0; a<addresses.length; a++){%>
-                <option value=<%= a%> <%if(a==chosen_address){%>selected<%}%>><%= addresses[a].option %></option>
+                <option value=<%= addresses[a].id%> <%if(addresses[a].id==chosen_address){%>selected<%}%>><%= addresses[a].text %></option>
                 <%}%>
             </select>
             <button class="button button-secondary js-hidden <%if(addresses.length==0){%>hide<%}%>" type="submit" id="select-address">Select Address</button>
