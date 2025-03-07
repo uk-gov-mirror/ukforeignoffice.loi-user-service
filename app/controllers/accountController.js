@@ -11,6 +11,7 @@ const mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/
 const phonePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
 const crypto = require('crypto');
 const util = require('util');
+const {Op} = require("sequelize");
 const randomBytes = util.promisify(crypto.randomBytes);
 
 async function sendToOrbit(accountManagementObject, user) {
@@ -73,6 +74,199 @@ module.exports.showAccount = async function(req, res) {
             backLink: '#',
             error
         })
+    }
+};
+
+module.exports.showAdminSection = async function(req, res) {
+    try {
+        return res.render('account_pages/admin.ejs', {
+            user: req?.session?.user,
+            account: req?.session?.account,
+            url: envVariables,
+            info: req.flash('info'),
+            error: null
+        });
+
+    } catch (error) {
+        console.error(`showAdminSection: ${error}`)
+        return res.render('generic-error.ejs', {
+            backLink: '#',
+            error
+        })
+    }
+};
+
+module.exports.showAdminSearchEmail = async function(req, res) {
+    try {
+        return res.render('account_pages/admin.ejs', {
+            user: req?.session?.user,
+            account: req?.session?.account,
+            url: envVariables,
+            info: req.flash('info'),
+            error: null
+        });
+
+    } catch (error) {
+        console.error(`showAdminSearchEmail: ${error}`)
+        return res.render('generic-error.ejs', {
+            backLink: '#',
+            error
+        })
+    }
+};
+
+module.exports.ajaxSearchEmail = async function(req, res) {
+    try {
+        const emailQuery = req.query.email;
+
+        if (!emailQuery || emailQuery.length < 3) {
+            return res.json([]);
+        }
+
+        const users = await Model.User.findAll({
+            where: {
+                email: { [Op.like]: `%${emailQuery}%` }
+            },
+            attributes: ["id", "email"],
+            order: [["email", "ASC"]]
+        });
+
+        res.json(users);
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+module.exports.adminSearchEmail = async function(req, res) {
+    try {
+
+        const user = req?.session?.user;
+        if (!user) {
+            throw new Error('User not found');
+        }
+        const account = req?.session?.account;
+        if (!account) {
+            throw new Error('Account not found');
+        }
+
+        let emailToSearchFor = req.body.searchEmail.trim();
+        if (!emailToSearchFor) {
+            return res.render('account_pages/admin.ejs', {
+                user,
+                account,
+                url: envVariables,
+                info: req.flash('info'),
+                error: `Please enter an email address`,
+            });
+        }
+
+        const searchResults = await Model.User.findOne({ where: { email: emailToSearchFor } });
+
+        return res.render('account_pages/admin-search-email.ejs', {
+            user,
+            account,
+            searchResults,
+            url: envVariables,
+            info: req.flash('info')
+        });
+
+    } catch (error) {
+        console.error(`adminSearchEmail: ${error}`)
+        return res.render('generic-error.ejs', {
+            backLink: req.get('Referer'),
+            error
+        })
+    }
+};
+
+module.exports.showUpdatePermissions = async function(req, res) {
+    try {
+        return res.render('account_pages/admin.ejs', {
+            user: req?.session?.user,
+            account: req?.session?.account,
+            url: envVariables,
+            info: req.flash('info'),
+            error: null
+        });
+
+    } catch (error) {
+        console.error(`showAdminSearchEmail: ${error}`)
+        return res.render('generic-error.ejs', {
+            backLink: '#',
+            error
+        })
+    }
+};
+
+module.exports.updatePermissions = async function(req, res) {
+    try {
+        let accountLocked = req.body.accountLocked === "true" || false;
+        let dropOffEnabled = req.body.dropOffEnabled === "true" || false;
+        let premiumServiceEnabled = req.body.premiumServiceEnabled === "true" || false;
+
+        const user = req?.session?.user;
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        const account = req?.session?.account;
+        if (!account) {
+            throw new Error('Account not found');
+        }
+
+        // userId and email of the account being edited
+        const userId = req.body.userId;
+        const email = req.body.email;
+        if (!userId) {
+            throw new Error("No userId provided");
+        }
+
+        // Fetch the existing user details before updating (for logging purposes)
+        const existingUser = await Model.User.findByPk(userId);
+
+        if (!existingUser) {
+            throw new Error(`User with ID ${userId} not found.`);
+        }
+
+        // Store changes for logging
+        let changes = [];
+        if (existingUser.accountLocked !== accountLocked) {
+            changes.push(`Account Locked: ${existingUser.accountLocked} → ${accountLocked}`);
+        }
+        if (existingUser.dropOffEnabled !== dropOffEnabled) {
+            changes.push(`Next-Day Service: ${existingUser.dropOffEnabled} → ${dropOffEnabled}`);
+        }
+        if (existingUser.premiumServiceEnabled !== premiumServiceEnabled) {
+            changes.push(`Urgent Service: ${existingUser.premiumServiceEnabled} → ${premiumServiceEnabled}`);
+        }
+
+        await Model.User.update(
+            { accountLocked, dropOffEnabled, premiumServiceEnabled },
+            { where: { id: userId } }
+        );
+
+        req.flash('info', `${email} has been updated successfully`);
+
+        // Log the update only if there were changes
+        if (changes.length > 0) {
+            console.info(`[UPDATE PERMISSIONS] ${user.email} UPDATED ${email}: ${changes.join(", ")}`);
+        }
+
+        return res.render('account_pages/admin.ejs', {
+            user,
+            account,
+            url: envVariables,
+            info: req.flash('info'),
+            error: null
+        });
+
+    } catch (error) {
+        console.error(`updatePermissions: ${error}`);
+        return res.render('generic-error.ejs', {
+            backLink: req.get('Referer'),
+            error
+        });
     }
 };
 

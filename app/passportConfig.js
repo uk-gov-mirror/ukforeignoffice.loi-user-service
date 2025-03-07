@@ -23,6 +23,10 @@ module.exports = function(app, passport) {
                     return done(null, false, { message: 'There was a problem signing in' });
                 }
 
+                if (user.accountLocked) {
+                    return done(null, false, { message: 'There was a problem signing in' });
+                }
+
                 const passwordMatch = await bcrypt.compare(password, user.password);
 
                 if (passwordMatch) {

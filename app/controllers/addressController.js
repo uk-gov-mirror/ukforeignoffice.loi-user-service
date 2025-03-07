@@ -110,33 +110,13 @@ module.exports.findAddress= function(req,res) {
                         addresses = [];
                         results.forEach(function (address) {
 
-
-                            var fullAddress = '';
-                            fullAddress += address.organisation ? address.organisation + ', ' : '';
-                            fullAddress += address.house_name   ? address.house_name + ', ' : '';
-                            fullAddress += address.street       ? address.street + ', ' : '';
-                            fullAddress += address.town         ? toTitleCase(address.town)  : '';
-                            fullAddress += address.county       ?  ', '+address.county : '';
-
-
-                            function toTitleCase(str) {
-                                return str.replace(/\w\S*/g, function (txt) {
-                                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-                                });
-                            }
-
                             addresses.push({
-                                option: fullAddress,
-                                organisation: address.organisation,
-                                house_name: address.house_name,
-                                street: address.street !== null && address.street !== 'undefined' && address.street !== undefined ? address.street : '',
-                                town: address.town !== null && address.town !== 'undefined' && address.town !== undefined ? toTitleCase(address.town) : '',
-                                county: address.county !== null && address.county !== 'undefined' && address.county !== undefined ? address.county : '',
-                                postcode:  postcode
+                                id: address.id,
+                                text: `${address.text} ${address.description}`
                             });
                         });
                     }
-                    //todo: remove this from session, better to write it to the page as a hidden block than to risk polluting the session with a massive block of json
+
                     req.session.addresses = addresses;
 
                     return res.render('address_pages/UKAddressSelect.ejs', {
@@ -172,6 +152,12 @@ module.exports.findAddress= function(req,res) {
     });
 };
 
+module.exports.retrieveAddress = function(addressId) {
+    const timeout = envVariables.postcodeLookUpApiOptions.timeout;
+    return axios.get(`${envVariables.postcodeLookUpApiOptions.uri}retrieve/${addressId}`, { timeout });
+};
+
+
 /**
  * ajaxFindPostcode - Takes a postcode input and returns addresses
  * 1. function compileAddresses():
@@ -204,33 +190,13 @@ module.exports.ajaxFindPostcode = function(req,res) {
                 addresses = [];
                 results.forEach(function (address) {
 
-
-                    var fullAddress = '';
-                    fullAddress += address.organisation ? address.organisation + ', ' : '';
-                    fullAddress += address.house_name   ? address.house_name + ', ' : '';
-                    fullAddress += address.street       ? address.street + ', ' : '';
-                    fullAddress += address.town         ? toTitleCase(address.town)  : '';
-                    fullAddress += address.county       ?  ', '+address.county : '';
-
-
-                    function toTitleCase(str) {
-                        return str.replace(/\w\S*/g, function (txt) {
-                            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-                        });
-                    }
-
                     addresses.push({
-                        option: fullAddress,
-                        organisation: address.organisation,
-                        house_name: address.house_name,
-                        street: address.street !== null && address.street !== 'undefined' && address.street !== undefined ? address.street : '',
-                        town: address.town !== null && address.town !== 'undefined' && address.town !== undefined ? toTitleCase(address.town) : '',
-                        county: address.county !== null && address.county !== 'undefined' && address.county !== undefined ? address.county : '',
-                        postcode: postcode
+                        id: address.id,
+                        text: `${address.text} ${address.description}`
                     });
                 });
             }
-            //todo: remove this from session, better to write it to the page as a hidden block than to risk polluting the session with a massive block of json
+
             req.session.addresses = addresses;
             return res.json( {error:return_error, addresses: addresses, postcode:  postcode});
         },
@@ -242,58 +208,97 @@ module.exports.ajaxFindPostcode = function(req,res) {
     }
 };
 
-module.exports.ajaxSelectAddress= function(req,res) {
-    Model.User.findOne({where:{email:req.session.email}}).then(function(user) {
-        Model.AccountDetails.findOne({where:{user_id:user.id}}).then(function(account) {
-            const chosenAddressIndex = req.body.chosen;
-            return res.json({
-                full_name: account.first_name + ' ' + account.last_name,
-                address: req.session.addresses[chosenAddressIndex]
-            });
-        });
-    });
-};
-
-module.exports.selectAddress= function(req,res) {
-    var formValues = '';
-    if(!req.method){
-        return res.redirect('/api/user/add-address-uk?is_uk=true');
-    }else if(!req.body.address){
-        req.flash('error','Pick an address');
-        return res.redirect('/api/user/find-your-address?postcode='+req.session.addresses[0].postcode);
+module.exports.ajaxSelectAddress = function (req, res) {
+    if (!req.session || !req.session.email) {
+        return res.status(400).json({ error: "User session email is missing." });
     }
 
-    Model.User.findOne({where:{email:req.session.email}}).then(function(user) {
-        Model.AccountDetails.findOne({where:{user_id:user.id}}).then(function(account){
-            formValues = {
-                full_name: account.first_name + " " + account.last_name,
-                organisation: req.session.addresses[req.body.address].organisation,
-                house_name: req.session.addresses[req.body.address].house_name,
-                street: req.session.addresses[req.body.address].street,
-                town: req.session.addresses[req.body.address].town,
-                county: req.session.addresses[req.body.address].county,
-                postcode: req.session.addresses[req.body.address].postcode
-            };
-
-            return res.render('address_pages/UKAddress.ejs', {
-                uk: true,
-                addresses: req.session.addresses,
-                form_values: formValues,
-                error_report: false,
-                show_fields:true,
-                manual:false,
-                postcodeFlash: req.flash('error'),
-                step: 2,
-                user:user,
-                initial: req.session.initial,
-                account:account,
-                postcode: req.session.addresses[req.body.address].postcode,
-                chosen_address: req.body.address,
-                url:envVariables
+    Model.User.findOne({ where: { email: req.session.email } })
+        .then(user => {
+            if (!user) {
+                console.error("User not found.");
+            }
+            return Model.AccountDetails.findOne({ where: { user_id: user.id } });
+        })
+        .then(account => {
+            if (!account) {
+                console.error("Account details not found.");
+            }
+            return module.exports.retrieveAddress(req.body.chosen)
+                .then(address => ({
+                    account,
+                    address
+                }));
+        })
+        .then(({ account, address }) => {
+            if (!address || !address.data) {
+                console.error("Address data is missing.");
+            }
+            return res.json({
+                full_name: account.first_name + ' ' + account.last_name,
+                address: address.data
             });
+        })
+        .catch(error => {
+            console.error("Error in ajaxSelectAddress:", error.message);
+            return res.status(500).json({ error: error.message });
         });
-    });
+};
 
+module.exports.selectAddress = function(req, res) {
+    let addressId = req.body.address;
+
+    if (!req.method) {
+        return res.redirect('/api/user/add-address-uk?is_uk=true');
+    } else if (!req.body.address) {
+        req.flash('error', 'Pick an address');
+        return res.redirect('/api/user/find-your-address');
+    }
+
+    Model.User.findOne({ where: { email: req.session.email } })
+        .then(user => {
+            if (!user) console.error("User not found");
+            return Model.AccountDetails.findOne({ where: { user_id: user.id } })
+                .then(account => ({ user, account }));
+        })
+        .then(({ user, account }) => {
+            return module.exports.retrieveAddress(addressId)
+                .then(response => {
+                    const address = response.data;
+
+                    const formValues = {
+                        full_name: `${account.first_name} ${account.last_name}`,
+                        organisation: address.organisation || '',
+                        house_name: address.house_name || '',
+                        street: address.street || '',
+                        town: address.town || '',
+                        county: address.county || '',
+                        postcode: address.postcode || ''
+                    };
+
+                    return res.render('address_pages/UKAddress.ejs', {
+                        uk: true,
+                        addresses: req.session.addresses,
+                        form_values: formValues,
+                        error_report: false,
+                        show_fields: true,
+                        manual: false,
+                        postcodeFlash: req.flash('error'),
+                        step: 2,
+                        user: user,
+                        initial: req.session.initial,
+                        account: account,
+                        postcode: address.postcode,
+                        chosen_address: addressId,
+                        url: envVariables
+                    });
+                });
+        })
+        .catch(error => {
+            console.error("Error selecting address:", error);
+            req.flash('error', 'An error occurred while selecting the address.');
+            return res.redirect('/api/user/find-your-address');
+        });
 };
 
 module.exports.showManualAddress = function(req, res) {
@@ -535,7 +540,7 @@ async function postcodeLookup(normalisedPostcode) {
     const postcode = normalisedPostcode.replace(/ /g, '');
     const options = {
         ...envVariables.postcodeLookUpApiOptions,
-        url: envVariables.postcodeLookUpApiOptions.uri + postcode
+        url: `${envVariables.postcodeLookUpApiOptions.uri}/lookup/${postcode}`
     };
 
     try {
