@@ -116,13 +116,13 @@
                     <% }) %>
                     <%}%>
                 </span>
-                <input class="govuk-input govuk-!-width-one-half" id="confirm_email" name="confirm_email" autocomplete="off" type="text" value="<%if (!erroneousFields || (erroneousFields && !erroneousFields[0].confirm_email&& !erroneousFields[0].email )){%><%=form_values.email%><%}%>">
+                <input class="govuk-input govuk-!-width-one-half" id="confirm_email" name="confirm_email" autocomplete="off" type="text" value="<%  if (form_values && form_values.confirm_email!=='') {  %><%=form_values.confirm_email%><%}%>">
             </div>
 
             <div class="form-group <% if (erroneousFields && erroneousFields[0].password == true && JSON.stringify(error).indexOf('password') > -1) { %>error<% } %>" id="legend_password">
                 <label for="password" class="form-label-bold">Password</label>
 
-                    <span class="form-hint">Minimum 8 characters long with at least 1 capital letter and 1 number</span>
+                    <span class="form-hint">Minimum 8 characters, including 1 uppercase letter, 1 number and 1 special character (e.g. !, @, #)</span>
                     <legend class="visuallyhidden">Password
 
                     </legend>

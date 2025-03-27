@@ -100,9 +100,9 @@ module.exports.resetPassword = async function (req, res) {
     if (req.body.password === '') {
         messages.push("Enter a password \n");
     } else {
-        if (!patt.test(req.body.password)) messages.push("Your password must be at least 8 characters long and must contain at least 1 lowercase letter, 1 capital letter and 1 number\n");
-        else if (req.body.password.length < 8) messages.push("Enter a password ensuring it is at least 8 characters long and contains at least 1 lowercase letter, 1 capital letter and 1 number \n");
-        else if (req.body.password.length > 16) messages.push("Enter a password ensuring it is at most 16 characters long and contains at least 1 lowercase letter, 1 capital letter and 1 number \n");
+        if (!patt.test(req.body.password)) messages.push("Your password must be at least 8 characters, including 1 uppercase letter, 1 number and 1 special character (e.g. !, @, #) \n");
+        else if (req.body.password.length < 8) messages.push("Enter a password ensuring it is at least 8 characters, including 1 uppercase letter, 1 number and 1 special character (e.g. !, @, #) \n");
+        else if (req.body.password.length > 50) messages.push("Enter a password ensuring it is at most 50 characters long, including 1 uppercase letter, 1 number and 1 special character (e.g. !, @, #) \n");
     }
 
     if (req.body.password != req.body.confirm_password) messages.push("Passwords did not match \n");

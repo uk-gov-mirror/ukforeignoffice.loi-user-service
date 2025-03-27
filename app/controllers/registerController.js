@@ -182,13 +182,13 @@ module.exports.register = function(req, res) {
             erroneousFields[0].confirm_password=true;
         } else {
             if(req.body.password.length < 8) {
-                messages.push({password:"Enter a password ensuring it is at least 8 characters long and contains at least 1 lowercase letter, 1 capital letter and 1 number \n"});
+                messages.push({password:"Enter a password with at least 8 characters, including 1 uppercase letter, 1 number and 1 special character (e.g. !, @, #) \n"});
                 messages.push({confirm_password:"Confirm your password \n"});
-            } else if(req.body.password.length > 16) {
-                messages.push({password:"Enter a password ensuring it is at most 16 characters long and contains at least 1 lowercase letter, 1 capital letter and 1 number \n"});
+            } else if(req.body.password.length > 50) {
+                messages.push({password:"Enter a password up to 50 characters long, including 1 uppercase letter, 1 number and 1 special character (e.g. !, @, #) \n"});
                 messages.push({confirm_password:"Confirm your password \n"});
             } else if(!patt.test(req.body.password)) {
-                messages.push({password:"Your password must be at least 8 characters long and must contain at least 1 lowercase letter, 1 capital letter and 1 number\n"});
+                messages.push({password:"Your password must be at least 8 characters long and contain 1 uppercase letter, 1 number and 1 special character (e.g. !, @, #) \n"});
                 messages.push({confirm_password:"Confirm your password \n"});
             }
         }
@@ -354,7 +354,16 @@ module.exports.register = function(req, res) {
                                 req.flash('info', "We've sent you a confirmation email. Click the link in the email to confirm your address.");
                                 return res.redirect('/api/user/emailconfirm');
                             } catch (error) {
-                                console.log(error);
+                                console.error('Caught error:', error);
+
+                                if (error.name === 'SequelizeValidationError') {
+                                    console.error('Validation errors:');
+                                    error.errors.forEach((err, index) => {
+                                        console.error(`  ${index + 1}. Field: ${err.path}, Message: ${JSON.stringify(err.message)}`);
+                                    });
+                                } else {
+                                    console.error('Unknown error:', error);
+                                }
                                 return res.render('register.ejs', {
                                     error_report: ValidationService.buildErrorsArray(error),
                                     email: req.session.email,
