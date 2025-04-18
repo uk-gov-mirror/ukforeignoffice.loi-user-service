@@ -17,7 +17,14 @@ const serverPort = (process.argv[2] && !isNaN(process.argv[2])  ? process.argv[2
 
 
 app.use(cookieParser());
-app.use(csrf({cookie: true}));
+app.set('trust proxy', 1);
+app.use(csrf({
+    cookie: {
+        secure: process.env.NODE_ENV !== 'development',
+        sameSite: 'Lax',
+        httpOnly: true
+    }
+}));
 
 app.use(function(req, res, next) {
     res.removeHeader("X-Powered-By");
@@ -82,7 +89,8 @@ app.use(
         cookie: {
             domain: sessionSettings.domain,
             maxAge: sessionSettings.maxAge,
-            secure: "auto",
+            secure: process.env.NODE_ENV !== 'development',
+            sameSite: 'Lax'
         },
     })
 );
