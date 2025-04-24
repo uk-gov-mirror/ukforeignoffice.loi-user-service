@@ -50,7 +50,7 @@ var attributes = {
                 args: /(?=.*[a-zA-Z])(?=.*\d)(?=.*[^a-zA-Z0-9\s]).{8,}/,
                 msg: {
                     "errInfo": 'Password is invalid',
-                    "errSoltn": 'Your password must be at least 8 characters long and must contain at least 1 lowercase letter, 1 capital letter and 1 number',
+                    "errSoltn": 'Your password must be at least 8 characters long and contain 1 capital letter, 1 number and 1 special character (e.g. !, @, #)',
                     "questionId": 'password'
                 }
             },
