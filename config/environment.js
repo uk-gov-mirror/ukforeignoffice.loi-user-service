@@ -25,7 +25,8 @@ const sequelizeUsers = new Sequelize(
         dialect: 'postgres',
         logging: false,
         dialectOptions: {
-            'connectTimeout': 15000 // 15 seconds timeout
+            connectTimeout: 15000, // 15 seconds timeout
+            ssl: sequelizeusers.userconnection.ssl,
         },
         retry: {
             base: 1000,
@@ -45,7 +46,8 @@ const serviceSequelize = new Sequelize(
         dialect: 'postgres',
         logging: false,
         dialectOptions: {
-            'connectTimeout': 15000 // 15 seconds timeout
+            connectTimeout: 15000, // 15 seconds timeout
+            ssl: servicesequelize.serviceconnection.ssl,
         },
         retry: {
             base: 1000,
