@@ -229,6 +229,7 @@ module.exports = function(express,envVariables) {
             } else {
 
                 req.flash('error', 'You have made too many incorrect login attempts');
+                await oneTimePasscodeService.lockUserAccount(req.user.id);
                 res.redirect('/api/user/sign-in');
 
             }
@@ -279,6 +280,7 @@ module.exports = function(express,envVariables) {
             } else {
 
                 req.flash('error', 'You have made too many incorrect login attempts');
+                await oneTimePasscodeService.lockUserAccount(user_id);
                 res.redirect('/api/user/sign-in');
 
             }
