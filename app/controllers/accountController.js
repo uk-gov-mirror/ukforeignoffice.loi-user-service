@@ -215,24 +215,28 @@ module.exports.updatePermissions = async function(req, res) {
             throw new Error('Account not found');
         }
 
-        // userId and email of the account being edited
         const userId = req.body.userId;
         const email = req.body.email;
         if (!userId) {
             throw new Error("No userId provided");
         }
 
-        // Fetch the existing user details before updating (for logging purposes)
         const existingUser = await Model.User.findByPk(userId);
 
         if (!existingUser) {
             throw new Error(`User with ID ${userId} not found.`);
         }
 
-        // Store changes for logging
         let changes = [];
+        let updateFields = { accountLocked, dropOffEnabled, premiumServiceEnabled };
+
         if (existingUser.accountLocked !== accountLocked) {
             changes.push(`Account Locked: ${existingUser.accountLocked} → ${accountLocked}`);
+            // If unlocking the account, reset oneTimePasscodeAttempts
+            if (existingUser.accountLocked && !accountLocked) {
+                updateFields.oneTimePasscodeAttempts = 0;
+                changes.push(`OTP Attempts reset to 0`);
+            }
         }
         if (existingUser.dropOffEnabled !== dropOffEnabled) {
             changes.push(`Next-Day Service: ${existingUser.dropOffEnabled} → ${dropOffEnabled}`);
@@ -241,14 +245,10 @@ module.exports.updatePermissions = async function(req, res) {
             changes.push(`Urgent Service: ${existingUser.premiumServiceEnabled} → ${premiumServiceEnabled}`);
         }
 
-        await Model.User.update(
-            { accountLocked, dropOffEnabled, premiumServiceEnabled },
-            { where: { id: userId } }
-        );
+        await Model.User.update(updateFields, { where: { id: userId } });
 
         req.flash('info', `${email} has been updated successfully`);
 
-        // Log the update only if there were changes
         if (changes.length > 0) {
             console.info(`[UPDATE PERMISSIONS] ${user.email} UPDATED ${email}: ${changes.join(", ")}`);
         }
@@ -269,7 +269,6 @@ module.exports.updatePermissions = async function(req, res) {
         });
     }
 };
-
 
 module.exports.showAddresses = async function(req, res) {
         try {

@@ -157,7 +157,21 @@ let OneTimePasscodeService = {
         } catch (error) {
             console.log(error)
         }
-    }
+    },
+
+    lockUserAccount: async function (user_id) {
+        try {
+            return await Model.User.update({
+                accountLocked: true,
+            }, {
+                where: {
+                    id: user_id
+                }
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    },
 
 }
 
