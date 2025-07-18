@@ -157,11 +157,14 @@ fs.copy(__dirname+'/data/strategy.js', __dirname+'/node_modules/passport-local/l
 // =====================================
 // GOV STYLES
 // =====================================
-app.use("/api/user/",express.static(__dirname + "/public"));
-app.use("/api/user/styles",express.static(__dirname + "/styles"));
-app.use("/api/user/fonts",express.static(__dirname + "/fonts"));
-app.use("/api/user/images",express.static(__dirname + "/images"));
-app.use("/api/user/js",express.static(__dirname + "/js"));
+const oneDay = 24 * 60 * 60 * 1000; // 1 day in milliseconds
+
+app.use("/api/user/", express.static(__dirname + "/public", { maxAge: oneDay }));
+app.use("/api/user/styles", express.static(__dirname + "/styles", { maxAge: oneDay }));
+app.use("/api/user/fonts", express.static(__dirname + "/fonts", { maxAge: oneDay }));
+app.use("/api/user/images", express.static(__dirname + "/images", { maxAge: oneDay }));
+app.use("/api/user/js", express.static(__dirname + "/js", { maxAge: oneDay }));
+
 
 //Pull in images from GOVUK packages
 
