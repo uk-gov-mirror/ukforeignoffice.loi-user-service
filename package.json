@@ -45,6 +45,6 @@
     "test": "NODE_ENV=test node node_modules/mocha/bin/_mocha --exit --timeout 10000 --recursive tests/"
   },
   "overrides": {
-    "cookie": "^0.7.0"
+    "cookie": "0.7.0"
   }
 }
