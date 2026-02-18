@@ -61,8 +61,6 @@ module.exports.showAccount = async function(req, res) {
         if (!account) return res.redirect('/api/user/complete-details');
 
         return res.render('account_pages/account.ejs', {
-            user: user,
-            account: account,
             url: envVariables,
             info: req.flash('info'),
             company_info: req.flash('company_info')
@@ -285,8 +283,6 @@ module.exports.showAddresses = async function(req, res) {
             const addresses = await Model.SavedAddress.findAll({ where: { user_id: user.id }, order: [['id', 'ASC']] });
 
             return res.render('account_pages/addresses.ejs', {
-                user: user,
-                account: account,
                 url: envVariables,
                 addresses: addresses,
                 info: req.flash('info')

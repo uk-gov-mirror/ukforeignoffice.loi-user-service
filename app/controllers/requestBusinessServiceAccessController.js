@@ -291,7 +291,7 @@ module.exports.approve = async function(req, res) {
         let token = req.params['token']
         let userAccountMatchingToken = await findAccountMatchingToken(token)
 
-        if (userAccountMatchingToken === null || userAccountMatchingToken.length === 0) {
+        if (!userAccountMatchingToken) {
             return res.render('account_pages/approve-reject-business-service-access.ejs', {
                 requestType: 'approve',
                 success: false
@@ -349,10 +349,10 @@ module.exports.approve = async function(req, res) {
         }
 
         async function sendAccountUpdateToOrbit(userAccountMatchingToken, userAccountDetails) {
+            const startTime = new Date();
             try {
                 const edmsManagePortalCustomerUrl = config.edmsHost + '/api/v1/managePortalCustomer';
                 const edmsBearerToken = await HelperService.getEdmsAccessToken();
-                const startTime = new Date();
 
                 const accountManagementObject = {
                     portalCustomerUpdate: {
@@ -471,10 +471,10 @@ module.exports.reject = async function(req, res) {
         }
 
         async function sendAccountUpdateToOrbit(userAccountMatchingToken, userAccountDetails) {
+            const startTime = new Date();
             try {
                 const edmsManagePortalCustomerUrl = config.edmsHost + '/api/v1/managePortalCustomer';
                 const edmsBearerToken = await HelperService.getEdmsAccessToken();
-                const startTime = new Date();
 
                 const accountManagementObject = {
                     portalCustomerUpdate: {
@@ -547,14 +547,14 @@ module.exports.reject = async function(req, res) {
 
         let token = req.params['token']
         let userAccountMatchingToken = await findAccountMatchingToken(token)
-        let userAccountDetails = await findAccountDetails(userAccountMatchingToken.id)
 
-        if (userAccountMatchingToken === null || userAccountMatchingToken.length === 0) {
+        if (!userAccountMatchingToken) {
             return res.render('account_pages/approve-reject-business-service-access.ejs', {
                 requestType: 'reject',
                 success: false
             });
         } else {
+            let userAccountDetails = await findAccountDetails(userAccountMatchingToken.id)
             await rejectPermissionsToUserAccount(userAccountMatchingToken)
             await clearCompanyName(userAccountMatchingToken)
             await emailService.businessServiceDecision(userAccountMatchingToken, 'reject')

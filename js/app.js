@@ -25,6 +25,7 @@ $(document).ready(function() {
     });
 
     $('#hide-confirmation').click(function(event){
+        event.preventDefault();
         if (browser.isIe() && browser.getVersion() <= 9) {
             return true;
         }
@@ -35,9 +36,9 @@ $(document).ready(function() {
         if (browser.isIe() && browser.getVersion() <= 9) {
             return true;
         }
-        //redirects to cookie screen, could maybe be a new tab instead
-        window.location ="/cookies";
+        window.location = "/cookies";
     });
+
 
     $('#save-cookie-changes').click(function(event){
         if (browser.isIe() && browser.getVersion() <= 9) {
@@ -142,6 +143,9 @@ $('#find-address').click(function(event){
                 clearResultAddresses();
             }else{
                 $('#postcode-error').addClass('hide');
+                $('#postcode-inline-error').hide();
+                $('#find-postcode').closest('.govuk-form-group').removeClass('govuk-form-group--error');
+                $('#find-postcode').removeClass('govuk-input--error').removeAttr('aria-describedby');
                 $("#sr-notification-container").empty().text("The postcode search was successful results are shown below.");
                 showResultAddresses(data.addresses);
             }
@@ -152,15 +156,27 @@ $('#find-address').click(function(event){
 
 function showPostCodeError(error){
     if (error === 'Enter your address manually instead'){
-        var html = '<h2 class="heading-medium error-summary-heading" id="error-summary-heading">Postcode search is not available at the moment</h2>' +
-            '<ul class="govuk-list govuk-error-summary__list"><li><a href="/api/user/your-address-manual">'+error+'</a></li></ul>';
+        var html = '<h2 class="govuk-error-summary__title" id="error-summary-heading">Postcode search is not available at the moment</h2>' +
+            '<div class="govuk-error-summary__body"><ul class="govuk-list govuk-error-summary__list"><li><a href="/api/user/your-address-manual">'+error+'</a></li></ul></div>';
         $('#postcode-error').removeClass('hide').html(html);
     }else{
-        var html = '<h2 class="heading-medium error-summary-heading" id="error-summary-heading">There is a problem</h2>' +
-            '<ul class="govuk-list govuk-error-summary__list"><li><a href="#find-postcode">'+error+'</a></li></ul>';
+        var html = '<h2 class="govuk-error-summary__title" id="error-summary-heading">There is a problem</h2>' +
+            '<div class="govuk-error-summary__body"><ul class="govuk-list govuk-error-summary__list"><li><a href="#find-postcode">'+error+'</a></li></ul></div>';
         $('#postcode-error').removeClass('hide').html(html);
     }
 
+    // Add GOV.UK error styling to form group and input
+    $('#find-postcode').closest('.govuk-form-group').addClass('govuk-form-group--error');
+    $('#find-postcode').addClass('govuk-input--error');
+
+    // Add or update inline error message
+    if ($('#postcode-inline-error').length) {
+        $('#postcode-inline-error').html('<span class="govuk-visually-hidden">Error:</span> ' + error).show();
+    } else {
+        $('<p id="postcode-inline-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> ' + error + '</p>')
+            .insertAfter('label[for="find-postcode"]');
+    }
+    $('#find-postcode').attr('aria-describedby', 'postcode-inline-error');
 }
 
 function clearResultAddresses(){

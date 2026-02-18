@@ -1,0 +1,10 @@
+// Cookie Banner - app-specific visibility overrides
+// Base styles are provided by govuk-frontend's cookie-banner component.
+// These rules handle JS-driven show/hide toggling for this app.
+
+// Hide the cookie message by default when JS is enabled
+// (JS will show it via inline style if cookies_preferences_set is not set)
+.js-enabled #global-cookie-message {
+  display: none;
+}
+

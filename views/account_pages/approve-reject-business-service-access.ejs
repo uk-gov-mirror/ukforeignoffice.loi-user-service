@@ -1,33 +1,31 @@
 <% pageTitle = "Approve or reject premium application - Get a document legalised – GOV.UK" %>
 
-<%- include ('../partials/header.ejs') %>
+<%- include('../partials/header.ejs') %>
 
-<div class="column-two-thirds">
-    <% if(requestType === 'approve') { %>
-    <h1 class="heading-xlarge">Approve Next-Day service access</h1>
-    <% } else { %>
+<% if(requestType === 'approve') { %>
+  <h1 class="heading-xlarge">Approve Next-Day service access</h1>
+<% } else { %>
     <h1 class="heading-xlarge">Reject Next-Day service access</h1>
-    <% } %>
+  <% } %>
 
-    <% if (success === false) { %>
+  <% if (success === false) { %>
 
-        <p>We could not find a user account associated with this request.</p>
+    <p>We could not find a user account associated with this request.</p>
 
-    <% } else { %>
+  <% } else { %>
 
-        <% if(requestType === 'approve') { %>
+      <% if(requestType === 'approve') { %>
 
-            <p>Next-Day service access has been granted for <%- userEmail %>.</p>
+        <p>Next-Day service access has been granted for <%- userEmail %>.</p>
 
-        <% } else { %>
+      <% } else { %>
 
-            <p>Next-Day service access has been rejected for <%- userEmail %>.</p>
+          <p>Next-Day service access has been rejected for <%- userEmail %>.</p>
 
         <% } %>
 
-    <% } %>
+      <% } %>
 
-    <button type="submit" class="govuk-button" onclick="window.open('', '_self', ''); window.close();">Close window</button>
-</div>
+      <button type="submit" class="govuk-button" onclick="window.open('', '_self', ''); window.close();">Close window</button>
 
-<%- include ('../partials/footer.ejs') %>
+      <%- include('../partials/footer.ejs') %>

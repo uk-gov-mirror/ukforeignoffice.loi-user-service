@@ -1,49 +1,46 @@
 <% pageTitle = "Manage user permissions - Get a document legalised – GOV.UK" %>
 
 <%if(error){
-    pageTitle = "Error: Manage user permissions - Get a document legalised – GOV.UK"
+pageTitle = "Error: Manage user permissions - Get a document legalised – GOV.UK"
 } %>
 
-<%- include ('../partials/header.ejs') %>
-<%- include ('../partials/inner-header.ejs') %>
+<%- include('../partials/header.ejs') %>
 
 <% if (info.length > 0) { %>
-    <div class="alert alert--success" role="alert"><p class="alert__message"><%= info %></p></div>
+  <div class="alert alert--success" role="alert"><p class="alert__message"><%= info %></p></div>
 <% } %>
 
-<div class="column-two-thirds">
-
-    <%if(error){%><br><%}%>
-
-    <div class="govuk-error-summary <% if (error) { %>show<% } else { %>hide<% } %>" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1" autofocus>
-        <p class="govuk-error-summary__title" id="error-summary-heading-example-2">There is a problem</p>
-        <div id="all-errors">
-            <ul class="govuk-list govuk-error-summary__list">
-                <% if (error) {  %>
-                    <li><a href="#search-email"><%= error %></a></li>
-                <% } %>
-            </ul>
-        </div>
+<% if (error) { %>
+  <div class="govuk-error-summary" data-module="govuk-error-summary" role="alert" aria-labelledby="error-summary-title" tabindex="-1" autofocus>
+    <h2 class="govuk-error-summary__title" id="error-summary-title">There is a problem</h2>
+    <div class="govuk-error-summary__body">
+      <ul class="govuk-list govuk-error-summary__list">
+        <li><a href="#search-email"><%= error %></a></li>
+      </ul>
     </div>
+  </div>
+<% } %>
 
-    <h1 class="heading-xlarge">Manage user permissions</h1>
+<h1 class="heading-xlarge">Manage user permissions</h1>
 
-    <form action="/api/user/admin-search-email?_csrf=<%=_csrf%>" method="post" id="search-form">
-        <fieldset class="govuk-fieldset">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                <h1 class="govuk-fieldset__heading">Find a user by email</h1>
-            </legend>
-            <div class="govuk-form-group" style="position: relative;">
-                <label class="govuk-visually-hidden" for="search-email">Enter email address</label>
-                <input class="govuk-input" id="search-email" name="searchEmail" type="email" autocomplete="off" aria-describedby="search-email-hint">
+<div >
 
-                <!-- Custom styled dropdown instead of <datalist> -->
-                <div id="email-suggestions-container"></div>
-            </div>
-            <button class="govuk-button" type="submit">Search user</button>
-        </fieldset>
-    </form>
+  <form action="/api/user/admin-search-email?_csrf=<%=_csrf%>" method="post" id="search-form">
+  <div class="govuk-form-group <% if (error) { %>govuk-form-group--error<% } %>" style="position: relative;">
+  <label class="govuk-label govuk-label--s" for="search-email">Find a user by email</label>
+  <% if (error) { %>
+    <p id="search-email-error" class="govuk-error-message">
+      <span class="govuk-visually-hidden">Error:</span> <%= error %>
+    </p>
+  <% } %>
+  <input class="govuk-input <% if (error) { %>govuk-input--error<% } %>" id="search-email" name="searchEmail" type="email" autocomplete="off" <% if (error) { %>aria-describedby="search-email-error"<% } %>>
+
+  <!-- Custom styled dropdown instead of <datalist> -->
+  <div id="email-suggestions-container"></div>
 </div>
+<button class="govuk-button" type="submit">Search user</button>
+</form>
 
-<script src="/api/user/js/admin-section.js"></script>
-<%- include ('../partials/footer.ejs') %>
+</div>
+<script src="/api/user/js/admin-section.js?v=<%= locals.cacheBust || '' %>"></script>
+<%- include('../partials/footer.ejs') %>

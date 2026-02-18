@@ -1,308 +1,302 @@
 <% pageTitle = "Create an account - Get a document legalised – GOV.UK" %>
 
 <%if(error){
-    pageTitle = "Error: Create an account - Get a document legalised – GOV.UK"
+pageTitle = "Error: Create an account - Get a document legalised – GOV.UK"
 } %>
+<% locals.innerHeaderBackLink = back_link %>
 
-<%- include ('partials/header') %>
-
-<%if(back_link){%><a href="<%= back_link%>" class="back_to_previous_button govuk-link">Back</a><%}%>
+<%- include('partials/header.ejs') %>
 <%if(error){%><br>
 <%}%>
 <div class="col-sm-6 col-sm-offset-3">
 
-    <div class="column-two-thirds">
-        <!-- show any messages that come back with authentication -->
-        <div style=" margin-top: 0px; " class="govuk-error-summary  <% if (error) { %>show<% } else { %>hide<% } %>" role="alert" aria-labelledby="error-summary-heading"
-             tabindex="-1" autofocus>
+  <div>
+    <!-- show any messages that come back with authentication -->
+    <div style=" margin-top: 0px; " class="govuk-error-summary <% if (error) { %>show<% } else { %>hide<% } %>" role="alert" aria-labelledby="error-summary-heading"
+    tabindex="-1" autofocus>
 
-            <h2 class="govuk-error-summary__title" id="error-summary-heading">
-                There is a problem
+    <h2 class="govuk-error-summary__title" id="error-summary-heading">
+      There is a problem
 
-            </h2>
+    </h2>
 
-            <ul class="govuk-list govuk-error-summary__list">
-                <%if (error) { %>
-                <%error.forEach(function(err){%>
-                <% if (err.email) { %>
-                <li><a href="#email"><%= err.email %></a></li>
-                <% } %>
-                <% if (err.confirm_email) { %>
-                <li><a href="#confirm_email"><%= err.confirm_email %></a></li>
-                <% } %>
-                <% if (err.password) { %>
-                <% if (passwordErrorType.toString().includes("blacklist") && (passwordErrorType.toString().includes("phraselist"))){%>
-                    <li><a id="bothlists" href="#legend_password"><%= err.password %></a></li>
-                <% } else if (passwordErrorType.toString().includes("phraselist")){%>
-                    <li><a id="phraselist" href="#legend_password"><%= err.password %></a></li>
-                <% } else if (passwordErrorType.toString().includes("blacklist")){%>
-                    <li><a id="blacklist" href="#legend_password"><%= err.password %></a></li>
+    <ul class="govuk-list govuk-error-summary__list">
+      <%if (error) { %>
+        <%error.forEach(function(err){%>
+          <% if (err.email) { %>
+            <li><a href="#email"><%= err.email %></a></li>
+          <% } %>
+          <% if (err.confirm_email) { %>
+            <li><a href="#confirm_email"><%= err.confirm_email %></a></li>
+          <% } %>
+          <% if (err.password) { %>
+            <% if (passwordErrorType.toString().includes("blacklist") && (passwordErrorType.toString().includes("phraselist"))){%>
+              <li><a id="bothlists" href="#legend_password"><%= err.password %></a></li>
+            <% } else if (passwordErrorType.toString().includes("phraselist")){%>
+                <li><a id="phraselist" href="#legend_password"><%= err.password %></a></li>
+              <% } else if (passwordErrorType.toString().includes("blacklist")){%>
+                  <li><a id="blacklist" href="#legend_password"><%= err.password %></a></li>
                 <% } else { %>
                     <li><a href="#password"><%= err.password %></a></li>
-                <% } %>
+                  <% } %>
                 <% } %>
                 <% if (err.confirm_password) { %>
-                <li><a href="#confirm_password"><%= err.confirm_password %></a></li>
+                  <li><a href="#confirm_password"><%= err.confirm_password %></a></li>
                 <% } %>
                 <% if (err.business) { %>
-                <li><a href="#radio-indent-1"><%= err.business %></a></li>
+                  <li><a href="#radio-indent-1"><%= err.business %></a></li>
                 <% } %>
                 <% if (err.company_name) { %>
-                <li><a href="#company_name"><%= err.company_name %></a></li>
+                  <li><a href="#company_name"><%= err.company_name %></a></li>
                 <% } %>
                 <% if (err.company_verification_check) { %>
-                <li><a href="#company_verification_check"><%= err.company_verification_check %></a></li>
+                  <li><a href="#company_verification_check"><%= err.company_verification_check %></a></li>
                 <% } %>
                 <% if (err.agree) { %>
-                <li><a href="#all_info_correct"><%= err.agree %></a></li>
+                  <li><a href="#all_info_correct"><%= err.agree %></a></li>
                 <% } %>
                 <% if (err.user_exists) { %>
-                <li class="error-no-link"><%= err.user_exists %></li>
+                  <li class="error-no-link"><%= err.user_exists %></li>
                 <% } %>
-                <% }) %>
-                <%}%>
-            </ul>
+              <% }) %>
+            <%}%>
+          </ul>
 
         </div>
 
         <h1 class="heading-xlarge">Create an account</h1>
 
         <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">
-                        Benefits of creating an account
-                    </span>
-            </summary>
-            <div class="govuk-details__text">
-                <p>Online accounts are required for our Next-Day business service. For the standard postal service they're
-                    optional. You'll get most benefit if you're a regular customer.</p>
-                <p>With an online account you can:</p>
-                <ul class="tick-list">
-                    <li><i aria-hidden="true" class="flaticon-checked21 no-margin"></i>make applications more quickly by saving your details
-                        e.g. addresses, payment details</li>
-                    <li><i aria-hidden="true" class="flaticon-checked21 no-margin"></i>check the status of an application</li>
-                    <li><i aria-hidden="true" class="flaticon-checked21 no-margin"></i>see your recent application history</li>
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Benefits of creating an account
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p>Online accounts are required for our Next-Day business service. For the standard postal service they're
+              optional. You'll get most benefit if you're a regular customer.</p>
+              <p>With an online account you can:</p>
+              <ul class="tick-list">
+                <li><i aria-hidden="true" class="flaticon-checked21 no-margin"></i>make applications more quickly by saving your details
+                  e.g. addresses, payment details</li>
+                  <li><i aria-hidden="true" class="flaticon-checked21 no-margin"></i>check the status of an application</li>
+                  <li><i aria-hidden="true" class="flaticon-checked21 no-margin"></i>see your recent application history</li>
                 </ul>
-            </div>
-        </details>
+              </div>
+            </details>
 
+            <!-- REGISTER FORM -->
+            <form action="/api/user/register?_csrf=<%=_csrf%>" method="post" id="register-form">
+            <div class="govuk-form-group <% if ((erroneousFields && erroneousFields[0].email == true)) { %>error<% } %>" id="legend_email">
+            <label for="email" class="govuk-label govuk-label--s">Email</label>
+            <span class="error-message">
+              <%if (error) { %>
+                <%error.forEach(function(err){%>
+                  <% if (err.email) { %>
+                    <%= err.email %>
+                  <% } %>
+                <% }) %>
+              <%}%>
+            </span>
 
-        <!-- REGISTER FORM -->
-        <form action="/api/user/register?_csrf=<%=_csrf%>" method="post" id="register-form">
-            <div class="form-group <% if ((erroneousFields && erroneousFields[0].email == true)) { %>error<% } %>" id="legend_email">
-                <label for="email" class="form-label-bold">Email</label>
-                    <span class="error-message">
-                        <%if (error) { %>
-                        <%error.forEach(function(err){%>
-                            <% if (err.email) { %>
-                                <%= err.email %>
-                            <% } %>
-                        <% }) %>
-                        <%}%>
-                    </span>
+            <input class="govuk-input govuk-!-width-one-half" id="email" name="email" autocomplete="off" aria-required="true" type="text" value="<% if (form_values && form_values.email!=='') { %><%=form_values.email%><% } %>">
+            <div id="email_hint" style="display: none;"></div>
+          </div>
 
-                    <input class="govuk-input govuk-!-width-one-half" id="email" name="email" autocomplete="off" aria-required="true" type="text" value="<% if (form_values && form_values.email!=='') { %><%=form_values.email%><% } %>">
-                    <div id="email_hint" style="display: none;"></div>
-            </div>
+          <div class="govuk-form-group <% if (erroneousFields && (erroneousFields[0].email == true || erroneousFields[0].confirm_email == true)) { %>error<% } %>" id="legend_confirm_email">
+          <label for="confirm_email" class="govuk-label govuk-label--s">Confirm email</label>
+          <span class="error-message">
+            <%if (error) { %>
+              <%error.forEach(function(err){%>
+                <% if (err.confirm_email) { %>
+                  <%= err.confirm_email %>
+                <% } %>
+              <% }) %>
+            <%}%>
+          </span>
+          <input class="govuk-input govuk-!-width-one-half" id="confirm_email" name="confirm_email" autocomplete="off" type="text" value="<% if (form_values && form_values.confirm_email!=='') { %><%=form_values.confirm_email%><%}%>">
+        </div>
 
-            <div class="form-group <% if (erroneousFields && (erroneousFields[0].email == true || erroneousFields[0].confirm_email == true)) { %>error<% } %>" id="legend_confirm_email">
-                <label for="confirm_email" class="form-label-bold">Confirm email</label>
-                <span class="error-message">
-                    <%if (error) { %>
-                    <%error.forEach(function(err){%>
-                        <% if (err.confirm_email) { %>
-                            <%= err.confirm_email %>
-                        <% } %>
-                    <% }) %>
-                    <%}%>
-                </span>
-                <input class="govuk-input govuk-!-width-one-half" id="confirm_email" name="confirm_email" autocomplete="off" type="text" value="<%  if (form_values && form_values.confirm_email!=='') {  %><%=form_values.confirm_email%><%}%>">
-            </div>
+        <div class="govuk-form-group <% if (erroneousFields && erroneousFields[0].password == true && JSON.stringify(error).indexOf('password') > -1) { %>error<% } %>" id="legend_password">
+        <label for="password" class="govuk-label govuk-label--s">Password</label>
 
-            <div class="form-group <% if (erroneousFields && erroneousFields[0].password == true && JSON.stringify(error).indexOf('password') > -1) { %>error<% } %>" id="legend_password">
-                <label for="password" class="form-label-bold">Password</label>
+        <span class="govuk-hint">Minimum 8 characters, including 1 uppercase letter, 1 number and 1 special character (e.g. !, @, #)</span>
+        <legend class="visuallyhidden">Password
 
-                    <span class="form-hint">Minimum 8 characters, including 1 uppercase letter, 1 number and 1 special character (e.g. !, @, #)</span>
-                    <legend class="visuallyhidden">Password
+        </legend>
+        <span class="error-message">
+          <%if (error) { %>
+            <%error.forEach(function(err){%>
+              <% if (err.password) { %>
+                <%= err.password %>
+              <% } %>
+            <% }) %>
+          <%}%>
+        </span>
 
-                    </legend>
-                    <span class="error-message">
-                        <%if (error) { %>
-                        <%error.forEach(function(err){%>
-                            <% if (err.password) { %>
-                                <%= err.password %>
-                            <% } %>
-                        <% }) %>
-                        <%}%>
-                    </span>
+        <input class="govuk-input govuk-!-width-one-half" id="password" autocomplete="off" aria-required="true" name="password" type="password">
 
-                    <input class="govuk-input govuk-!-width-one-half" id="password" autocomplete="off" aria-required="true" name="password" type="password">
+      </div>
 
-            </div>
+      <div class="govuk-form-group <% if (erroneousFields && (erroneousFields[0].password == true || erroneousFields[0].confirm_password == true) && JSON.stringify(error).indexOf('confirm_password') > -1) { %>error<% } %>"
+      id="legend_confirm_password">
+      <label for="confirm_password" class="govuk-label govuk-label--s">Confirm password</label>
+      <legend class="visuallyhidden">Confirm password
 
-            <div class="form-group <% if (erroneousFields && (erroneousFields[0].password == true || erroneousFields[0].confirm_password == true) && JSON.stringify(error).indexOf('confirm_password') > -1)  { %>error<% } %>"
-                 id="legend_confirm_password">
-                <label for="confirm_password" class="form-label-bold">Confirm password</label>
-                    <legend class="visuallyhidden">Confirm password
+      </legend>
+      <span class="error-message">
+        <%if (error) { %>
+          <%error.forEach(function(err){%>
+            <% if (err.confirm_password) { %>
+              <%= err.confirm_password %>
+            <% } %>
+          <% }) %>
+        <%}%>
+      </span>
 
-                    </legend>
-                    <span class="error-message">
-                        <%if (error) { %>
-                        <%error.forEach(function(err){%>
-                            <% if (err.confirm_password) { %>
-                                <%= err.confirm_password %>
-                            <% } %>
-                        <% }) %>
-                        <%}%>
-                    </span>
-
-
-                    <input class="govuk-input govuk-!-width-one-half" id="confirm_password" autocomplete="off" aria-required="true" name="confirm_password" type="password">
-            </div>
-
-
-            <div class="form-group <% if (erroneousFields && erroneousFields[0].business_yes_no) { %>error<% } %>">
-                    <label id="legend_business" class="form-label-bold">Are you registering on behalf of a business?
-                    </label>
-
-                    <span class="form-hint">Businesses who will regularly submit documents in bulk may be eligible to access our Next-Day service</span>
-
-                    <div class="" id="business-question">
-
-                        <fieldset class="inline" aria-required="true" role="radiogroup">
-                            <label class="visuallyhidden">Confirm whether you are registering on behalf of a business
-
-                            </label>
-                            <span class="error-message">
-                                <%if (error) { %>
-                                <%error.forEach(function(err){%>
-                                    <% if (err.business) { %>
-                                        <%= err.business %>
-                                    <% } %>
-                                <% }) %>
-                                <%}%>
-                            </span>
-                            <div class="govuk-radios govuk-radios--inline">
-
-                                <div class="govuk-radios__item">
-
-                                    <input class="govuk-radios__input" id="radio-indent-1" type="radio"
-                                           name="business_yes_no" data-target="business-info" value="Yes"
-                                           <% if (form_values && form_values.business_yes_no == 'Yes'
-                                           ){ %>checked
-                                            <% } %>
-                                    >
-                                    <label class="govuk-radios__label <% if (form_values && form_values.business_yes_no == 'Yes'){ %>selected<% } %>"
-                                           data-target="business-info"
-                                           for="radio-indent-1">
-                                        Yes
-                                    </label>
-                                </div>
-                                <div class="govuk-radios__item">
-
-                                    <input class="govuk-radios__input" id="radio-indent-2" type="radio"  data-target="business-info-hide"
-                                           name="business_yes_no" value="No"
-                                           <% if (form_values && form_values.business_yes_no == 'No'
-                                           ){ %>checked
-                                            <% } %>
-                                    >
-                                    <label class="govuk-radios__label <% if (form_values && form_values.business_yes_no == 'No'){ %>selected<% } %>"
-                                           for="radio-indent-2">
-                                        No
-                                    </label>
-                                </div>
-                            </div>
-                        </fieldset>
-                        <div class="panel panel-border-narrow  <% if (erroneousFields && erroneousFields[0].company_name) { %>error<% } %> <% if (form_values && form_values.business_yes_no == 'Yes'){ %><% }else{ %>js-hidden<% } %>"
-                             id="business-info">
-
-                            <label class="form-label-bold" for="company_name">Company name</label>
-                                        <span class="error-message">
-                                            <%if (error) { %>
-                                            <%error.forEach(function(err){%>
-                                                <% if (err.company_name) { %>
-                                                    <%= err.company_name %>
-                                                <% } %>
-                                            <% }) %>
-                                            <%}%>
-                                        </span>
-
-                                <input class="govuk-input govuk-!-width-one-half" name="company_name" type="text" id="company_name"
-                                       value="<% if (form_values && form_values.company_name !== '') { %><%= form_values.company_name %><% } %>">
-                            <br /><br />
-                            <label class="form-label-bold" for="company_verification_check">Company verification</label>
-                            <span class="form-hint">The Next-Day service is for approved businesses only. The Legalisation Office may ask for evidence to verify your details e.g. company letter, VAT number, Companies House number</span>
-                                <legend id="legend_company_verification_check"
-                                        class="visuallyhidden">Company verification
-                                </legend>
-                                <span class="error-message">
-                                    <%if (error) { %>
-                                    <%error.forEach(function(err){%>
-                                        <% if (err.company_verification_check) { %>
-                                            <%= err.company_verification_check %>
-                                        <% } %>
-                                    <% }) %>
-                                    <%}%>
-                                </span>
-                                <div class="govuk-checkboxes__item">
-
-                                <input class="govuk-checkboxes__input" type="checkbox" name="company_verification_check"
-                                       id="company_verification_check"
-                                       <% if (form_values && form_values.company_verification_check &&
-                                               form_values.company_verification_check === true) { %>checked
-                                        <% } %>
-                                >
-                                <label class="govuk-checkboxes__label" for="company_verification_check">
-                                     I confirm that I represent a business and will provide evidence when asked
-                                </label>
-                                </div>
-
-                        </div>
-                    </div>
-
-
-            </div>
-
-            <div class="form-group <% if (erroneousFields && erroneousFields[0].all_info_correct) { %>error<% } %>" id="legend_agree_terms">
-                <p>By continuing you confirm that:</p>
-
-                <ul>
-                    <li>the information you've given is correct</li>
-                    <li>you agree to the <a class="govuk-link" href="<%= applicationServiceURL %>terms-and-conditions">terms and conditions</a></li>
-                </ul>
-                    <legend class="visuallyhidden">Agree terms and conditions
-                    </legend>
-                <span class="error-message">
-                    <%if (error) { %>
-                    <%error.forEach(function(err){%>
-                        <% if (err.agree) { %>
-                            <%= err.agree %>
-                        <% } %>
-                    <% }) %>
-                    <%}%>
-                </span>
-
-                    <div class="govuk-checkboxes__item">
-                    <input type="hidden" name="all_info_correct" id="all_info_correct_hidden" value="-1">
-                    <input class="govuk-checkboxes__input" type="checkbox" name="all_info_correct" id="all_info_correct" <% if (form_values && form_values.all_info_correct &&
-                            form_values.all_info_correct===true) { %>checked
-                            <% } %>>
-                    <label class="govuk-checkboxes__label" for="all_info_correct">
-                         I agree
-                    </label>
-                    </div>
-
-            </div>
-
-
-            <button type="submit" class="govuk-button">Create an account</button>
-        </form>
-
-        <hr>
-
-        <p>Already got an account? <a class="govuk-link" href="/api/user/sign-in?from=/api/user/register">Sign in</a></p>
+      <input class="govuk-input govuk-!-width-one-half" id="confirm_password" autocomplete="off" aria-required="true" name="confirm_password" type="password">
     </div>
+
+    <div class="govuk-form-group <% if (erroneousFields && erroneousFields[0].business_yes_no) { %>error<% } %>">
+    <label id="legend_business" class="govuk-label govuk-label--s">Are you registering on behalf of a business?
+    </label>
+
+    <span class="govuk-hint">Businesses who will regularly submit documents in bulk may be eligible to access our Next-Day service</span>
+
+    <div id="business-question">
+
+      <fieldset class="inline" aria-required="true" role="radiogroup">
+        <label class="visuallyhidden">Confirm whether you are registering on behalf of a business
+
+        </label>
+        <span class="error-message">
+          <%if (error) { %>
+            <%error.forEach(function(err){%>
+              <% if (err.business) { %>
+                <%= err.business %>
+              <% } %>
+            <% }) %>
+          <%}%>
+        </span>
+        <div class="govuk-radios govuk-radios--inline">
+
+          <div class="govuk-radios__item">
+
+            <input class="govuk-radios__input" id="radio-indent-1" type="radio"
+            name="business_yes_no" data-target="business-info" value="Yes"
+            <% if (form_values && form_values.business_yes_no == 'Yes'
+            ){ %>checked
+          <% } %>
+          >
+          <label class="govuk-radios__label <% if (form_values && form_values.business_yes_no == 'Yes'){ %>selected<% } %>"
+          data-target="business-info"
+          for="radio-indent-1">
+          Yes
+        </label>
+      </div>
+      <div class="govuk-radios__item">
+
+        <input class="govuk-radios__input" id="radio-indent-2" type="radio" data-target="business-info-hide"
+        name="business_yes_no" value="No"
+        <% if (form_values && form_values.business_yes_no == 'No'
+        ){ %>checked
+      <% } %>
+      >
+      <label class="govuk-radios__label <% if (form_values && form_values.business_yes_no == 'No'){ %>selected<% } %>"
+      for="radio-indent-2">
+      No
+    </label>
+  </div>
+</div>
+</fieldset>
+<div class="panel panel-border-narrow <% if (erroneousFields && erroneousFields[0].company_name) { %>error<% } %> <% if (form_values && form_values.business_yes_no == 'Yes'){ %><% }else{ %>js-hidden<% } %>"
+id="business-info">
+
+<label class="govuk-label govuk-label--s" for="company_name">Company name</label>
+<span class="error-message">
+  <%if (error) { %>
+    <%error.forEach(function(err){%>
+      <% if (err.company_name) { %>
+        <%= err.company_name %>
+      <% } %>
+    <% }) %>
+  <%}%>
+</span>
+
+<input class="govuk-input govuk-!-width-one-half" name="company_name" type="text" id="company_name"
+value="<% if (form_values && form_values.company_name !== '') { %><%= form_values.company_name %><% } %>">
+<br /><br />
+<label class="govuk-label govuk-label--s" for="company_verification_check">Company verification</label>
+<span class="govuk-hint">The Next-Day service is for approved businesses only. The Legalisation Office may ask for evidence to verify your details e.g. company letter, VAT number, Companies House number</span>
+<legend id="legend_company_verification_check"
+class="visuallyhidden">Company verification
+</legend>
+<span class="error-message">
+  <%if (error) { %>
+    <%error.forEach(function(err){%>
+      <% if (err.company_verification_check) { %>
+        <%= err.company_verification_check %>
+      <% } %>
+    <% }) %>
+  <%}%>
+</span>
+<div class="govuk-checkboxes__item">
+
+  <input class="govuk-checkboxes__input" type="checkbox" name="company_verification_check"
+  id="company_verification_check"
+  <% if (form_values && form_values.company_verification_check &&
+  form_values.company_verification_check === true) { %>checked
+<% } %>
+>
+<label class="govuk-checkboxes__label" for="company_verification_check">
+  I confirm that I represent a business and will provide evidence when asked
+</label>
+</div>
+
+</div>
+</div>
 
 </div>
 
-<%- include ('partials/footer') %>
+<div class="govuk-form-group <% if (erroneousFields && erroneousFields[0].all_info_correct) { %>error<% } %>" id="legend_agree_terms">
+<p>By continuing you confirm that:</p>
+
+<ul>
+  <li>the information you've given is correct</li>
+  <li>you agree to the <a class="govuk-link" href="<%= applicationServiceURL %>terms-and-conditions">terms and conditions</a></li>
+</ul>
+<legend class="visuallyhidden">Agree terms and conditions
+</legend>
+<span class="error-message">
+  <%if (error) { %>
+    <%error.forEach(function(err){%>
+      <% if (err.agree) { %>
+        <%= err.agree %>
+      <% } %>
+    <% }) %>
+  <%}%>
+</span>
+
+<div class="govuk-checkboxes__item">
+  <input type="hidden" name="all_info_correct" id="all_info_correct_hidden" value="-1">
+  <input class="govuk-checkboxes__input" type="checkbox" name="all_info_correct" id="all_info_correct" <% if (form_values && form_values.all_info_correct &&
+  form_values.all_info_correct===true) { %>checked
+  <% } %>>
+  <label class="govuk-checkboxes__label" for="all_info_correct">
+    I agree
+  </label>
+</div>
+
+</div>
+
+<button type="submit" class="govuk-button">Create an account</button>
+</form>
+
+<hr>
+
+<p>Already got an account? <a class="govuk-link" href="/api/user/sign-in?from=/api/user/register">Sign in</a></p>
+</div>
+
+</div>
+
+<%- include('partials/footer.ejs') %>

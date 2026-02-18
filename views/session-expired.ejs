@@ -1,22 +1,22 @@
 <% pageTitle = "Session expired - Get a document legalised – GOV.UK" %>
 
-<%- include ('partials/header.ejs') %>
+<%- include('partials/header.ejs') %>
 
 <div class="container">
 
-    <h1 class="heading-xlarge">Your application has timed out</h1>
+  <h1 class="heading-xlarge">Your application has timed out</h1>
 
-    <div class="intro column-two-thirds">
+  <div class="intro ">
 
-        <p>You haven't entered any details for 30 minutes, so we've cleared your information to keep it secure.</p>
-        <ul>
-            <li><a href="<%= startNewApplicationUrl %>">Start a new application</a></li>
-            <li><a href="https://www.gov.uk">GOV.UK home page</a></li>
-        </ul>
+    <p>You haven't entered any details for 30 minutes, so we've cleared your information to keep it secure.</p>
+    <ul>
+      <li><a href="<%= startNewApplicationUrl %>">Start a new application</a></li>
+      <li><a href="https://www.gov.uk">GOV.UK home page</a></li>
+    </ul>
 
-    </div>
+  </div>
 
 </div>
 
-<%- include ('partials/footer.ejs') %>
+<%- include('partials/footer.ejs') %>
 

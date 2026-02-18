@@ -1,114 +1,107 @@
 <% pageTitle = "Your account - Get a document legalised – GOV.UK" %>
 
-<%- include ('../partials/header.ejs') %>
+<%- include('../partials/header.ejs') %>
+<div >
 
-<%- include ('../partials/inner-header.ejs') %>
-<div class="column-two-thirds">
-
-    <h1 class="heading-xlarge" style="margin-bottom: 25px">Personal details</h1>
-    <% if (info.length > 0) { %>
+  <h1 class="heading-xlarge" style="margin-bottom: 25px">Personal details</h1>
+  <% if (info.length > 0) { %>
     <div class="alert alert--success" role="alert"><p class="alert__message"><%= info %></p></div>
-    <% } %>
+  <% } %>
 
-    <div class="form-group" style="margin-bottom: 0px;">
-        <table class="review-personal-details summary-table">
-            <tbody>
-            <tr>
-                <td class="summary-table-cell-label">First name</td>
-                <td class="summary-table-cell-content"><%= account.first_name%></td>
-                <td class="summary-table-cell-link"><a class="govuk-link" href="/api/user/change-details">Change<span class="visually-hidden"> first name</span></a></td>
-            </tr>
-            <tr>
-                <td class="summary-table-cell-label">Last name</td>
-                <td class="summary-table-cell-content"><%= account.last_name%></td>
-                <td class="summary-table-cell-link"><a class="govuk-link" href="/api/user/change-details">Change<span class="visually-hidden"> last name</span></a></td>
-            </tr>
-            <tr>
-                <td class="summary-table-cell-label">Mobile No</td>
-                <td class="summary-table-cell-content">
-                    <% if(account.mobileNo != null){ %>
-                        <%= account.mobileNo %>
-                    <% }else{ %>
-                        None provided
-                    <% } %></td>
-                <td class="summary-table-cell-link"><a class="govuk-link" href="<% if (user.mfaPreference === 'Email') { %>/api/user/change-details<%} else { %> /api/user/change-mfa <% } %>">Change<span class="visually-hidden"> mobile number</span></a></td>
-            </tr>
-            <tr>
-                <td class="summary-table-cell-label">Secondary No</td>
-                <td class="summary-table-cell-content">
-                    <% if(account.telephone !== null && account.telephone !== ''){ %>
-                        <%= account.telephone %>
-                    <% }else{ %>
-                        None provided
-                    <% } %></td>
-                <td class="summary-table-cell-link"><a class="govuk-link" href="/api/user/change-details">Change<span class="visually-hidden"> secondary phone number</span></a></td>
-            </tr>
-            <tr>
-                <td class="summary-table-cell-label">Feedback consent</td>
-                <td class="summary-table-cell-content"><%= account.feedback_consent==null? 'Not set':account.feedback_consent ? 'Yes' : 'No'%></td>
-                <td class="summary-table-cell-link"><a class="govuk-link" href="/api/user/change-details">Change<span class="visually-hidden"> feedback consent</span></a></td>
-            </tr>
-            <tr>
-                <td class="summary-table-cell-label">Email</td>
-                <td class="summary-table-cell-content"><%= user.email%></td>
-                <td class="summary-table-cell-link"><a class="govuk-link" href="/api/user/change-email">Change <span class="visually-hidden"> email</span></a></td>
-            </tr>
-            <tr>
-                <td class="summary-table-cell-label">Password</td>
-                <td class="summary-table-cell-content">***********</td>
-                <td class="summary-table-cell-link"> <a class="govuk-link" href="/api/user/change-password">Change<span class="visually-hidden"> password</span></a></td>
-            </tr>
-            <tr>
-                <td class="summary-table-cell-label">MFA preference</td>
-                <td class="summary-table-cell-content"><%= user.mfaPreference %></td>
-                <td class="summary-table-cell-link"> <a class="govuk-link" href="/api/user/change-mfa">Change<span class="visually-hidden"> mfa</span></a></td>
-            </tr>
-
-            </tbody>
-        </table>
-
+  <div class="govuk-form-group" style="margin-bottom: 0px;">
+    <dl class="govuk-summary-list review-personal-details">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">First name</dt>
+        <dd class="govuk-summary-list__value"><%= account.first_name%></dd>
+        <dd class="govuk-summary-list__actions"><a class="govuk-link" href="/api/user/change-details">Change<span class="govuk-visually-hidden"> first name</span></a></dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Last name</dt>
+        <dd class="govuk-summary-list__value"><%= account.last_name%></dd>
+        <dd class="govuk-summary-list__actions"><a class="govuk-link" href="/api/user/change-details">Change<span class="govuk-visually-hidden"> last name</span></a></dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Mobile No</dt>
+        <dd class="govuk-summary-list__value">
+          <% if(account.mobileNo != null){ %>
+            <%= account.mobileNo %>
+          <% }else{ %>
+              None provided
+            <% } %>
+          </dd>
+          <dd class="govuk-summary-list__actions"><a class="govuk-link" href="<% if (user.mfaPreference === 'Email') { %>/api/user/change-details<% } else { %>/api/user/change-mfa<% } %>">Change<span class="govuk-visually-hidden"> mobile number</span></a></dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Secondary No</dt>
+          <dd class="govuk-summary-list__value">
+            <% if(account.telephone !== null && account.telephone !== ''){ %>
+              <%= account.telephone %>
+            <% }else{ %>
+                None provided
+              <% } %>
+            </dd>
+            <dd class="govuk-summary-list__actions"><a class="govuk-link" href="/api/user/change-details">Change<span class="govuk-visually-hidden"> secondary phone number</span></a></dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Feedback consent</dt>
+            <dd class="govuk-summary-list__value"><%= account.feedback_consent==null? 'Not set':account.feedback_consent ? 'Yes' : 'No'%></dd>
+            <dd class="govuk-summary-list__actions"><a class="govuk-link" href="/api/user/change-details">Change<span class="govuk-visually-hidden"> feedback consent</span></a></dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Email</dt>
+            <dd class="govuk-summary-list__value"><%= user.email%></dd>
+            <dd class="govuk-summary-list__actions"><a class="govuk-link" href="/api/user/change-email">Change<span class="govuk-visually-hidden"> email</span></a></dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Password</dt>
+            <dd class="govuk-summary-list__value">***********</dd>
+            <dd class="govuk-summary-list__actions"><a class="govuk-link" href="/api/user/change-password">Change<span class="govuk-visually-hidden"> password</span></a></dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">MFA preference</dt>
+            <dd class="govuk-summary-list__value"><%= user.mfaPreference %></dd>
+            <dd class="govuk-summary-list__actions"><a class="govuk-link" href="/api/user/change-mfa">Change<span class="govuk-visually-hidden"> mfa</span></a></dd>
+          </div>
+        </dl>
 
         <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                    How to close your account
-                </span>
-            </summary>
-            <div class="govuk-details__text">
-                If you want to close your account please contact us at <a class="govuk-link" href="mailto:legalisation@fcdo.gov.uk">legalisation@fcdo.gov.uk</a>
-            </div>
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              How to close your account
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            If you want to close your account please contact us at <a class="govuk-link" href="mailto:legalisation@fcdo.gov.uk">legalisation@fcdo.gov.uk</a>
+          </div>
         </details>
 
-    </div>
-
-
-</div>
-
-<%if(user.dropOffEnabled){%>
-<h1 class="heading-xlarge" style="margin-bottom: 25px">Company details</h1>
-
-<div class="column-two-thirds" style="margin-bottom: 50px">
-    <div class="form-group">
-        <% if (company_info.length > 0) { %>
-        <div class="alert alert--success" role="alert"><p class="alert__message"><%= company_info %></p></div>
-        <% } %>
-        <table class="review-personal-details summary-table">
-            <tbody>
-            <tr>
-                <td class="summary-table-cell-label">Company name</td>
-                <td class="summary-table-cell-content"><%= account.company_name%></td>
-                <td class="summary-table-cell-link"><a class="govuk-link" href="/api/user/change-company-details">Change <span class="visually-hidden"> company name</span></a></td>
-            </tr>
-            </tbody>
-        </table>
+      </div>
 
     </div>
-</div>
-<%}%>
-<% if (!user.dropOffEnabled && user.noOfBusinessRequestAttempts <= 3 && user.businessUpgradeToken === null) {%>
-<div class="column-two-thirds">
-   <p>If you represent a business you can <a class="govuk-link" href="/api/user/request-business-service-access?from=account">register as a Next-Day service provider</a>.</p>
-</div>
-<%}%>
 
-<%- include ('../partials/footer.ejs') %>
+    <%if(user.dropOffEnabled){%>
+      <h1 class="heading-xlarge" style="margin-bottom: 25px">Company details</h1>
+
+      <div style="margin-bottom: 50px">
+        <div class="govuk-form-group">
+          <% if (company_info.length > 0) { %>
+            <div class="alert alert--success" role="alert"><p class="alert__message"><%= company_info %></p></div>
+          <% } %>
+          <dl class="govuk-summary-list review-personal-details">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Company name</dt>
+              <dd class="govuk-summary-list__value"><%= account.company_name%></dd>
+              <dd class="govuk-summary-list__actions"><a class="govuk-link" href="/api/user/change-company-details">Change<span class="govuk-visually-hidden"> company name</span></a></dd>
+            </div>
+          </dl>
+
+        </div>
+      </div>
+    <%}%>
+    <% if (!user.dropOffEnabled && user.noOfBusinessRequestAttempts <= 3 && user.businessUpgradeToken === null) {%>
+      <div >
+        <p>If you represent a business you can <a class="govuk-link" href="/api/user/request-business-service-access?from=account">register as a Next-Day service provider</a>.</p>
+      </div>
+    <%}%>
+
+    <%- include('../partials/footer.ejs') %>

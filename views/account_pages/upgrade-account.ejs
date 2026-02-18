@@ -1,60 +1,57 @@
 <% pageTitle = "Upgrade to premium - Get a document legalised – GOV.UK" %>
 
 <%if(error_report && error_report.length>0){
-    pageTitle = "Error: Upgrade to premium - Get a document legalised – GOV.UK"
+pageTitle = "Error: Upgrade to premium - Get a document legalised – GOV.UK"
 } %>
 
-<%- include ('../partials/header.ejs') %>
-<a href="/api/user/account" class="back_to_previous_button govuk-link">Back</a>
+<%- include('../partials/header.ejs') %>
+<div >
+  <%if(error_report.length>0){%><br>
+<%}%>
+<form action="/api/user/upgrade-account?_csrf=<%=_csrf%>" method="post" id="upgrade-account">
 
-<div class="column-two-thirds">
-    <%if(error_report.length>0){%><br>
-    <%}%>
-    <form action="/api/user/upgrade-account?_csrf=<%=_csrf%>" method="post" id="upgrade-account">
+<div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1" autofocus>
 
-        <div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1" autofocus>
+<p class="govuk-error-summary__title" id="error-summary-heading-example-2">
+  There is a problem
+</p>
 
-            <p class="govuk-error-summary__title" id="error-summary-heading-example-2">
-                There is a problem
-            </p>
+<div id="all-errors">
+  <% if (error_report) { console.log(error_report);%>
+  <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
+    <p><%= errorMsgs.fieldError %></p>
+  <% }) %>
+<% } %>
 
-            <div id="all-errors">
-                <% if (error_report) { console.log(error_report);%>
-                <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-                <p><%= errorMsgs.fieldError %></p>
-                <% }) %>
-                <% } %>
+<ul class="govuk-list govuk-error-summary__list">
+  <% if (error_report) { %>
+    <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
+      <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+    <% }) %>
+  <% } %>
+</ul>
+</div>
+</div>
+<h1 class="heading-xlarge">Upgrade your account</h1>
 
-                <ul class="govuk-list govuk-error-summary__list">
-                    <% if (error_report) {  %>
-                    <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-                    <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
-                    <% }) %>
-                    <% } %>
-                </ul>
-            </div>
-        </div>
-        <h1 class="heading-xlarge">Upgrade your account</h1>
+<div class="govuk-form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('company_name')>-1) { %>error<% } %>">
 
-        <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('company_name')>-1) { %>error<% } %>">
+<label for="company-name" class="govuk-label govuk-label--s">Company name</label>
+<% if (error_report) { %>
+  <% error_report[0][0].errMsgs.forEach( function(error) { %>
+    <% if (error.questionId=="company_name") { %>
+      <span class="error-message">
+        <%= error.fieldSolution %>
+      </span>
+    <% } %>
+  <% }) %>
+<% } %>
 
-            <label for="company-name" class="form-label-bold">Company name</label>
-                <% if (error_report) { %>
-                <% error_report[0][0].errMsgs.forEach( function(error) { %>
-                <% if (error.questionId=="company_name") { %>
-                <span class="error-message">
-                       <%= error.fieldSolution %>
-                    </span>
-                <% } %>
-                <% }) %>
-                <% } %>
-
-
-            <input class="govuk-input govuk-!-width-one-half" id="company_name" aria-required="true" type="text" autocomplete="off" name="company_name" value="<% if(form_values){%><%=form_values.company_name%><%} %>">
-        </div>
-        <button class="govuk-button" type="submit">Upgrade</button>
-    </form>
+<input class="govuk-input govuk-!-width-one-half" id="company_name" aria-required="true" type="text" autocomplete="off" name="company_name" value="<% if(form_values){%><%=form_values.company_name%><%} %>">
+</div>
+<button class="govuk-button" type="submit">Upgrade</button>
+</form>
 
 </div>
 
-<%- include ('../partials/footer.ejs') %>
+<%- include('../partials/footer.ejs') %>

@@ -1,92 +1,87 @@
 <% pageTitle = "Manage user permissions - Get a document legalised – GOV.UK" %>
 
-<%- include ('../partials/header.ejs') %>
-<%- include ('../partials/inner-header.ejs') %>
+<% locals.innerHeaderBackLink = '/api/user/admin' %>
+<%- include('../partials/header.ejs') %>
 
-<a href="/api/user/admin" class="back_to_previous_button govuk-link">Back</a>
+<h1 class="heading-xlarge">Search results</h1>
 
-<div class="column-two-thirds">
-    <h1 class="heading-xlarge">Search results</h1>
+<% if (searchResults) { %>
+  <form action="/api/user/update-permissions?_csrf=<%=_csrf%>" method="post">
+  <input type="hidden" name="userId" value="<%= searchResults.id %>">
+  <input type="hidden" name="email" value="<%= searchResults.email %>">
 
-    <% if (searchResults) { %>
-    <form action="/api/user/update-permissions?_csrf=<%=_csrf%>" method="post">
-        <input type="hidden" name="userId" value="<%= searchResults.id %>">
-        <input type="hidden" name="email" value="<%= searchResults.email %>">
+  <table class="govuk-table">
+    <caption class="govuk-visually-hidden govuk-table__caption govuk-table__caption--m">Search results</caption>
+    <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header">Email</th>
+        <td class="govuk-table__cell"><%= searchResults.email || "N/A" %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header">Date Account Created</th>
+        <td class="govuk-table__cell">
+          <%= searchResults.createdAt ? new Date(searchResults.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : "N/A" %>
+        </td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header">Account Expires On</th>
+        <td class="govuk-table__cell">
+          <%= searchResults.accountExpiry ? new Date(searchResults.accountExpiry).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : "N/A" %>
+        </td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header">Account Locked?</th>
+        <td class="govuk-table__cell">
+          <div class="govuk-checkboxes">
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" type="checkbox" id="accountLocked" name="accountLocked" value="true"
+              <%= searchResults.accountLocked === true ? "checked" : "" %>
+              <%= user.id === searchResults.id ? "disabled" : "" %>>
+              <label class="govuk-label govuk-checkboxes__label" for="accountLocked">
+                Lock this account
+              </label>
+            </div>
+          </div>
+          <% if (user.id === searchResults.id) { %>
+            <input type="hidden" name="accountLocked" value="false">
+            <p class="govuk-hint">You cannot lock your own account.</p>
+          <% } %>
+        </td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header">Next-Day Service Enabled?</th>
+        <td class="govuk-table__cell">
+          <div class="govuk-checkboxes">
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" type="checkbox" id="dropOffEnabled" name="dropOffEnabled" value="true" <%= searchResults.dropOffEnabled === true ? "checked" : "" %>>
+              <label class="govuk-label govuk-checkboxes__label" for="dropOffEnabled">
+                Next-Day Service
+              </label>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header">Urgent Service Enabled?</th>
+        <td class="govuk-table__cell">
+          <div class="govuk-checkboxes">
+            <div class="govuk-checkboxes__item">
+              <input class="govuk-checkboxes__input" type="checkbox" id="premiumServiceEnabled" name="premiumServiceEnabled" value="true" <%= searchResults.premiumServiceEnabled === true ? "checked" : "" %>>
+              <label class="govuk-label govuk-checkboxes__label" for="premiumServiceEnabled">
+                Urgent Service
+              </label>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-        <table class="govuk-table">
-            <caption class="govuk-visually-hidden govuk-table__caption govuk-table__caption--m">Search results</caption>
-            <tbody class="govuk-table__body">
-            <tr class="govuk-table__row">
-                <th class="govuk-table__header">Email</th>
-                <td class="govuk-table__cell"><%= searchResults.email || "N/A" %></td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th class="govuk-table__header">Date Account Created</th>
-                <td class="govuk-table__cell">
-                    <%= searchResults.createdAt ? new Date(searchResults.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : "N/A" %>
-                </td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th class="govuk-table__header">Account Expires On</th>
-                <td class="govuk-table__cell">
-                    <%= searchResults.accountExpiry ? new Date(searchResults.accountExpiry).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : "N/A" %>
-                </td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th class="govuk-table__header">Account Locked?</th>
-                <td class="govuk-table__cell">
-                    <div class="govuk-checkboxes">
-                        <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" type="checkbox" id="accountLocked" name="accountLocked" value="true"
-                                    <%= searchResults.accountLocked === true ? "checked" : "" %>
-                                    <%= user.id === searchResults.id ? "disabled" : "" %>>
-                            <label class="govuk-label govuk-checkboxes__label" for="accountLocked">
-                                Lock this account
-                            </label>
-                        </div>
-                    </div>
-                    <% if (user.id === searchResults.id) { %>
-                        <input type="hidden" name="accountLocked" value="false">
-                        <p class="govuk-hint">You cannot lock your own account.</p>
-                    <% } %>
-                </td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th class="govuk-table__header">Next-Day Service Enabled?</th>
-                <td class="govuk-table__cell">
-                    <div class="govuk-checkboxes">
-                        <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" type="checkbox" id="dropOffEnabled" name="dropOffEnabled" value="true" <%= searchResults.dropOffEnabled === true ? "checked" : "" %>>
-                            <label class="govuk-label govuk-checkboxes__label" for="dropOffEnabled">
-                                Next-Day Service
-                            </label>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th class="govuk-table__header">Urgent Service Enabled?</th>
-                <td class="govuk-table__cell">
-                    <div class="govuk-checkboxes">
-                        <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" type="checkbox" id="premiumServiceEnabled" name="premiumServiceEnabled" value="true" <%= searchResults.premiumServiceEnabled === true ? "checked" : "" %>>
-                            <label class="govuk-label govuk-checkboxes__label" for="premiumServiceEnabled">
-                                Urgent Service
-                            </label>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+  <button class="govuk-button" type="submit">Save Changes</button>
+</form>
+<% } else { %>
+    <p>No user found with the provided email.</p>
+    <a href="/api/user/admin" class="govuk-button">Search again</a>
+  <% } %>
 
-        <button class="govuk-button" type="submit">Save Changes</button>
-    </form>
-    <% } else { %>
-        <p>No user found with the provided email.</p>
-        <a href="/api/user/admin" class="govuk-button">Search again</a>
-    <% } %>
-
-</div>
-
-<%- include ('../partials/footer.ejs') %>
+  <%- include('../partials/footer.ejs') %>

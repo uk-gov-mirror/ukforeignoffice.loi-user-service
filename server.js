@@ -4,6 +4,7 @@ const express = require('express'),
     environmentVariables = common.config(),
     passport = require('passport'),
     passportConfig = require('./app/passportConfig'),
+    viewAuthData = require('./app/middleware/viewAuthData'),
     flash = require('connect-flash'),
     appRouter = require('./app/routes.js')(express,environmentVariables),
     bodyParser = require('body-parser'),
@@ -111,8 +112,12 @@ app.use(
 // =====================================
 app.set('view engine', 'ejs');
 
+const crypto = require('crypto');
+const cacheBust = crypto.randomBytes(4).toString('hex');
+
 app.use(function (req, res, next) {
     res.locals = {
+        cacheBust,
         piwikID: environmentVariables.live_variables.piwikId,
         feedbackURL: environmentVariables.live_variables.feedbackURL,
         service_public: environmentVariables.live_variables.Public,
@@ -131,6 +136,7 @@ app.use(function (req, res, next) {
 app.use(flash()); //use connect-flash for flash messages stored in session
 app.use(passport.initialize());
 app.use(passport.session()); //persistent login sessions
+app.use(viewAuthData);
 
 
 app.use(jsonParser);
@@ -174,27 +180,8 @@ app.use("/api/user/fonts", express.static(__dirname + "/fonts", { maxAge: oneDay
 app.use("/api/user/images", express.static(__dirname + "/images", { maxAge: oneDay }));
 app.use("/api/user/js", express.static(__dirname + "/js", { maxAge: oneDay }));
 
-
-//Pull in images from GOVUK packages
-
-fs.copy('node_modules/govuk_frontend_toolkit/images', 'images/govuk_frontend_toolkit', function (err) {
-    if (err) return console.error(err);
-});
-fs.mkdirs('images/govuk_frontend_toolkit/icons', function (err) {
-    if (err) return console.error(err);
-});
-fs.readdir('images/govuk_frontend_toolkit', function(err, items) {
-    for (var i=0; i<items.length; i++) {
-        if('images/govuk_frontend_toolkit/'+items[i].substr(0,5)=='images/govuk_frontend_toolkit/icon-' && items[i].substr(items[i].length-3,3)=='png'){
-           moveItem(items[i]);
-        }
-    }
-});
-function moveItem(item){
-    fs.move('images/govuk_frontend_toolkit/'+item, 'images/govuk_frontend_toolkit/icons/'+item,{ clobber: true }, function (err) {
-        if (err) return console.error(err);
-    });
-}
+// Serve GOV.UK Frontend v5 assets
+app.use("/api/user/govuk-frontend", express.static(__dirname + "/node_modules/govuk-frontend/dist/govuk", { maxAge: oneDay }));
 
 
 // =====================================
