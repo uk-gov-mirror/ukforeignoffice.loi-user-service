@@ -18,6 +18,15 @@ const serverPort = (process.argv[2] && !isNaN(process.argv[2])  ? process.argv[2
 
 app.use(cookieParser());
 app.set('trust proxy', 1);
+
+// Healthcheck - responds before session/csrf to avoid creating Redis sessions
+app.use(function(req, res, next) {
+    if (req.path === '/api/user/healthcheck') {
+        return res.json({ message: 'User Service is running' });
+    }
+    next();
+});
+
 app.use(csrf({
     cookie: {
         secure: process.env.NODE_ENV !== 'development',
