@@ -64,11 +64,6 @@ module.exports = function(express,envVariables) {
         res.redirect(envVariables.applicationServiceURL);
     });
 
-    // healtcheck
-    router.get('/healthcheck', function(req, res) {
-        res.json({message: 'User Service is running'});
-    });
-
     router.get('/usercheck' , function(req,res) {
         return res.render('usercheck.ejs', {queryString:req.query, applicationServiceURL: envVariables.applicationServiceURL, error:false});
     });
