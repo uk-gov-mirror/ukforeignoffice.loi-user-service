@@ -37,7 +37,7 @@ $attorney-yellow: #FFBF47;
 $attorney-grey: #0B0C0C;
 $shaded-bg-grey: #f8f8f8;
 $details-link: govuk-colour("black");
-$details-link-hover: govuk-colour("dark-grey");
+$details-link-hover: govuk-colour("black", $variant: "tint-25");
 $alert-failure-bg: #fbede9;
 $light-grey: #bfc1c3;
 $govuk-blue-colour: #005ea5;
@@ -58,8 +58,8 @@ $client-request-rejected-border: $scarlet-red;
 $client-request-rejected-bg: $pale-violet-red;
 
 .flash {
-  border: 3px solid govuk-colour("dark-grey");
-  background-color: govuk-colour("light-grey");
+  border: 3px solid govuk-colour("black", $variant: "tint-25");
+  background-color: govuk-colour("black", $variant: "tint-95");
   padding: govuk-spacing(5);
   margin-bottom: govuk-spacing(8);
   max-width: 798px;

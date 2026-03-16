@@ -23,8 +23,19 @@ pageTitle = "Error: Enter one time password - Get a document legalised – GOV.U
 <%}%>
 
 <% if (info.length > 0) { %>
-  <br />
-  <div class="alert alert--success" role="alert"><p class="alert__message"><%= info %></p></div>
+  <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-important-message-title"
+       data-module="govuk-notification-banner">
+    <div class="govuk-notification-banner__header">
+      <h2 class="govuk-notification-banner__title" id="govuk-important-message-title">
+        Important
+      </h2>
+    </div>
+    <div class="govuk-notification-banner__content">
+      <% info.forEach(function(item) { %>
+        <p class="govuk-notification-banner__heading"><%= item %></p>
+      <% }); %>
+    </div>
+  </div>
 <% } %>
 
 <h1 class="heading-xlarge">Check your <% if (mfaPreference === 'Email') { %>email<% } else { %>phone <% } %></h1>
