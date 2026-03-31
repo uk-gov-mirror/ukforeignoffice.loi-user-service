@@ -1,152 +1,152 @@
 <% pageTitle = "Finish setting up your account - Get a document legalised – GOV.UK" %>
 
 <%if(error){
-    pageTitle = "Error: Finish setting up your account - Get a document legalised – GOV.UK"
+pageTitle = "Error: Finish setting up your account - Get a document legalised – GOV.UK"
 } %>
 
-<%- include ('../partials/header.ejs') %>
+<%- include('../partials/header.ejs') %>
 
-<% if (error.length > 0) { %>
-    <br>
-<div class="govuk-error-summary" style="width: 60%" autofocus>
-    <h1 class="govuk-error-summary__title"><%= error %></h1>
-</div>
-<%}%>
-<div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1" autofocus>
+<% if ((error && error.length > 0) || error_report) { %>
+  <div class="govuk-error-summary" data-module="govuk-error-summary" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1" autofocus>
 
     <h2 class="govuk-error-summary__title" id="error-summary-heading-example-2">
-        There is a problem
+      There is a problem
     </h2>
 
     <div id="all-errors">
-        <ul class="govuk-list govuk-error-summary__list">
-            <% if (error_report) {  %>
-                <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-                    <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
-                <% }) %>
-            <% } %>
-        </ul>
+      <ul class="govuk-list govuk-error-summary__list">
+        <% if (error && error.length > 0) { %>
+          <li><%= error %></li>
+        <% } %>
+        <% if (error_report) { %>
+          <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
+            <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+          <% }) %>
+        <% } %>
+      </ul>
     </div>
-</div>
+  </div>
+<% } %>
 <h1 class="heading-xlarge">Finish setting up your account</h1>
 
-<div class="column-two-thirds">
-    <p>We need a few more details to set your account up</p>
-    <form action="/api/user/complete-registration?_csrf=<%=_csrf%>" id="complete-registration-form" method="post">
+<div >
+  <p>We need a few more details to set your account up</p>
+  <form action="/api/user/complete-registration?_csrf=<%=_csrf%>" id="complete-registration-form" method="post">
 
-        <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('first_name')>-1) { %>error<% } %>">
+  <div class="govuk-form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('first_name')>-1) { %>govuk-form-group--error<% } %>">
 
-            <label for="first-name" class="form-label-bold">First name</label>
+  <label for="first-name" class="govuk-label govuk-label--s">First name</label>
 
-                    <% if (error_report) { %>
-                    <% error_report[0][0].errMsgs.forEach( function(error) { %>
-                    <% if (error.questionId=="first_name") { %>
-                    <span class="error-message">
-                       <%= error.fieldSolution %>
-                    </span>
-                    <% } %>
-                    <% }) %>
-                    <% } %>
+  <% if (error_report) { %>
+    <% error_report[0][0].errMsgs.forEach( function(error) { %>
+      <% if (error.questionId=="first_name") { %>
+        <p id="first_name-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error:</span>
+          <%= error.fieldSolution %>
+        </p>
+      <% } %>
+    <% }) %>
+  <% } %>
 
-                <input class="govuk-input govuk-!-width-one-half" id="first-name" aria-required="true" type="text" autocomplete="on" name="first_name" value="<% if(form_values){%><%=form_values.first_name%><%} %>">
-        </div>
-        <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('last_name')>-1) { %>error<% } %>">
-            <label for="last-name"  class="form-label-bold">Last name</label>
+  <input class="govuk-input govuk-!-width-one-half" id="first-name" aria-required="true" type="text" autocomplete="on" name="first_name" value="<% if(form_values){%><%=form_values.first_name%><%} %>">
+</div>
+<div class="govuk-form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('last_name')>-1) { %>govuk-form-group--error<% } %>">
+<label for="last-name" class="govuk-label govuk-label--s">Last name</label>
 
-                    <% if (error_report) { %>
-                    <% error_report[0][0].errMsgs.forEach( function(error) { %>
-                    <% if (error.questionId=="last_name") { %>
-                    <span class="error-message">
-                       <%= error.fieldSolution %>
-                    </span>
-                    <% } %>
-                    <% }) %>
-                    <% } %>
+<% if (error_report) { %>
+  <% error_report[0][0].errMsgs.forEach( function(error) { %>
+    <% if (error.questionId=="last_name") { %>
+      <p id="last_name-error" class="govuk-error-message">
+        <span class="govuk-visually-hidden">Error:</span>
+        <%= error.fieldSolution %>
+      </p>
+    <% } %>
+  <% }) %>
+<% } %>
 
-                <input class="govuk-input govuk-!-width-one-half" id="last-name" autocomplete="on" type="text" aria-required="true" name="last_name" value="<% if(form_values){%><%=form_values.last_name%><%} %>">
+<input class="govuk-input govuk-!-width-one-half" id="last-name" autocomplete="on" type="text" aria-required="true" name="last_name" value="<% if(form_values){%><%=form_values.last_name%><%} %>">
 
 </div>
-        <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>">
-            <label for="mobileNo" class="form-label-bold">Mobile number</label>
-            <% if (error_report) { %>
-                <% error_report[0][0].errMsgs.forEach( function(error) { %>
-                    <% if (error.questionId=="mobileNo") { %>
-                        <span class="error-message">
-                       <%= error.fieldSolution %>
-                    </span>
-                    <% } %>
-                <% }) %>
-            <% } %>
-            <input type="tel" id="mobileNo" class="govuk-input govuk-!-width-one-half" autocomplete="on"  name="mobileNo" value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo%><%} %>">
-        </div>
-        <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>error<% } %>">
-            <label for="phone" class="form-label-bold">Secondary phone number <span>(optional)</span></label>
-            <fieldset>
-                    <% if (error_report) { %>
-                    <% error_report[0][0].errMsgs.forEach( function(error) { %>
-                    <% if (error.questionId=="telephone") { %>
-                    <span class="error-message">
-                       <%= error.fieldSolution %>
-                    </span>
-                    <% } %>
-                    <% }) %>
-                    <% } %>
-                <input type="tel" id="phone" class="govuk-input govuk-!-width-one-half" autocomplete="on" aria-required="true" name="telephone" value="<% if(form_values){%><%=form_values.telephone%><%} %>">
-            </fieldset>
-        </div>
+<div class="govuk-form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>govuk-form-group--error<% } %>">
+<label for="mobileNo" class="govuk-label govuk-label--s">Mobile number</label>
+<% if (error_report) { %>
+  <% error_report[0][0].errMsgs.forEach( function(error) { %>
+    <% if (error.questionId=="mobileNo") { %>
+      <p id="mobileNo-error" class="govuk-error-message">
+        <span class="govuk-visually-hidden">Error:</span>
+        <%= error.fieldSolution %>
+      </p>
+    <% } %>
+  <% }) %>
+<% } %>
+<input type="tel" id="mobileNo" class="govuk-input govuk-!-width-one-half" autocomplete="on" name="mobileNo" value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo%><%} %>">
+</div>
+<div class="govuk-form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>govuk-form-group--error<% } %>">
+<label for="phone" class="govuk-label govuk-label--s">Secondary phone number <span>(optional)</span></label>
+<% if (error_report) { %>
+  <% error_report[0][0].errMsgs.forEach( function(error) { %>
+    <% if (error.questionId=="telephone") { %>
+      <p id="telephone-error" class="govuk-error-message">
+        <span class="govuk-visually-hidden">Error:</span>
+        <%= error.fieldSolution %>
+      </p>
+    <% } %>
+  <% }) %>
+<% } %>
+<input type="tel" id="phone" class="govuk-input govuk-!-width-one-half" autocomplete="on" aria-required="true" name="telephone" value="<% if(form_values){%><%=form_values.telephone%><%} %>">
+</div>
 
-        <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('feedback_consent')>-1) { %>error<% } %>" >
-            <h2 class="form-label-bold">Feedback</h2>
+<div class="govuk-form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('feedback_consent')>-1) { %>govuk-form-group--error<% } %>" >
+<h2 class="govuk-label govuk-label--s">Feedback</h2>
 
-            <span>
+<span>
 
-                We welcome your views on the legalisation service. If you agree to be contacted by answering "Yes" below, you will be consenting to share your personal data - name, email address, telephone numbers and service received - with our independent partner research agency, IFF Research. You may withdraw your consent at any stage by emailing <a class="govuk-link" href="mailto:consular.research@fcdo.gov.uk" >consular.research@fcdo.gov.uk<span class="visually-hidden"> opens in new window</span></a>. For more details on how your data will be handled in relation to feedback see the <a class="govuk-link" href="https://www.gov.uk/government/organisations/foreign-commonwealth-office/about/research" target="_blank">research privacy policy<span class="visually-hidden"> opens in new window</span></a>.<br>
+  We welcome your views on the legalisation service. If you agree to be contacted by answering "Yes" below, you will be consenting to share your personal data - name, email address, telephone numbers and service received - with our independent partner research agency, IFF Research. You may withdraw your consent at any stage by emailing <a class="govuk-link" href="mailto:consular.research@fcdo.gov.uk" >consular.research@fcdo.gov.uk<span class="govuk-visually-hidden"> opens in new window</span></a>. For more details on how your data will be handled in relation to feedback see the <a class="govuk-link" href="https://www.gov.uk/government/organisations/foreign-commonwealth-office/about/research" target="_blank">research privacy policy<span class="visually-hidden"> opens in new window</span></a>.<br>
 
-            <br>
-                <p>Can our partner contact you for feedback to help improve this service?</p>
+  <br>
+  <p>Can our partner contact you for feedback to help improve this service?</p>
 
-            </span>
-            <fieldset class="inline" aria-required="true" role="radiogroup">
-                <label id="legend_feedback_consent" class="visuallyhidden">Can our partner contact you for feedback to help improve this service?
-                </label>
-                <% if (error_report) { %>
-                    <% error_report[0][0].errMsgs.forEach( function(error) { %>
-                        <% if (error.questionId=="feedback_consent") { %>
-                            <span class="error-message">
+</span>
+<fieldset class="inline" aria-required="true" role="radiogroup">
+  <label id="legend_feedback_consent" class="visuallyhidden">Can our partner contact you for feedback to help improve this service?
+  </label>
+  <% if (error_report) { %>
+    <% error_report[0][0].errMsgs.forEach( function(error) { %>
+      <% if (error.questionId=="feedback_consent") { %>
+        <p id="feedback_consent-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error:</span>
+          <%= error.fieldSolution %>
+        </p>
+      <% } %>
+    <% }) %>
+  <% } %>
 
-                       <%= error.fieldSolution %>
-                    </span>
-                        <% } %>
-                    <% }) %>
-                <% } %>
+  <fieldset class="inline">
+    <label class="govuk-visually-hidden">Feedback consent</label>
+    <div class="govuk-radios govuk-radios--inline">
 
-                <fieldset class="inline">
-                    <label class="visually-hidden">Feedback consent</label>
-                    <div class="govuk-radios govuk-radios--inline">
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="radio-feedback-yes" type="radio" name="feedback_consent" value=true <% if (error_report && error_report[1][0].erroneousFields.indexOf('feedback_consent')>-1) { %>aria-describedby="feedback_consent-error"<% } %> <%if(typeof(feedback_consent)!='undefined' && feedback_consent){%>checked <%}%>>
+        <label class="govuk-radios__label <%if(typeof(feedback_consent)!='undefined' && feedback_consent){%>selected <%}%>" for="radio-feedback-yes" >
+        Yes
+      </label>
+    </div>
 
-                    <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="radio-feedback-yes" type="radio"  name="feedback_consent" value=true <%if(typeof(feedback_consent)!='undefined' && feedback_consent){%>checked <%}%>>
-                    <label class="govuk-radios__label <%if(typeof(feedback_consent)!='undefined' && feedback_consent){%>selected <%}%>" for="radio-feedback-yes" >
-                        Yes
-                    </label>
-                    </div>
+    <div class="govuk-radios__item">
+      <input class="govuk-radios__input" id="radio-feedback-no" type="radio" name="feedback_consent" value=false <% if (error_report && error_report[1][0].erroneousFields.indexOf('feedback_consent')>-1) { %>aria-describedby="feedback_consent-error"<% } %> <%if(typeof(feedback_consent)!='undefined' && !feedback_consent){%>checked <%}%>>
+      <label class="govuk-radios__label <%if(typeof(feedback_consent)!='undefined' && !feedback_consent){%>selected <%}%>" for="radio-feedback-no">
+      No
+    </label>
+  </div>
+</div>
+</fieldset>
+</fieldset>
+</div>
 
-                    <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="radio-feedback-no"  type="radio" name="feedback_consent" value=false <%if(typeof(feedback_consent)!='undefined' && !feedback_consent){%>checked <%}%>>
-                    <label class="govuk-radios__label <%if(typeof(feedback_consent)!='undefined' && !feedback_consent){%>selected <%}%>" for="radio-feedback-no">
-                        No
-                    </label>
-                    </div>
-                    </div>
-                </fieldset>
-            </fieldset>
-        </div>
+<button class="govuk-button" type="submit">Continue</button>
 
-
-        <button class="govuk-button" type="submit">Continue</button>
-
-    </form>
+</form>
 
 </div>
 
-<%- include ('../partials/footer.ejs') %>
+<%- include('../partials/footer.ejs') %>

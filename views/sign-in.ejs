@@ -1,83 +1,91 @@
 <% pageTitle = "Sign in - Get a document legalised – GOV.UK" %>
 <%if(error && error.length>0){
-    pageTitle = "Error: Sign in - Get a document legalised – GOV.UK"
+pageTitle = "Error: Sign in - Get a document legalised – GOV.UK"
 } %>
 <% var hide_back_link = true%>
-<%- include ('partials/header') %>
+
 <% if (info.length > 0) { %>
-<%if(info.toString().substring(0,21)=="If an account matches"){
-    hide_back_link = true;
-}
-}%>
+  <%if(info.toString().substring(0,21)=="If an account matches"){
+  hide_back_link = true;
+  }
+  }%>
+  <%if(!signed_out && !hide_back_link){ locals.innerHeaderBackLink = back_link; }%>
 
-<%if(!signed_out && !hide_back_link){%>
-<a href="<%= back_link%>" class="back-to-previous">Back</a>
-<%}%>
-<h1 class="heading-large">Sign in</h1>
+<%- include('partials/header.ejs') %>
 
-<div class="column-two-thirds">
-    <script>var _paq = _paq || [];</script>
-    <% if (error.length > 0) { %>
-    <%if(error[0]=='Activation reset token is invalid.  Sign in to send a new one.'){ %>
-    <script>
+  <h1 class="heading-xlarge">Sign in</h1>
+
+  <script>var _paq = _paq || [];</script>
+  <% if (error.length > 0) { %>
+    <%if(error[0]=='Activation reset token is invalid. Sign in to send a new one.'){ %>
+      <script>
         //Event category: Reg 04 - verify email address
         _paq.push(['trackEvent', 'Reg 04 - verify email address', 'Verification link expired']);
-    </script>
+      </script>
     <%}%>
-    <div class="govuk-error-summary" role="alert" autofocus>
-
-        <h2 class="govuk-error-summary__title">There is a problem</h2>
-
+    <div class="govuk-error-summary" data-module="govuk-error-summary" role="alert" aria-labelledby="error-summary-title" tabindex="-1" autofocus>
+      <h2 class="govuk-error-summary__title" id="error-summary-title">There is a problem</h2>
+      <div class="govuk-error-summary__body">
         <ul class="govuk-list govuk-error-summary__list">
-            <%if(error=='Missing email and password' || error=='Missing email'){var email_error=true;%><li><a href="#email">Enter your email</a></li><%}%>
-            <%if(error=='Missing email and password' || error=='Missing password'){var password_error=true; %><li><a href="#password">Enter your password</a></li><%}%>
-            <%if(error!='Missing email and password' && error!='Missing email' && error!='Missing password'){ %><li><a href="#email"><%= error%></a></li><%}%>
-
+          <%if(error=='Missing email and password' || error=='Missing email'){var email_error=true;%><li><a href="#email">Enter your email</a></li><%}%>
+          <%if(error=='Missing email and password' || error=='Missing password'){var password_error=true; %><li><a href="#password">Enter your password</a></li><%}%>
+          <%if(error!='Missing email and password' && error!='Missing email' && error!='Missing password'){ %><li><a href="#email"><%= error%></a></li><%}%>
         </ul>
+      </div>
     </div>
-    <% } %>
+  <% } %>
 
-    <% if (info.length > 0) { %>
+  <% if (info.length > 0) { %>
     <%if(info.toString().substring(0,21)=="If an account matches"){%>
-    <script>
+      <script>
         //Event category: Account 09 - forgot password submission
         _paq.push(['trackEvent', 'Account 09 - forgot password submission', 'submitted forgot password form']);
-    </script>
+      </script>
     <%}%>
     <%if(info.toString().indexOf("You've successfully confirmed your email address")!=-1){%>
-    <script>
+      <script>
         _paq.push(['trackEvent', 'Reg 04 - verify email address', 'Email verified successfully']);
-    </script>
+      </script>
     <%}%>
-    <div class="alert alert--success" role="alert"><p class="alert__message"><%= info %></p></div>
-    <% } %>
 
 
-    <!-- LOGIN FORM -->
-    <p>
-        <a href="/api/user/register?from=/api/user/sign-in">Create an account</a> if you do not already have one.
-    </p>
-    <form action="/api/user/sign-in?_csrf=<%=_csrf%>" method="post" id="sign-in">
-        <input type="hidden" name="next" value="<%= qs.next %>" />
-        <div class="form-group <%if(email_error){%>error<%}%>">
-            <label for="email" class="form-label-bold">Email</label>
-            <%if(error=='Missing email and password' || error=='Missing email'){%><span class="error-message">Enter your email</span><%}%>
-            <input class="govuk-input govuk-!-width-one-half" id="email" name="email" aria-required="true" autocomplete="off" type="text"  <% if(typeof(email) !='undefined'){%>value = "<%= email%>"<%}%>>
-        </div>
+  <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-important-message-title"
+       data-module="govuk-notification-banner">
+    <div class="govuk-notification-banner__header">
+      <h2 class="govuk-notification-banner__title" id="govuk-important-message-title">
+        Important
+      </h2>
+    </div>
+    <div class="govuk-notification-banner__content">
+      <% info.forEach(function(item) { %>
+        <p class="govuk-notification-banner__heading"><%= item %></p>
+      <% }); %>
+    </div>
+  </div>
 
-        <div class="form-group <%if(password_error){%>error<%}%>">
-            <label for="password" class="form-label-bold">Password</label>
-            <%if(error=='Missing email and password' || error=='Missing password'){%><span class="error-message">Enter your password</span><%}%>
-            <input class="govuk-input govuk-!-width-one-half" id="password" name="password" aria-required="true" autocomplete="off"  type="password" >
-        </div>
-        <input type="submit" class="govuk-button" id="sign-in-button" value="Sign in">
-        <p><a class="govuk-link" href="/api/user/forgot">Forgotten your password?</a></p>
+  <% } %>
 
-
-    </form>
-    <section class="govuk-inset-text" style="font-size: 19px;">
-        Your application will time out and you will have to start again if you do not enter information for 30 minutes.
-    </section>
+  <!-- LOGIN FORM -->
+  <p class="govuk-body">
+    <a class="govuk-link" href="/api/user/register?from=/api/user/sign-in">Create an account</a> if you do not already have one.
+  </p>
+  <form action="/api/user/sign-in?_csrf=<%=_csrf%>" method="post" id="sign-in">
+  <input type="hidden" name="next" value="<%= qs.next %>" />
+  <div class="govuk-form-group <%if(email_error){%>govuk-form-group--error<%}%>">
+  <label for="email" class="govuk-label govuk-label--s">Email</label>
+  <%if(error=='Missing email and password' || error=='Missing email'){%><p id="email-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Enter your email</p><%}%>
+  <input class="govuk-input govuk-!-width-one-half <%if(email_error){%>govuk-input--error<%}%>" id="email" name="email" aria-required="true" autocomplete="email" type="email" <% if(typeof(email) !='undefined'){%>value="<%= email%>"<%}%> <%if(email_error){%>aria-describedby="email-error"<%}%>>
 </div>
 
-<%- include ('partials/footer') %>
+<div class="govuk-form-group <%if(password_error){%>govuk-form-group--error<%}%>">
+<label for="password" class="govuk-label govuk-label--s">Password</label>
+<%if(error=='Missing email and password' || error=='Missing password'){%><p id="password-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Enter your password</p><%}%>
+<input class="govuk-input govuk-!-width-one-half <%if(password_error){%>govuk-input--error<%}%>" id="password" name="password" aria-required="true" autocomplete="current-password" type="password" <%if(password_error){%>aria-describedby="password-error"<%}%>>
+</div>
+<button type="submit" class="govuk-button" id="sign-in-button" data-module="govuk-button">Sign in</button>
+<p class="govuk-body"><a class="govuk-link" href="/api/user/forgot">Forgotten your password?</a></p>
+</form>
+<div class="govuk-inset-text">
+  Your application will time out and you will have to start again if you do not enter information for 30 minutes.
+</div>
+<%- include('partials/footer.ejs') %>

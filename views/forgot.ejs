@@ -1,51 +1,49 @@
 <% pageTitle = "Forgot password - Get a document legalised – GOV.UK" %>
 
 <%if(message.length > 0){
-    pageTitle = "Error: Forgot password - Get a document legalised – GOV.UK"
+pageTitle = "Error: Forgot password - Get a document legalised – GOV.UK"
 } %>
-<%- include ('partials/header.ejs') %>
-
-<a href="/api/user/sign-in" class="back_to_previous_button govuk-link">Back</a>
+<% locals.innerHeaderBackLink = '/api/user/sign-in' %>
+<%- include('partials/header.ejs') %>
 
 <% if (message.length > 0) { %>
-    <br>
-    <div class="govuk-error-summary" role="alert" style="width: 60%" autofocus>
-        <h2 class="govuk-error-summary__title" id="error-summary-heading-example-2">
-            There is a problem
-        </h2>
-        <div class="govuk-error-summary__body" id="all-errors">
-            <ul class="govuk-list govuk-error-summary__list">
-                <%= message %>
-            </ul>
-        </div>
+  <br>
+  <div class="govuk-error-summary" role="alert" style="width: 60%" autofocus>
+    <h2 class="govuk-error-summary__title" id="error-summary-heading-example-2">
+      There is a problem
+    </h2>
+    <div class="govuk-error-summary__body" id="all-errors">
+      <ul class="govuk-list govuk-error-summary__list">
+        <%= message %>
+      </ul>
     </div>
+  </div>
 <% } %>
 <h1 class="heading-xlarge">Forgot password </h1>
 
-
 <script>var _paq = _paq || [];</script>
 <%if(typeof(locked)!='undefined' && locked==true){%>
-<script>
+  <script>
     //Event category: Account 10 - account locked
     _paq.push(['trackEvent', 'Account 10 - account locked', 'clicked reset link in account lock email']);
-</script>
+  </script>
 <%}%>
 <script>
-    _paq.push(['trackEvent', 'Account 11 - reset password', 'user clicked link in email to reset password']);
+  _paq.push(['trackEvent', 'Account 11 - reset password', 'user clicked link in email to reset password']);
 </script>
 
-<form action="/api/user/forgot?_csrf=<%=_csrf%>" method="post" class="column-two-thirds">
+<form action="/api/user/forgot?_csrf=<%=_csrf%>" method="post" >
 
-    <div class="form-group">
-        <label for="email" class="form-label-bold">Email</label>
-        <input class="govuk-input govuk-!-width-one-half" aria-required="true"  id="email" name="email" autocomplete="off" type="text"  <% if(typeof(email) !='undefined'){%>value = "<%= email%>"<%}%>>
-    </div>
+<div class="govuk-form-group">
+  <label for="email" class="govuk-label govuk-label--s">Email</label>
+  <input class="govuk-input govuk-!-width-one-half" aria-required="true" id="email" name="email" autocomplete="off" type="text" <% if(typeof(email) !='undefined'){%>value = "<%= email%>"<%}%>>
+</div>
 
-    <input type="submit" class="button" value="Reset password">
+<input type="submit" class="button" value="Reset password">
 
-    <hr>
+<hr>
 </form>
 
 <p>Need an account? <a href="/api/user/register">Register</a></p>
 
-<%- include ('partials/footer.ejs') %>
+<%- include('partials/footer.ejs') %>

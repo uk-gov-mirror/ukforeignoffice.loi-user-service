@@ -1,152 +1,148 @@
 <% pageTitle ="Add a return address - Get a document legalised – GOV.UK" %>
 
 <%if(error_report && error_report.length>0){
-    pageTitle = "Error: Add a return address - Get a document legalised – GOV.UK"
+pageTitle = "Error: Add a return address - Get a document legalised – GOV.UK"
 } %>
 
-<%- include ('../partials/header.ejs') %>
+<% locals.innerHeaderBackLink = '/api/user/add-address' %>
+<%- include('../partials/header.ejs') %>
 
-<a href="/api/user/add-address" class="back_to_previous_button govuk-link">Back</a>
-<%if(error_report.length>0){%><br>
+<%if (error_report && error_report.length>0) {%>
+  <div class="govuk-error-summary" data-module="govuk-error-summary" role="alert" aria-labelledby="error-summary-title" tabindex="-1" autofocus>
+    <h2 class="govuk-error-summary__title" id="error-summary-title">
+      <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
+        <%= error_heading %>
+      <%}else{%>
+        There is a problem
+      <%}%>
+    </h2>
+    <div class="govuk-error-summary__body">
+      <ul class="govuk-list govuk-error-summary__list">
+        <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
+          <li><a href="/api/user/your-address-manual"><%= error_report%></a></li>
+        <%}else{%>
+          <li><a href="#find-postcode"><%= error_report%></a></li>
+        <%}%>
+      </ul>
+    </div>
+  </div>
 <%}%>
-    <%if (error_report && error_report.length>0) {%>
-    <div class="govuk-error-summary column-two-thirds" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1" autofocus >
-
-
-        <h2 class="govuk-error-summary__title"  id="error-summary-heading-example-2">
-            <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
-            <%= error_heading %>
-            <%}else{%>
-            There is a problem
-            <%}%>
-        </h2>
-        <ul class="govuk-list govuk-error-summary__list">
-            <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
-            <li><a href="/api/user/your-address-manual"><%= error_report%></a></li>
-            <%}else{%>
-            <li><a><%= error_report%></a></li>
-            <%}%>
-        </ul>
-    </div>
-    <%}%>
     <div class="govuk-error-summary hide" id="postcode-error" role="alert" tabindex="-1" autofocus></div>
-<h1 class="heading-xlarge">Add a return address</h1>
+    <h1 class="heading-xlarge">Add a return address</h1>
 
-    <div id="sr-notification-container" class="visually-hidden"  aria-live="assertive" aria-atomic="true"></div>
-<div class="column-two-thirds">
-    <div class="form-group column-two-third">
-        <form id="find-address-form"  method="post" action="/api/user/find-your-address?_csrf=<%=_csrf%>">
-            <label class="form-label-bold"  for="find-postcode">Enter postcode</label>
-            <% if(typeof(error_report)!='undefined'){%><span class="error-message"><%= error_report%></span><%}%>
+    <div id="sr-notification-container" class="govuk-visually-hidden" aria-live="assertive" aria-atomic="true"></div>
+    <div>
+      <div class="govuk-form-group <% if(error_report && error_report.length>0){%>govuk-form-group--error<%}%>">
+        <form id="find-address-form" method="post" action="/api/user/find-your-address?_csrf=<%=_csrf%>">
+        <label class="govuk-label govuk-label--s" for="find-postcode">Enter postcode</label>
+        <% if(error_report && error_report.length>0){%>
+          <p id="postcode-inline-error" class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error:</span> <%= error_report%>
+          </p>
+        <%}%>
 
-            <input class="govuk-input govuk-!-width-one-quarter" style="margin-right: 10px;" aria-required="true" id="find-postcode" type="text"
-                   name="find-postcode">
-            <button class="govuk-button govuk-button--secondary" data-csrf="<%=_csrf%>" type="submit" id="find-address">Find UK address</button>
-            <a class="link address-manual" id="address-manual" href="/api/user/your-address-manual" >Enter address manually</a>
-        </form>
+        <input class="govuk-input govuk-!-width-one-quarter<% if(error_report && error_report.length>0){%> govuk-input--error<%}%>" style="margin-right: 10px;" aria-required="true" id="find-postcode" type="text"
+        name="find-postcode" <% if(error_report && error_report.length>0){%>aria-describedby="postcode-inline-error"<%}%>>
+        <button class="govuk-button" data-csrf="<%=_csrf%>" type="submit" id="find-address">Find UK address</button>
+        <a class="link address-manual" id="address-manual" href="/api/user/your-address-manual" >Enter address manually</a>
+      </form>
     </div>
+  </div>
+  <form id="select-address-form" method="post" action="/api/user/select-your-address?_csrf=<%=_csrf%>">
+  <input type="hidden" name="full_name" value="<%if(account.full_name != null){%><%= account.full_name %><%}%>">
+  <input type="hidden" name="postcode" value="">
+  <div class="hide" id="address-list-group">
+    <label class="form-label visuallyhidden" for="address-list-box">Pick an address</label>
+    <select class="govuk-input govuk-!-width-one-half" data-csrf="<%=_csrf%>" id="address-list-box" name="address" form="select-address-form" aria-required="true"
+    onchange="">
+    <option disabled selected>Pick an address</option>
+  </select>
 </div>
-<form id="select-address-form" class="column-two-thirds"  method="post" action="/api/user/select-your-address?_csrf=<%=_csrf%>">
-    <input type="hidden" name="full_name" value="<%if(account.full_name != null){%><%= account.full_name %><%}%>">
-    <input type="hidden" name="postcode" value="">
-    <div class="hide" id="address-list-group">
-        <label class="form-label visuallyhidden" for="address-list-box">Pick an address</label>
-        <select class="govuk-input govuk-!-width-one-half" data-csrf="<%=_csrf%>" id="address-list-box" name="address" form="select-address-form" aria-required="true"
-                onchange="">
-            <option disabled selected>Pick an address</option>
-        </select>
-    </div>
-    <div class="js-hidden hide">
-        <button class="button find-address button-secondary" type="submit" id="select-address">Select Address</button>
-    </div>
+<div class="js-hidden hide">
+  <button class="govuk-button govuk-button--secondary find-address" type="submit" id="select-address">Select Address</button>
+</div>
 
 </form>
 
+<div id="uk-address-form" class="address-form hide">
 
-<div id="uk-address-form" class="address-form hide column-two-thirds">
+  <form id="address_form" method="post" action="/api/user/save-address?_csrf=<%=_csrf%>">
+  <div class="govuk-form-group" id="address-details-group">
 
-    <form id="address_form" method="post" action="/api/user/save-address?_csrf=<%=_csrf%>">
-        <div class="form-group" id="address-details-group">
+    <div class="govuk-form-group " id="legend_full_name">
+      <label class="govuk-label govuk-label--s" for="full-name">Full name</label>
+      <span class="govuk-hint">Name of the person you would like the documents returned to</span>
+      <input class="govuk-input govuk-!-width-one-half" id="full_name" type="text" aria-required="true" name="full_name" maxlength="255" value="">
 
-            <div class="form-group " id="legend_full_name">
-                <label class="form-label-bold" for="full-name">Full name</label>
-                <span class="form-hint">Name of the person you would like the documents returned to</span>
-                <input class="govuk-input govuk-!-width-one-half" id="full_name" type="text" aria-required="true" name="full_name" maxlength="255" value="">
+    </div>
+    <div class="govuk-form-group" id="legend_organisation">
+      <label class="govuk-label govuk-label--s" for="organisation">Company or organisation (optional)</label>
+      <legend class="visuallyhidden">Company or organisation</legend>
 
-            </div>
-            <div class="form-group" id="legend_organisation">
-                <label class="form-label-bold" for="organisation">Company or organisation (optional)</label>
-                <legend class="visuallyhidden">Company or organisation</legend>
+      <input class="govuk-input govuk-!-width-one-half" id="organisation" type="text" name="organisation" aria-required="false" maxlength="255" value="" >
+    </div>
 
-                <input class="govuk-input govuk-!-width-one-half" id="organisation" type="text" name="organisation" aria-required="false" maxlength="255" value="" >
-            </div>
+    <div class="govuk-form-group" id="legend_house_name">
+      <label class="govuk-label govuk-label--s" for="house_name">House name or number</label>
 
-            <div class="form-group" id="legend_house_name">
-                <label class="form-label-bold" for="house_name">House name or number</label>
+      <input class="govuk-input govuk-!-width-one-half" id="house_name" type="text" aria-required="true" maxlength="255" name="house_name" value="" >
+    </div>
 
+    <div class="govuk-form-group" id="legend_street">
+      <label class="govuk-label govuk-label--s" for="street">Street</label>
 
-                <input class="govuk-input govuk-!-width-one-half" id="house_name" type="text" aria-required="true" maxlength="255" name="house_name" value="" >
-            </div>
+      <input class="govuk-input govuk-!-width-one-half" type="text" id="street" aria-required="true" maxlength="255" name="street" value="" >
+    </div>
 
-            <div class="form-group" id="legend_street">
-                <label class="form-label-bold" for="street">Street</label>
+    <div class="govuk-form-group" id="legend_town">
+      <label class="govuk-label govuk-label--s" for="town">Town</label>
 
+      <input class="govuk-input govuk-!-width-one-half" type="text" id="town" aria-required="true" maxlength="255" name="town" value="" >
+    </div>
 
-                <input class="govuk-input govuk-!-width-one-half" type="text" id="street" aria-required="true" maxlength="255" name="street" value="" >
-            </div>
+    <div class="govuk-form-group" id="legend_county">
+      <label class="govuk-label govuk-label--s" for="county">County <span>(optional)</span></label>
 
-            <div class="form-group" id="legend_town">
-                <label class="form-label-bold" for="town">Town</label>
+      <input class="govuk-input govuk-!-width-one-half" type="text" id="county" name="county" maxlength="255" value="">
+    </div>
 
-                <input class="govuk-input govuk-!-width-one-half" type="text" id="town" aria-required="true" maxlength="255" name="town" value="" >
-            </div>
+    <div class="govuk-form-group" id="legend_postcode">
+      <label class="govuk-label govuk-label--s" for="postcode">Postcode</label>
 
-            <div class="form-group" id="legend_county">
-                <label class="form-label-bold" for="county">County <span>(optional)</span></label>
+      <input class="govuk-input govuk-!-width-one-quarter" id="postcode" aria-required="true" name="postcode" type="text" value="" >
+    </div>
 
+    <div class="govuk-form-group" id="legend_mobileNo">
+      <label class="govuk-label govuk-label--s" for="telephone">Mobile number</label>
+      <span class="govuk-hint">Contact mobile number for this address for delivery questions or updates</span>
 
-                <input class="govuk-input govuk-!-width-one-half" type="text" id="county" name="county" maxlength="255" value="">
-            </div>
+      <input class="govuk-input govuk-!-width-one-half" type="tel" id="mobileNo" aria-required="true" name="mobileNo" maxlength="255" value="<% if (contact_mobileNo) { %><%= contact_mobileNo %><% } %>">
+    </div>
 
-            <div class="form-group" id="legend_postcode">
-                <label class="form-label-bold" for="postcode">Postcode</label>
+    <div class="govuk-form-group" id="legend_telephone">
+      <label class="govuk-label govuk-label--s" for="telephone">Secondary phone number <span>(optional)</span></label>
+      <span class="govuk-hint">Contact telephone number for this address for delivery questions or updates</span>
 
-                <input class="govuk-input govuk-!-width-one-quarter" id="postcode" aria-required="true" name="postcode" type="text" value="" >
-            </div>
+      <input class="govuk-input govuk-!-width-one-half" type="tel" id="telephone" aria-required="true" name="telephone" maxlength="255" value="<% if (contact_telephone) { %><%= contact_telephone %><% } %>">
+    </div>
 
-            <div class="form-group" id="legend_mobileNo">
-                    <label class="form-label-bold" for="telephone">Mobile number</label>
-                    <span class="form-hint">Contact mobile number for this address for delivery questions or updates</span>
+    <div class="govuk-form-group" id="legend_email">
+      <label class="govuk-label govuk-label--s" for="email">Email address <span>(optional)</span></label>
+      <span class="govuk-hint">Contact email for this address for delivery questions or updates</span>
 
-                <input class="govuk-input govuk-!-width-one-half" type="tel" id="mobileNo" aria-required="true" name="mobileNo" maxlength="255" value="<% if (contact_mobileNo) { %><%= contact_mobileNo %><% } %>">
-            </div>
+      <input class="govuk-input govuk-!-width-one-half" type="text" id="email" name="email" maxlength="255" value="<% if (contact_email) { %><%= contact_email %><% } %>">
+    </div>
 
-            <div class="form-group" id="legend_telephone">
-                <label class="form-label-bold" for="telephone">Secondary phone number <span>(optional)</span></label>
-                <span class="form-hint">Contact telephone number for this address for delivery questions or updates</span>
+    <input type="hidden" name="country" value="United Kingdom">
+    <input type="hidden" name="manual" value=false>
+    <input type="hidden" name="initial" value=<%if(initial){%><%= initial%><%}%>>
+  </div>
 
-                <input class="govuk-input govuk-!-width-one-half" type="tel" id="telephone" aria-required="true" name="telephone" maxlength="255" value="<% if (contact_telephone) { %><%= contact_telephone %><% } %>">
-            </div>
+  <div class="govuk-form-group">
+    <button id="NextBtn" class="govuk-button">Continue</button>
+  </div>
 
-            <div class="form-group" id="legend_email">
-                <label class="form-label-bold" for="email">Email address <span>(optional)</span></label>
-                <span class="form-hint">Contact email for this address for delivery questions or updates</span>
-
-
-                <input class="govuk-input govuk-!-width-one-half" type="text" id="email" name="email" maxlength="255" value="<% if (contact_email) { %><%= contact_email %><% } %>">
-            </div>
-
-            <input type="hidden" name="country" value="United Kingdom">
-            <input type="hidden" name="manual" value=false>
-            <input type="hidden" name="initial" value=<%if(initial){%><%= initial%><%}%>>
-        </div>
-
-        <div class="form-group">
-            <button id="NextBtn" class="govuk-button">Continue</button>
-        </div>
-
-
-    </form>
+</form>
 </div>
 
-<%- include ('../partials/footer.ejs') %>
+<%- include('../partials/footer.ejs') %>

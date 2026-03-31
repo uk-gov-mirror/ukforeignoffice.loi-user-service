@@ -1,197 +1,136 @@
 <%var primaryAddressErrors = [];
 if (error_report) {
-    if (error_report[0][0].errMsgs) {
-        error_report[0][0].errMsgs.forEach(
-                function(error){
-                    if (error.fieldName == "full_name") {
-                        primaryAddressErrors.push(error);
-                    }
-                    if (error.fieldName == "postcode") {
-                        primaryAddressErrors.push(error);
-                    }
-                    if (error.fieldName == "house_name") {
-                        primaryAddressErrors.push(error);
-                    }
-                    if (error.fieldName == "street") {
-                        primaryAddressErrors.push(error);
-                    }
-                    if (error.fieldName == "town") {
-                        primaryAddressErrors.push(error);
-                    }
-                    if (error.fieldName == "county") {
-                        primaryAddressErrors.push(error);
-                    }
-                    if (error.fieldName == "telephone") {
-                        primaryAddressErrors.push(error);
-                    }
-                    if (error.fieldName == "mobileNo") {
-                        primaryAddressErrors.push(error);
-                    }
-                    if (error.fieldName == "email") {
-                        primaryAddressErrors.push(error);
-                    }
+if (error_report[0][0].errMsgs) {
+error_report[0][0].errMsgs.forEach(
+function(error){
+if (error.fieldName == "full_name") {
+primaryAddressErrors.push(error);
+}
+if (error.fieldName == "postcode") {
+primaryAddressErrors.push(error);
+}
+if (error.fieldName == "house_name") {
+primaryAddressErrors.push(error);
+}
+if (error.fieldName == "street") {
+primaryAddressErrors.push(error);
+}
+if (error.fieldName == "town") {
+primaryAddressErrors.push(error);
+}
+if (error.fieldName == "county") {
+primaryAddressErrors.push(error);
+}
+if (error.fieldName == "telephone") {
+primaryAddressErrors.push(error);
+}
+if (error.fieldName == "mobileNo") {
+primaryAddressErrors.push(error);
+}
+if (error.fieldName == "email") {
+primaryAddressErrors.push(error);
+}
 
-                }
-        )
-    }
+}
+)
+}
 
 }
 %>
 <% pageTitle ="Add a return address - Get a document legalised – GOV.UK" %>
 
 <%if(error_report && error_report.length>0){
-    pageTitle = "Error: Add a return address - Get a document legalised – GOV.UK"
+pageTitle = "Error: Add a return address - Get a document legalised – GOV.UK"
 } %>
 
-<%- include ('../partials/header.ejs') %>
-
-<a href="/api/user/add-address-uk" class="back_to_previous_button govuk-link">Back</a>
-
+<% locals.innerHeaderBackLink = '/api/user/add-address-uk' %>
+<%- include('../partials/header.ejs') %>
 
 <%if(error_report.length>0){%><br>
 <%}%>
 <div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" aria-labelledby="error-summary-heading" tabindex="-1" style="clear:left;" autofocus>
 
-    <h2 class="govuk-error-summary__title" id="error-summary-heading">
-        There is a problem
+<h2 class="govuk-error-summary__title" id="error-summary-heading">
+  There is a problem
 
-    </h2>
+</h2>
 
-    <div id="all-errors">
-           <ul class="govuk-list govuk-error-summary__list">
-            <% if (error_report) {  %>
-            <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-            <li>
-                <a href="<%= errorMsgs.questionId === 'town-county' ? '#' + 'town' : '#' + errorMsgs.questionId %>">
-                    <%= errorMsgs.fieldSolution %>
-                </a>
-            </li>
-            <% }) %>
-            <% } %>
-        </ul>
-    </div>
+<div id="all-errors">
+  <ul class="govuk-list govuk-error-summary__list">
+    <% if (error_report) { %>
+      <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
+        <li>
+          <a href="<%= errorMsgs.questionId === 'town-county' ? '#' + 'town' : '#' + errorMsgs.questionId %>">
+          <%= errorMsgs.fieldSolution %>
+        </a>
+      </li>
+    <% }) %>
+  <% } %>
+</ul>
+</div>
 </div>
 <h1 class="heading-xlarge">Add a return address</h1>
 
+<form id="address_form" method="post" action="/api/user/save-address?_csrf=<%=_csrf%>">
+<div class="govuk-form-group address-form " id="address-details-group">
 
-<form id="address_form" class="column-two-thirds" method="post" action="/api/user/save-address?_csrf=<%=_csrf%>">
-    <div class="form-group address-form " id="address-details-group">
+  <div class="govuk-form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('full_name')>-1) { %>error<% } %>" id="legend_full_name">
 
-        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('full_name')>-1) { %>error<% } %>" id="legend_full_name">
+  <label class="govuk-label govuk-label--s" for="full-name">Full name</label>
+  <span class="govuk-hint">Name of the person you would like the documents returned to</span><input class="govuk-input govuk-!-width-one-half" id="full_name" type="text" aria-required="true" name="full_name" maxlength="255" value="<%if (form_values) { %><%= form_values.full_name %><%}else{%><%= account.first_name+' '+account.last_name%><%}%>">
+</div>
+<div class="govuk-form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('organisation')>-1) { %>error<% } %>" id="legend_organisation">
+<label class="govuk-label govuk-label--s" for="organisation">Company or organisation (optional)</label><input class="govuk-input govuk-!-width-one-half" id="organisation" type="text" name="organisation" aria-required="true" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].organisation%><%} else if (form_values) { %><%= form_values.organisation %><% } %>" >
+</div>
 
-            <label class="form-label-bold" for="full-name">Full name</label>
-            <span class="form-hint">Name of the person you would like the documents returned to</span>
-            <fieldset>
-                <legend class="visuallyhidden"> Full name
-                </legend>
+<div class="govuk-form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('house_name')>-1) { %>error<% } %>" id="legend_house_name">
+<label class="govuk-label govuk-label--s" for="house_name">House name or number</label><input class="govuk-input govuk-!-width-one-half" id="house_name" type="text" aria-required="true" maxlength="255" name="house_name" value="<%if(form_values && form_values.house_name && form_values.house_name != 'N/A') { %><%= form_values.house_name %><% } %>" >
+</div>
 
-                <input class="govuk-input govuk-!-width-one-half" id="full_name" type="text" aria-required="true" name="full_name" maxlength="255" value="<%if (form_values) { %><%= form_values.full_name %><%}else{%><%= account.first_name+' '+account.last_name%><%}%>">
-            </fieldset>
-        </div>
-        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('organisation')>-1) { %>error<% } %>" id="legend_organisation">
-            <label class="form-label-bold" for="organisation">Company or organisation (optional)</label>
-            <legend class="visuallyhidden"> Company or organisation
+<div class="govuk-form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('street')>-1) { %>error<% } %>" id="legend_street">
+<label class="govuk-label govuk-label--s" for="street">Street</label><input class="govuk-input govuk-!-width-one-half" type="text" id="street" aria-required="true" maxlength="255" name="street" value="<%if(form_values[0]){%><%= form_values[0].street%><%} else if (form_values) { %><%= form_values.street %><% } %>" >
+</div>
 
-            </legend>
+<div class="govuk-form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('town')>-1) { %>error<% } %>" id="legend_town">
+<div class="govuk-form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('town-county')>-1) { %>error<% } %>" id="town-county">
+<label class="govuk-label govuk-label--s" for="town">Town</label>
 
-            <input class="govuk-input govuk-!-width-one-half" id="organisation" type="text" name="organisation" aria-required="true" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].organisation%><%} else if (form_values) { %><%= form_values.organisation %><% } %>" >
-        </div>
+<input class="govuk-input govuk-!-width-one-half" type="text" id="town" aria-required="true" maxlength="255" name="town" value="<%if(form_values[0]){%><%= form_values[0].town%><%} else if (form_values) { %><%= form_values.town %><% } %>" >
+</div>
 
-        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('house_name')>-1) { %>error<% } %>" id="legend_house_name">
-            <label class="form-label-bold" for="house_name">House name or number</label>
-            <fieldset>
-                <legend class="visuallyhidden"> House name or number
-                </legend>
+<div class="govuk-form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('county')>-1) { %>error<% } %>" id="legend_county">
+<label class="govuk-label govuk-label--s" for="county">County <span>(optional)</span></label><input class="govuk-input govuk-!-width-one-half" type="text" id="county" aria-required="true" name="county" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].county%><%} else if (form_values) { %><%= form_values.county %><% } %>">
+</div>
+</div>
 
-                <input class="govuk-input govuk-!-width-one-half" id="house_name" type="text" aria-required="true" maxlength="255" name="house_name" value="<%if(form_values && form_values.house_name && form_values.house_name != 'N/A') { %><%= form_values.house_name %><% } %>" >
-            </fieldset>
-        </div>
+<div class="govuk-form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('postcode')>-1) { %>error<% } %>" id="legend_postcode">
+<label class="govuk-label govuk-label--s" for="postcode">Postcode</label><input class="govuk-input govuk-!-width-one-quarter" id="postcode" aria-required="true" name="postcode" type="text" value="<%if(form_values[0]){%><%= form_values[0].postcode%><%} else if (form_values) { %><%= form_values.postcode %><% } %>" >
+</div>
 
-        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('street')>-1) { %>error<% } %>" id="legend_street">
-            <label class="form-label-bold" for="street">Street</label>
-            <fieldset>
-                <legend class="visuallyhidden"> Street
-                </legend>
+<div class="govuk-form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>" id="legend_mobileNo">
+<label class="govuk-label govuk-label--s" for="mobileNo">Mobile number</label>
+<span class="govuk-hint">Mobile number for this address for delivery questions or updates</span><input class="govuk-input govuk-!-width-one-half" type="tel" id="mobileNo" name="mobileNo" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].mobileNo || ''%><%} else if (form_values) { %><%= form_values.mobileNo || '' %><% } else {%><%= contact_mobileNo%><%}%>">
+</div>
 
-                <input class="govuk-input govuk-!-width-one-half" type="text" id="street" aria-required="true" maxlength="255" name="street" value="<%if(form_values[0]){%><%= form_values[0].street%><%} else if (form_values) { %><%= form_values.street %><% } %>" >
-            </fieldset>
-        </div>
+<div class="govuk-form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>error<% } %>" id="legend_telephone">
+<label class="govuk-label govuk-label--s" for="telephone">Secondary phone number <span>(optional)</span></label>
+<span class="govuk-hint">Contact number for this address for delivery questions or updates</span><input class="govuk-input govuk-!-width-one-half" type="tel" id="telephone" aria-required="true" name="telephone" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].telephone%><%} else if (form_values) { %><%= form_values.telephone %><% } else {%><%= contact_telephone %><%}%>">
+</div>
 
-        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('town')>-1) { %>error<% } %>" id="legend_town">
-            <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('town-county')>-1) { %>error<% } %>" id="town-county">
-                <label class="form-label-bold" for="town">Town</label>
-                <fieldset>
-                    <legend class="visuallyhidden"> Town</legend>
+<div class="govuk-form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('email')>-1) { %>error<% } %>" id="legend_email">
+<label class="govuk-label govuk-label--s" for="email">Email address <span>(optional)</span></label>
+<span class="govuk-hint">Contact email for this address for delivery questions or updates</span><input class="govuk-input govuk-!-width-one-half" type="text" id="email" name="email" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].email || ''%><%} else if (form_values) { %><%= form_values.email || ''%><% } else {%><%= contact_email %><%}%>">
+</div>
 
-                    <input class="govuk-input govuk-!-width-one-half" type="text" id="town" aria-required="true" maxlength="255" name="town" value="<%if(form_values[0]){%><%= form_values[0].town%><%} else if (form_values) { %><%= form_values.town %><% } %>" >
-                </fieldset>
-            </div>
+<input type="hidden" name="country" value="United Kingdom">
+<input type="hidden" name="manual" value=true>
+<input type="hidden" name="initial" value=<%if(initial){%><%= initial%><%}%>>
+</div>
 
-            <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('county')>-1) { %>error<% } %>" id="legend_county">
-                <label class="form-label-bold" for="county">County <span>(optional)</span></label>
-                <fieldset>
-                    <legend class="visuallyhidden"> County
-
-                    </legend>
-
-                    <input class="govuk-input govuk-!-width-one-half" type="text" id="county" aria-required="true" name="county" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].county%><%} else if (form_values) { %><%= form_values.county %><% } %>">
-                </fieldset>
-            </div>
-        </div>
-
-        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('postcode')>-1) { %>error<% } %>" id="legend_postcode">
-            <label class="form-label-bold" for="postcode">Postcode</label>
-            <fieldset>
-                <legend class="visuallyhidden"> Postcode
-                </legend>
-
-                <input class="govuk-input govuk-!-width-one-quarter" id="postcode" aria-required="true" name="postcode" type="text" value="<%if(form_values[0]){%><%= form_values[0].postcode%><%} else if (form_values) { %><%= form_values.postcode %><% } %>" >
-            </fieldset>
-        </div>
-
-        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>" id="legend_mobileNo">
-            <label class="form-label-bold" for="mobileNo">Mobile number</label>
-            <span class="form-hint">Mobile number for this address for delivery questions or updates</span>
-            <fieldset>
-                <legend class="visuallyhidden">Mobile number
-                </legend>
-
-                <input class="govuk-input govuk-!-width-one-half" type="tel" id="mobileNo"  name="mobileNo" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].mobileNo || ''%><%} else if (form_values) { %><%= form_values.mobileNo || '' %><% } else {%><%= contact_mobileNo%><%}%>">
-            </fieldset>
-        </div>
-
-        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>error<% } %>" id="legend_telephone">
-            <label class="form-label-bold" for="telephone">Secondary phone number <span>(optional)</span></label>
-            <span class="form-hint">Contact number for this address for delivery questions or updates</span>
-            <fieldset>
-                <legend class="visuallyhidden">Primary phone number
-                </legend>
-
-                <input class="govuk-input govuk-!-width-one-half" type="tel" id="telephone" aria-required="true" name="telephone" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].telephone%><%} else if (form_values) { %><%= form_values.telephone %><% } else {%><%= contact_telephone %><%}%>">
-            </fieldset>
-        </div>
-
-        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('email')>-1) { %>error<% } %>" id="legend_email">
-            <label class="form-label-bold" for="email">Email address <span>(optional)</span></label>
-            <span class="form-hint">Contact email for this address for delivery questions or updates</span>
-            <fieldset>
-                <legend class="visuallyhidden"> Email address
-                </legend>
-
-                <input class="govuk-input govuk-!-width-one-half" type="text" id="email" name="email" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].email || ''%><%} else if (form_values) { %><%= form_values.email || ''%><% } else {%><%= contact_email %><%}%>">
-            </fieldset>
-        </div>
-
-        <input type="hidden" name="country" value="United Kingdom">
-        <input type="hidden" name="manual" value=true>
-        <input type="hidden" name="initial" value=<%if(initial){%><%= initial%><%}%>>
-    </div>
-
-    <div class="form-group">
-        <button id="NextBtn" class="govuk-button">Continue</button>
-    </div>
-
+<div class="govuk-form-group">
+  <button id="NextBtn" class="govuk-button">Continue</button>
+</div>
 
 </form>
 
-<%- include ('../partials/footer.ejs') %>
+<%- include('../partials/footer.ejs') %>

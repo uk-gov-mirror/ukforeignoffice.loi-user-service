@@ -1,58 +1,137 @@
 <% pageTitle = "Saved addresses - Get a document legalised – GOV.UK" %>
-<%- include ('../partials/header.ejs') %>
-<%- include ('../partials/inner-header.ejs') %>
+<%- include('../partials/header.ejs') %>
 
+<div>
 
-<div class="column-two-thirds">
-    <h1 class="heading-xlarge">Saved addresses</h1>
-    <p>Speed up your postal applications by saving return addresses you use regularly.</p>
     <% if (info.length > 0) { %>
-    <div class="alert alert--success" role="alert"><p class="alert__message"><%= info %></p></div>
+        <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-important-message-title"
+             data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-important-message-title">
+                    Important
+                </h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <% info.forEach(function(item) { %>
+                    <p class="govuk-notification-banner__heading"><%= item %></p>
+                <% }); %>
+            </div>
+        </div>
     <% } %>
-    <div class="form-group">
-        <table class="review-personal-details summary-table">
-            <tbody>
-            <% addresses.forEach(function (address){%>
-            <tr><td>
-                    <%
-                        var address_start = "";
-                        if(address.house_name == 'N/A'){
-                            address_start = address.organisation
-                        }
-                        else if (address.organisation){
-                            address_start = address.organisation+', '+address.house_name;
-                        }
-                        else{
-                            address_start = address.house_name
-                        }
 
-                        var contact_details = "";
-                        if (address.mobileNo !== "" && address.mobileNo !== "undefined" && address.mobileNo !== null){
-                            contact_details = "Contact: " + address.mobileNo;
+  <h1 class="heading-xlarge">Saved addresses</h1>
+  <p>Speed up your postal applications by saving return addresses you use regularly.</p>
 
-                            if (address.telephone !== "" && address.telephone !== "undefined" && address.telephone !== null){
-                                contact_details = contact_details + ", " + address.telephone;
-                            }
-                            if (address.email !== "" && address.email !== "undefined" && address.email !== null){
-                                contact_details = contact_details + ", " + address.email;
-                            }
-                        } else {
+  <% if (addresses && addresses.length > 0) { %>
+    <%
+      var initialVisibleCount = 3;
+      var hasHiddenAddresses = addresses.length > initialVisibleCount;
+    %>
 
-                        }
-                    %>
-                    <%= address.full_name%>, <%= address_start%>, <%= address.street%>, <%= address.town%>, <%if(address.county.length>0){%><%= address.county%>, <%}%>
-                    <%if(address.postcode.length>1){%><%= address.postcode%>, <%}%>
-                    <%= address.country%>
-                    <%if(contact_details != ""){%><br /><%= contact_details %><%}%>
-                    <br/><br/>
-                    <a class="govuk-button govuk-button--secondary" href="/api/user/edit-address?id=<%= address.id%>">Edit</a>
-                    <a class="govuk-button govuk-button--warning" href="/api/user/delete-address?id=<%= address.id%>">Delete</a>
-                </td>
-            </tr>
-            <% });%>
-            </tbody></table>
-    </div>
+    <div>
+      <% if (hasHiddenAddresses) { %>
+        <button
+        type="button"
+        id="show-all-addresses-top"
+        class="govuk-button govuk-button--secondary"
+        hidden
+        >
+        Show all addresses (<%= addresses.length %>)
+      </button>
+    <% } %>
     <a class="govuk-button" href="/api/user/add-address">Add an address</a>
+  </div>
+
+  <% addresses.forEach(function (address, index) { %>
+    <%
+      var addressFirstLine = "";
+      if (address.house_name == 'N/A') {
+      addressFirstLine = address.organisation;
+      } else if (address.organisation) {
+      addressFirstLine = address.organisation + ', ' + address.house_name;
+      } else {
+      addressFirstLine = address.house_name;
+      }
+
+      var addressLines = [
+      address.full_name,
+      addressFirstLine,
+      address.street,
+      address.town,
+      address.county && address.county.length > 0 ? address.county : null,
+      address.postcode && address.postcode.length > 1 ? address.postcode : null,
+      address.country
+      ].filter(Boolean);
+
+      var contactParts = [];
+      if (address.mobileNo && address.mobileNo !== "undefined") contactParts.push(address.mobileNo);
+      if (address.telephone && address.telephone !== "undefined") contactParts.push(address.telephone);
+      if (address.email && address.email !== "undefined") contactParts.push(address.email);
+    %>
+
+    <% if (index === initialVisibleCount) { %>
+      <div id="additional-addresses">
+      <% } %>
+
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">Saved address</h2>
+          <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="/api/user/edit-address?id=<%= address.id %>">
+              Edit<span class="govuk-visually-hidden"> saved address</span>
+            </a>
+          </li>
+          <li class="govuk-summary-card__action">
+            <a class="govuk-link" href="/api/user/delete-address?id=<%= address.id %>">
+            Delete<span class="govuk-visually-hidden"> saved address</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="govuk-summary-card__content">
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Address</dt>
+          <dd class="govuk-summary-list__value"><%= addressLines.join(', ') %></dd>
+        </div>
+
+        <% if (contactParts.length > 0) { %>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Contact</dt>
+            <dd class="govuk-summary-list__value"><%= contactParts.join(', ') %></dd>
+          </div>
+        <% } %>
+      </dl>
+    </div>
+  </div>
+
+  <% if (index === addresses.length - 1 && hasHiddenAddresses) { %>
+  </div>
+<% } %>
+<% }); %>
+
+<% if (hasHiddenAddresses) { %>
+  <script>
+    (function () {
+    var showAllButton = document.getElementById('show-all-addresses-top');
+    var additionalAddresses = document.getElementById('additional-addresses');
+    if (!showAllButton || !additionalAddresses) return;
+
+    additionalAddresses.hidden = true;
+    showAllButton.hidden = false;
+
+    showAllButton.addEventListener('click', function () {
+    additionalAddresses.hidden = false;
+    showAllButton.hidden = true;
+    });
+    })();
+  </script>
+<% } %>
+<% } else { %>
+    <p class="govuk-body">You have no saved addresses yet.</p>
+  <% } %>
 </div>
 
-<%- include ('../partials/footer.ejs') %>
+<%- include('../partials/footer.ejs') %>

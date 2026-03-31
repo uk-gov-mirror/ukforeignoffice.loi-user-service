@@ -1,19 +1,18 @@
 <% pageTitle = "Error - Get a document legalised – GOV.UK" %>
 
-<%- include ('partials/header.ejs') %>
-
-<a href="<%= backLink %>" class="back_to_previous_button govuk-link">Back</a>
+<% locals.innerHeaderBackLink = backLink %>
+<%- include('partials/header.ejs') %>
 
 <div class="container">
 
-    <h1 class="heading-xlarge">Sorry, there is a problem with the service</h1>
+  <h1 class="heading-xlarge">Sorry, there is a problem with the service</h1>
 
-    <div class="intro column-two-thirds">
+  <div class="intro ">
 
-        <p><%= error %></p>
+    <p><%= error %></p>
 
-    </div>
+  </div>
 
 </div>
 
-<%- include ('partials/footer.ejs') %>
+<%- include('partials/footer.ejs') %>

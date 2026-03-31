@@ -1,21 +1,30 @@
-<div class="inner_header">
-    <div class="inner-header-content">
+</div>
+</div>
 
-    <span class="email-logout-text">
+<div class="inner_header">
+  <% if (typeof innerHeaderBackLink !== 'undefined' && innerHeaderBackLink) { %>
+    <a href="<%= innerHeaderBackLink %>" class="govuk-back-link inner-header-back-link">Back</a>
+  <% } %>
+  <% if (typeof user !== 'undefined' && user) { %>
+    <div class="inner-header-content">
+      <span class="email-logout-text inner-header-user">
         <% if (account?.first_name?.length > 0) { %>
-            <%= (account.first_name + ' ' + (account.last_name || '')).trim().slice(0, 50) %>
+          <%= (account.first_name + ' ' + (account.last_name || '')).trim().slice(0, 50) %>
         <% } else { %>
             <%= user.email || 'Unknown User' %>
-        <% } %>
-    </span>
-        <span class="email-logout-text">
-            <% if (user.isAdmin) { %><a id="Admin-Link" href="/api/user/admin" class="govuk-link">Admin</a><% } %>
-            <a id="Applications-Link" href="<%= url.applicationServiceURL%>dashboard" class="govuk-link">Applications</a>
-            <a id="Account-Link" href="/api/user/account" class="govuk-link">Account</a>
-            <a id="Addresses-Link" href="/api/user/addresses" class="govuk-link">Addresses</a>
-            <a href="<%= url.applicationServiceURL%>sign-out" id="sign-out-link" class="govuk-link">Sign out</a>
-    </span>
+          <% } %>
+        </span>
+        <span class="email-logout-text inner-header-links">
+          <% if (user.isAdmin) { %><a id="Admin-Link" href="/api/user/admin" class="govuk-link">Admin</a><% } %>
+          <a id="Applications-Link" href="<%= (typeof url !== 'undefined' && url.applicationServiceURL) ? url.applicationServiceURL + 'dashboard' : '/api/user/dashboard' %>" class="govuk-link">Applications</a>
+          <a id="Account-Link" href="/api/user/account" class="govuk-link">Account</a>
+          <a id="Addresses-Link" href="/api/user/addresses" class="govuk-link">Addresses</a>
+          <a href="<%= (typeof url !== 'undefined' && url.applicationServiceURL) ? url.applicationServiceURL + 'sign-out' : '/api/user/sign-out' %>" id="sign-out-link" class="govuk-link">Sign out</a>
+        </span>
+      </div>
+    <% } %>
 
-    </div>
+  </div>
 
-</div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
