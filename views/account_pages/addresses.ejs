@@ -23,24 +23,22 @@
   <p>Speed up your postal applications by saving return addresses you use regularly.</p>
 
   <% if (addresses && addresses.length > 0) { %>
+    <a class="govuk-button" href="/api/user/add-address">Add an address</a>
     <%
       var initialVisibleCount = 3;
       var hasHiddenAddresses = addresses.length > initialVisibleCount;
     %>
 
-    <div>
-      <% if (hasHiddenAddresses) { %>
-        <button
-        type="button"
-        id="show-all-addresses-top"
-        class="govuk-button govuk-button--secondary"
-        hidden
-        >
-        Show all addresses (<%= addresses.length %>)
-      </button>
-    <% } %>
-    <a class="govuk-button" href="/api/user/add-address">Add an address</a>
-  </div>
+    <% if (hasHiddenAddresses) { %>
+      <button
+      type="button"
+      id="show-all-addresses-top"
+      class="govuk-button govuk-button--secondary"
+      hidden
+      >
+      Show all addresses (<%= addresses.length %>)
+    </button>
+  <% } %>
 
   <% addresses.forEach(function (address, index) { %>
     <%
@@ -130,7 +128,7 @@
   </script>
 <% } %>
 <% } else { %>
-    <p class="govuk-body">You have no saved addresses yet.</p>
+    <a class="govuk-button" href="/api/user/add-address">Add an address</a>
   <% } %>
 </div>
 
