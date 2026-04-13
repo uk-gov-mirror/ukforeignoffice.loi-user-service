@@ -67,7 +67,7 @@ body,
 .govuk-fieldset__heading,
 .govuk-phase-banner__content,
 .govuk-phase-banner__content__tag {
-  font-family: "nta", Arial, sans-serif !important;
+  font-family: "GDS Transport", Arial, sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -209,7 +209,7 @@ i {
 }
 
 .email-logout-text{
-  font-family: "nta",Arial,sans-serif;
+  font-family: "GDS Transport",Arial,sans-serif;
   margin-top: 0;
   font-size: 16px;
   line-height: 1.1;
@@ -231,7 +231,7 @@ i {
 }
 
 .inner-header-links a {
-  font-family: "nta",Arial,sans-serif;
+  font-family: "GDS Transport",Arial,sans-serif;
   margin-left: 0;
 }
 
@@ -415,7 +415,7 @@ select.country {
   text-decoration: underline; }
 
 .back-to-previous {
-  font-family: "nta",Arial,sans-serif;
+  font-family: "GDS Transport",Arial,sans-serif;
   font-size: 16px;
   line-height: 1.25;
   font-weight: 300;
@@ -432,7 +432,7 @@ select.country {
   color: #0b0c0c !important; }
 
 .back_to_previous_button {
-  font-family: "nta",Arial,sans-serif;
+  font-family: "GDS Transport",Arial,sans-serif;
   font-size: 16px;
   line-height: 1.1;
   font-weight: 300;
@@ -741,7 +741,7 @@ select.country {
   outline: none; }
 
 .button-get-started {
-  font-family: "nta", Arial, sans-serif;
+  font-family: "GDS Transport", Arial, sans-serif;
   font-size: 24px;
   line-height: 1.25;
   font-weight: 700;
@@ -777,7 +777,7 @@ table {
 
 table th,
 table td {
-  font-family: "nta", Arial, sans-serif;
+  font-family: "GDS Transport", Arial, sans-serif;
   font-size: 16px;
   line-height: 1.25;
   font-weight: 400;
@@ -799,7 +799,8 @@ table th.numeric {
   text-align: right; }
 
 table td.numeric {
-  font-family: "ntatabularnumbers", "nta", Arial, sans-serif;
+  font-family: "GDS Transport", Arial, sans-serif;
+  font-variant-numeric: tabular-nums;
   font-size: 16px;
   line-height: 1.25;
   font-weight: 400;
@@ -952,13 +953,13 @@ td.summary-table-cell-link {
 }
 
 .govuk-phase-banner__content {
-  font-family: "nta",Arial,sans-serif!important;
+  font-family: "GDS Transport",Arial,sans-serif!important;
   font-size: 16px!important;
 }
 
 @media (min-width: 40.0625em) {
   .govuk-tag {
-    font-family: "nta",Arial,sans-serif!important;
+    font-family: "GDS Transport",Arial,sans-serif!important;
     font-size: 16px!important;
  } }
 
