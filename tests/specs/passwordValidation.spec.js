@@ -95,7 +95,7 @@ describe('Password Validation Logic', () => {
 
     it('should be case-sensitive when checking blacklist', () => {
       // The blacklist check is case-sensitive by default
-      const password = 'password1' // lowercase version
+      const _password = 'password1' // lowercase version
       // Check if it differs from uppercase version in blacklist
       const result1 = isPasswordInBlacklist('Password1')
       const result2 = isPasswordInBlacklist('password1')
@@ -196,7 +196,7 @@ describe('Password Validation Logic', () => {
     })
 
     it('should handle very long password', () => {
-      const password = 'A'.repeat(50) + '@1'
+      const password = `${'A'.repeat(50)}@1`
       expect(isPasswordValid(password, passwordPattern)).to.be.true
     })
 

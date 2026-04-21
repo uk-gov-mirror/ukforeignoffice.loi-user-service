@@ -1,5 +1,3 @@
-const Sequelize = require('sequelize')
-
 const attributes = {
   user_id: {
     type: 'integer',

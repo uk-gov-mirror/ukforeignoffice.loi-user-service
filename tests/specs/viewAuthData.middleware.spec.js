@@ -37,7 +37,7 @@ describe('viewAuthData middleware', () => {
 
   it('uses session account when present for authenticated users', async () => {
     let findOneCalled = false
-    Model.AccountDetails.findOne = async () => {
+    Model.AccountDetails.findOne = () => {
       findOneCalled = true
       return null
     }
@@ -61,7 +61,7 @@ describe('viewAuthData middleware', () => {
   })
 
   it('fetches account from database when session account is missing', async () => {
-    Model.AccountDetails.findOne = async () => ({
+    Model.AccountDetails.findOne = () => ({
       dataValues: {
         user_id: 11,
         first_name: 'Fetched',
@@ -90,7 +90,7 @@ describe('viewAuthData middleware', () => {
 
   it('passes errors to next when account lookup fails', async () => {
     const expectedError = new Error('db failed')
-    Model.AccountDetails.findOne = async () => {
+    Model.AccountDetails.findOne = () => {
       throw expectedError
     }
 

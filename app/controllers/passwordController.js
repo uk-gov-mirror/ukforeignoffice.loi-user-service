@@ -1,11 +1,11 @@
-const crypto = require('crypto'),
-  Model = require('../model/models.js'),
-  common = require('../../config/common.js'),
-  envVariables = common.config(),
-  validator = require('validator'),
-  { Op } = require('sequelize'),
-  emailService = require('../services/emailService'),
-  isEmail = require('isemail')
+const crypto = require('node:crypto')
+const Model = require('../model/models.js')
+const common = require('../../config/common.js')
+const envVariables = common.config()
+const validator = require('validator')
+const { Op } = require('sequelize')
+const emailService = require('../services/emailService')
+const isEmail = require('isemail')
 
 module.exports.forgotPassword = async (req, res) => {
   try {
@@ -73,17 +73,17 @@ module.exports.forgotPassword = async (req, res) => {
 }
 
 module.exports.resetPassword = async (req, res) => {
-  var reset = req.path != '/set-new-password'
-  var patt = new RegExp(envVariables.password_settings.passwordPattern)
-  var messages = []
-  var passwordErrorType = []
-  var blackList = require('../../config/blacklist.js')
-  var phraselist = require('../../config/phraselist.js')
-  var passwordInBlacklist = validator.isIn(req.body.password, blackList)
-  var normalisedPassword = validator.blacklist(req.body.password, ' ').trim().toLowerCase()
-  var passwordInPhraselist = false
+  const reset = req.path !== '/set-new-password'
+  const patt = new RegExp(envVariables.password_settings.passwordPattern)
+  const messages = []
+  const passwordErrorType = []
+  const blackList = require('../../config/blacklist.js')
+  const phraselist = require('../../config/phraselist.js')
+  const passwordInBlacklist = validator.isIn(req.body.password, blackList)
+  const normalisedPassword = validator.blacklist(req.body.password, ' ').trim().toLowerCase()
+  let passwordInPhraselist = false
 
-  for (var phrase of phraselist) {
+  for (const phrase of phraselist) {
     if (normalisedPassword.includes(phrase.toLowerCase())) {
       passwordInPhraselist = true
       break
@@ -121,7 +121,7 @@ module.exports.resetPassword = async (req, res) => {
       )
   }
 
-  if (req.body.password != req.body.confirm_password) messages.push('Passwords did not match \n')
+  if (req.body.password !== req.body.confirm_password) messages.push('Passwords did not match \n')
 
   if (messages.length > 0) {
     return res.render(reset ? 'reset.ejs' : 'set-new-password.ejs', {
@@ -132,7 +132,7 @@ module.exports.resetPassword = async (req, res) => {
   } else {
     try {
       //Find User with the password token which has not expired
-      var where = reset
+      const where = reset
         ? {
             where: {
               resetPasswordToken: req.params.token,
@@ -147,23 +147,23 @@ module.exports.resetPassword = async (req, res) => {
             },
           }
 
-      var user = await Model.User.findOne(where)
+      const user = await Model.User.findOne(where)
       if (!user && reset) {
         req.flash('error', 'Password reset token is invalid or has expired.')
         return res.redirect('back')
       }
 
       //Hash the new password
-      var bcrypt = require('bcryptjs')
-      var salt = bcrypt.genSaltSync(10)
-      var password = req.body.password,
+      const bcrypt = require('bcryptjs')
+      const salt = bcrypt.genSaltSync(10)
+      const password = req.body.password,
         confirm_password = req.body.confirm_password
-      var hashedPassword = password !== null && password !== '' ? bcrypt.hashSync(password, salt) : ''
-      var hashedConfirmPassword =
+      const hashedPassword = password !== null && password !== '' ? bcrypt.hashSync(password, salt) : ''
+      const hashedConfirmPassword =
         confirm_password !== null && confirm_password !== '' ? bcrypt.hashSync(confirm_password, salt) : ''
 
       function password_expiry(date, days) {
-        var result = new Date(date)
+        const result = new Date(date)
         result.setDate(result.getDate() + days)
         return result
       }

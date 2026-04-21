@@ -3,7 +3,7 @@ const moment = require('moment')
 const { Op } = require('sequelize')
 
 const OneTimePasscodeService = {
-  generateOneTimePasscode: async () => {
+  generateOneTimePasscode: () => {
     // generate a 6 digit passcode
     return Math.floor(100000 + Math.random() * 900000)
   },

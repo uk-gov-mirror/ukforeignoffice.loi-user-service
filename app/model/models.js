@@ -1,13 +1,12 @@
-var UserMeta = require('./User.js'),
-  AccountDetailsMeta = require('./AccountDetails.js'),
-  SavedAddressMeta = require('./SavedAddress.js'),
-  OneTimePasscodesMeta = require('./OneTimePasscodes.js'),
-  usersDbConn = require('../sequelize.js')
-
-var User = usersDbConn.define('Users', UserMeta.attributes, UserMeta.options)
-var AccountDetails = usersDbConn.define('AccountDetails', AccountDetailsMeta.attributes, AccountDetailsMeta.options)
-var SavedAddress = usersDbConn.define('SavedAddress', SavedAddressMeta.attributes, SavedAddressMeta.options)
-var OneTimePasscodes = usersDbConn.define(
+const UserMeta = require('./User.js')
+const AccountDetailsMeta = require('./AccountDetails.js')
+const SavedAddressMeta = require('./SavedAddress.js')
+const OneTimePasscodesMeta = require('./OneTimePasscodes.js')
+const usersDbConn = require('../sequelize.js')
+const User = usersDbConn.define('Users', UserMeta.attributes, UserMeta.options)
+const AccountDetails = usersDbConn.define('AccountDetails', AccountDetailsMeta.attributes, AccountDetailsMeta.options)
+const SavedAddress = usersDbConn.define('SavedAddress', SavedAddressMeta.attributes, SavedAddressMeta.options)
+const OneTimePasscodes = usersDbConn.define(
   'OneTimePasscodes',
   OneTimePasscodesMeta.attributes,
   OneTimePasscodesMeta.options,

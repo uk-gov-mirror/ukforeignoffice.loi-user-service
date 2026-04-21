@@ -1,5 +1,5 @@
 const Model = require('../model/models')
-const crypto = require('crypto')
+const crypto = require('node:crypto')
 const common = require('../../config/common.js')
 const emailService = require('../services/emailService')
 const envVariables = common.config()
@@ -38,7 +38,7 @@ module.exports.showRequestBusinessServiceAccess = async (req, res) => {
           let back_link = '/api/user/account'
           if (req.query.from) {
             if (req.query.from === 'start') {
-              back_link = envVariables.applicationServiceURL + 'select-service'
+              back_link = `${envVariables.applicationServiceURL}select-service`
             }
           }
 
@@ -65,11 +65,11 @@ module.exports.requestBusinessServiceAccess = async (req, res) => {
   try {
     if (req.session.email) {
       const emailData = {
-        userEmail: req.session['email'],
+        userEmail: req.session.email,
         companyName: req.body['company-name'],
         companiesHouseNumber: req.body['companies-house-number'],
         businessArea: req.body['business-area'],
-        justification: req.body['justification'],
+        justification: req.body.justification,
         token: '',
         userID: '',
       }
@@ -81,10 +81,10 @@ module.exports.requestBusinessServiceAccess = async (req, res) => {
       if (noErrorsPresent) {
         let token = await generateUserToken()
         token = token.toString('hex')
-        emailData['token'] = token
+        emailData.token = token
         await assignTokenToUser(userAccount, token)
         await updateCompanyName(userAccount)
-        emailData['userID'] = userAccount.id
+        emailData.userID = userAccount.id
         await emailService.requestBusinessAccess(emailData)
         redirectToSelectServicePage()
       }
@@ -152,7 +152,7 @@ module.exports.requestBusinessServiceAccess = async (req, res) => {
         }
       }
 
-      async function validateFormInput(emailData, user, account) {
+      function validateFormInput(emailData, user, account) {
         try {
           const errorsArray = []
 
@@ -216,7 +216,7 @@ module.exports.requestBusinessServiceAccess = async (req, res) => {
             url: envVariables,
             error: true,
             errorsArray: errorsArray,
-            back_link: envVariables.applicationServiceURL + 'select-service',
+            back_link: `${envVariables.applicationServiceURL}select-service`,
             form_values: req.body,
           })
         } catch (error) {
@@ -230,7 +230,7 @@ module.exports.requestBusinessServiceAccess = async (req, res) => {
             'info',
             'Your request to gain access to the Next-Day service has been submitted successfully. You will be notified via email when a decision has been made.',
           )
-          return res.redirect(envVariables.applicationServiceURL + 'select-service')
+          return res.redirect(`${envVariables.applicationServiceURL}select-service`)
         } catch (error) {
           console.log('requestBusinessServiceAccess.redirectToSelectServicePage', error)
         }
@@ -249,7 +249,7 @@ module.exports.approve = async (req, res) => {
       return res.status(200).send('OK')
     }
 
-    const token = req.params['token']
+    const token = req.params.token
     const userAccountMatchingToken = await findAccountMatchingToken(token)
 
     if (!userAccountMatchingToken) {
@@ -315,13 +315,13 @@ module.exports.approve = async (req, res) => {
     async function sendAccountUpdateToOrbit(userAccountMatchingToken, userAccountDetails) {
       const startTime = new Date()
       try {
-        const edmsManagePortalCustomerUrl = config.edmsHost + '/api/v1/managePortalCustomer'
+        const edmsManagePortalCustomerUrl = `${config.edmsHost}/api/v1/managePortalCustomer`
         const edmsBearerToken = await HelperService.getEdmsAccessToken()
 
         const accountManagementObject = {
           portalCustomerUpdate: {
             userId: 'legalisation',
-            timestamp: new Date().getTime().toString(),
+            timestamp: Date.now().toString(),
             portalCustomer: {
               portalCustomerId: userAccountMatchingToken.id,
               forenames: userAccountDetails.first_name,
@@ -354,9 +354,9 @@ module.exports.approve = async (req, res) => {
             )
           } else {
             console.error(
-              '[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ' + userAccountMatchingToken.id,
+              `[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ${userAccountMatchingToken.id}`,
             )
-            console.error('response code: ' + response.status)
+            console.error(`response code: ${response.status}`)
             console.error(response.data)
           }
 
@@ -365,7 +365,7 @@ module.exports.approve = async (req, res) => {
           const endTime = new Date()
           const elapsedTime = endTime - startTime
           console.error(
-            '[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ' + userAccountMatchingToken.id,
+            `[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ${userAccountMatchingToken.id}`,
           )
           console.error(error.response ? error.response.data : error.message)
           console.log(`Orbit account management request response time: ${elapsedTime}ms`)
@@ -437,13 +437,13 @@ module.exports.reject = async (req, res) => {
     async function sendAccountUpdateToOrbit(userAccountMatchingToken, userAccountDetails) {
       const startTime = new Date()
       try {
-        const edmsManagePortalCustomerUrl = config.edmsHost + '/api/v1/managePortalCustomer'
+        const edmsManagePortalCustomerUrl = `${config.edmsHost}/api/v1/managePortalCustomer`
         const edmsBearerToken = await HelperService.getEdmsAccessToken()
 
         const accountManagementObject = {
           portalCustomerUpdate: {
             userId: 'legalisation',
-            timestamp: new Date().getTime().toString(),
+            timestamp: Date.now().toString(),
             portalCustomer: {
               portalCustomerId: userAccountMatchingToken.id,
               forenames: userAccountDetails.first_name,
@@ -470,13 +470,13 @@ module.exports.reject = async (req, res) => {
 
         if (response.status === 200) {
           console.log(
-            '[ACCOUNT MANAGEMENT] ACCOUNT UPDATE SENT TO ORBIT SUCCESSFULLY FOR USER_ID ' + userAccountMatchingToken.id,
+            `[ACCOUNT MANAGEMENT] ACCOUNT UPDATE SENT TO ORBIT SUCCESSFULLY FOR USER_ID ${userAccountMatchingToken.id}`,
           )
         } else {
           console.error(
-            '[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ' + userAccountMatchingToken.id,
+            `[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ${userAccountMatchingToken.id}`,
           )
-          console.error('response code: ' + response.status)
+          console.error(`response code: ${response.status}`)
           console.error(response.data)
         }
 
@@ -485,7 +485,7 @@ module.exports.reject = async (req, res) => {
         const endTime = new Date()
         const elapsedTime = endTime - startTime
         console.error(
-          '[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ' + userAccountMatchingToken.id,
+          `[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ${userAccountMatchingToken.id}`,
         )
         console.error(error.response ? error.response.data : error.message)
         console.log(`Orbit account management request response time: ${elapsedTime}ms`)
@@ -505,7 +505,7 @@ module.exports.reject = async (req, res) => {
       }
     }
 
-    const token = req.params['token']
+    const token = req.params.token
     const userAccountMatchingToken = await findAccountMatchingToken(token)
 
     if (!userAccountMatchingToken) {

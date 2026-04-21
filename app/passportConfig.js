@@ -1,4 +1,3 @@
-const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcryptjs')
 const Model = require('./model/models.js')
@@ -65,7 +64,7 @@ module.exports = (app, passport) => {
             )
 
             await emailService.lockedOut(user.first_name, email)
-            console.info('ACCOUNT LOCKED - UserID:' + user.id)
+            console.info(`ACCOUNT LOCKED - UserID: ${user.id}`)
             return done(null, false, { message: 'There was a problem signing in' })
           } else {
             return done(null, false, { message: 'There was a problem signing in' })

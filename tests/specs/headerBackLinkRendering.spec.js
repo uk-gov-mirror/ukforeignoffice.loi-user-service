@@ -6,7 +6,7 @@ before('Setup', async () => {
   const chai = await import('chai')
   expect = chai.expect
   ejs = require('ejs')
-  path = require('path')
+  path = require('node:path')
 })
 
 function buildBaseLocals(overrides = {}) {
@@ -41,7 +41,7 @@ function buildBaseLocals(overrides = {}) {
   }
 }
 
-async function renderView(viewRelativePath, locals) {
+function renderView(viewRelativePath, locals) {
   const filename = path.join(__dirname, '..', '..', 'views', viewRelativePath)
   return ejs.renderFile(filename, locals)
 }

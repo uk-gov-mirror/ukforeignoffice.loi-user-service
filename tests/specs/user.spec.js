@@ -1,11 +1,10 @@
 let expect
-let server
 
 before('Run Server', async () => {
   const chai = await import('chai')
   expect = chai.expect
   // Adjust the relative path as necessary and include the file extension
-  server = (await import('../../server.js')).getApp
+  const _server = (await import('../../server.js')).getApp
 })
 
 describe('Healthcheck is working', () => {

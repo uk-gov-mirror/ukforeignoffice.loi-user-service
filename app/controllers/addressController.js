@@ -1,9 +1,8 @@
-const Model = require('../model/models.js'),
-  ValidationService = require('../services/ValidationService.js'),
-  common = require('../../config/common.js'),
-  envVariables = common.config(),
-  axios = require('axios')
-
+const Model = require('../model/models.js')
+const ValidationService = require('../services/ValidationService.js')
+const common = require('../../config/common.js')
+const envVariables = common.config()
+const axios = require('axios')
 const mobilePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){6,25}$/
 const phonePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){6,25}$/
 
@@ -22,10 +21,10 @@ module.exports.showUKQuestion = (req, res) => {
 }
 
 module.exports.submitUKQuestion = (req, res) => {
-  if (typeof req.body.is_uk == 'undefined') {
+  if (typeof req.body.is_uk === 'undefined') {
     // ERROR HANDLING
     req.flash('error', 'Choose an option below')
-    var error_redirect = '/api/user/add-address'
+    const error_redirect = '/api/user/add-address'
     return res.redirect(error_redirect)
   } else if (JSON.parse(req.body.is_uk)) {
     showPostcodeLookup(req, res)
@@ -76,7 +75,7 @@ module.exports.findAddress = (req, res) => {
 
   if (!req.query.postcode && !req.body['find-postcode']) {
     return res.redirect('/api/user/add-address-uk?is_uk=true')
-  } else if (req.query && req.query.postcode) {
+  } else if (req.query?.postcode) {
     postcode = Postcode.toNormalised(req.query.postcode)
   } else {
     postcode = Postcode.toNormalised(req.body['find-postcode'])
@@ -98,7 +97,7 @@ module.exports.findAddress = (req, res) => {
       } else {
         postcodeLookup(postcode).then(
           (results) => {
-            var addresses = []
+            let addresses = []
             if (results.message === 'No matching address found: no response') {
               req.flash('error', 'No addresses found')
               addresses = false
@@ -159,9 +158,9 @@ module.exports.retrieveAddress = (addressId) => {
  * @return results
  */
 module.exports.ajaxFindPostcode = (req, res) => {
-  var address_type = req.body.address_type
+  const address_type = req.body.address_type
   if (!req.body) {
-    return res.redirect('your-' + address_type + '-address-uk?is_uk=true')
+    return res.redirect(`your-${address_type}-address-uk?is_uk=true`)
   }
   const Postcode = require('postcode')
   const postcode = Postcode.toNormalised(req.body['find-postcode'])
@@ -171,8 +170,8 @@ module.exports.ajaxFindPostcode = (req, res) => {
   } else {
     postcodeLookup(postcode).then(
       (results) => {
-        var return_error = false
-        var addresses = []
+        const return_error = false
+        let addresses = []
         if (results.message === 'No matching address found: no response') {
           req.flash('error', 'No addresses found')
           addresses = false
@@ -198,7 +197,7 @@ module.exports.ajaxFindPostcode = (req, res) => {
 }
 
 module.exports.ajaxSelectAddress = (req, res) => {
-  if (!req.session || !req.session.email) {
+  if (!req.session?.email) {
     return res.status(400).json({ error: 'User session email is missing.' })
   }
 
@@ -219,11 +218,11 @@ module.exports.ajaxSelectAddress = (req, res) => {
       }))
     })
     .then(({ account, address }) => {
-      if (!address || !address.data) {
+      if (!address?.data) {
         console.error('Address data is missing.')
       }
       return res.json({
-        full_name: account.first_name + ' ' + account.last_name,
+        full_name: `${account.first_name} ${account.last_name}`,
         address: address.data,
       })
     })
@@ -308,14 +307,14 @@ module.exports.showManualAddress = (req, res) => {
 module.exports.saveAddress = (req, res) => {
   Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
     Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => {
-      var country = req.body.country || ''
-      var email = req.body.email || null
-      var telephone = req.body.telephone || null
-      var mobileNo = req.body.mobileNo
-      var Postcode = require('postcode')
-      var postcodeObject = Postcode.toNormalised(req.body.postcode)
-      var postcode = ' '
-      if (country != 'United Kingdom') {
+      const country = req.body.country || ''
+      const email = req.body.email || null
+      const telephone = req.body.telephone || null
+      const mobileNo = req.body.mobileNo
+      const Postcode = require('postcode')
+      const postcodeObject = Postcode.toNormalised(req.body.postcode)
+      let postcode = ' '
+      if (country !== 'United Kingdom') {
         postcode =
           req.body.postcode.trim().length === 0 ? ' ' : req.body.postcode.length > 1 ? req.body.postcode : postcode
       } else {
@@ -323,7 +322,7 @@ module.exports.saveAddress = (req, res) => {
       }
 
       if (!req.body.house_name || req.body.house_name.length === 0) {
-        if (req.body.organisation && req.body.organisation.length > 0 && req.body.organisation != 'N/A') {
+        if (req.body.organisation && req.body.organisation.length > 0 && req.body.organisation !== 'N/A') {
           req.body.house_name = 'N/A'
         }
       }
@@ -371,8 +370,8 @@ module.exports.showEditAddress = (req, res) => {
             console.log('Address is null')
             return res.redirect('/api/user/addresses')
           }
-          var require_contact_details = 'no'
-          var back_link = ''
+          let require_contact_details = 'no'
+          let back_link = ''
 
           // if the user has been sent here from the application
           // service because they need to update their telephone
@@ -404,7 +403,7 @@ module.exports.showEditAddress = (req, res) => {
               url: envVariables,
               form_values: address,
               address_id: req.query.id,
-              uk: address.country == 'United Kingdom',
+              uk: address.country === 'United Kingdom',
               addresses: req.session.addresses,
               error_report: false,
               show_fields: true,
@@ -425,21 +424,21 @@ module.exports.showEditAddress = (req, res) => {
 }
 
 module.exports.editAddress = (req, res) => {
-  var country = req.body.country || ''
-  var email = req.body.email || null
-  var mobileNo = req.body.mobileNo
-  var telephone = req.body.telephone || null
-  var Postcode = require('postcode')
-  var postcodeObject = Postcode.toNormalised(req.body.postcode)
-  var postcode = ' '
-  if (country != 'United Kingdom') {
+  const country = req.body.country || ''
+  const email = req.body.email || null
+  const mobileNo = req.body.mobileNo
+  const telephone = req.body.telephone || null
+  const Postcode = require('postcode')
+  const postcodeObject = Postcode.toNormalised(req.body.postcode)
+  let postcode = ' '
+  if (country !== 'United Kingdom') {
     postcode = req.body.postcode.trim().length === 0 ? ' ' : req.body.postcode.length > 1 ? req.body.postcode : postcode
   } else {
     postcode = postcodeObject ? postcodeObject : ''
   }
 
   if (!req.body.house_name || req.body.house_name.length === 0) {
-    if (req.body.organisation && req.body.organisation.length > 0 && req.body.organisation != 'N/A') {
+    if (req.body.organisation && req.body.organisation.length > 0 && req.body.organisation !== 'N/A') {
       req.body.house_name = 'N/A'
     }
   }
@@ -483,7 +482,7 @@ module.exports.editAddress = (req, res) => {
 
             // go back to the application-service and update details
             // before being redirected to the correct page
-            return res.redirect(envVariables.applicationServiceURL + 'manage-saved-address')
+            return res.redirect(`${envVariables.applicationServiceURL}manage-saved-address`)
           } else {
             return res.redirect('/api/user/addresses')
           }
@@ -502,7 +501,7 @@ module.exports.deleteAddress = (req, res) => {
   Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
     Model.SavedAddress.destroy({ where: { user_id: user.id, id: req.query.id } })
       .then((result) => {
-        if (result == true) {
+        if (result === true) {
           console.log(`address successfully deleted for user ${user.id} and id ${req.query.id}`)
           req.flash('info', 'Address successfully deleted')
         } else {

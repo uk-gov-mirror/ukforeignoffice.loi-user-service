@@ -1,27 +1,27 @@
 const bcrypt = require('bcryptjs'),
   axios = require('axios'),
-  async = require('async'),
+  _async = require('async'),
   config = require('../../config/environment'),
-  crypto = require('crypto'),
-  fs = require('fs'),
+  crypto = require('node:crypto'),
+  _fs = require('node:fs'),
   Model = require('../model/models.js'),
   ValidationService = require('../services/ValidationService.js'),
   common = require('../../config/common.js'),
   envVariables = common.config(),
   validator = require('validator'),
   dbConnection = require('../sequelize.js'),
-  moment = require('moment'),
+  _moment = require('moment'),
   { Op } = require('sequelize'),
   emailService = require('../services/emailService'),
   HelperService = require('../services/HelperService')
 
-var mobilePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){5,14}$/
-var phonePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){5,14}$/
+const mobilePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){5,14}$/
+const phonePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){5,14}$/
 //old pattern /([0-9]|[\-+#() ]){6,}/;
 
 async function sendToOrbit(accountManagementObject, user) {
   try {
-    const edmsManagePortalCustomerUrl = config.edmsHost + '/api/v1/managePortalCustomer'
+    const edmsManagePortalCustomerUrl = `${config.edmsHost}/api/v1/managePortalCustomer`
     const edmsBearerToken = await HelperService.getEdmsAccessToken()
     const startTime = new Date()
 
@@ -36,10 +36,10 @@ async function sendToOrbit(accountManagementObject, user) {
     const elapsedTime = endTime - startTime
 
     if (response.status === 200) {
-      console.log('[ACCOUNT MANAGEMENT] ACCOUNT CREATION SENT TO ORBIT SUCCESSFULLY FOR USER_ID ' + user.id)
+      console.log(`[ACCOUNT MANAGEMENT] ACCOUNT CREATION SENT TO ORBIT SUCCESSFULLY FOR USER_ID ${user.id}`)
     } else {
-      console.error('[ACCOUNT MANAGEMENT] ACCOUNT CREATION FAILED SENDING TO ORBIT FOR USER_ID ' + user.id)
-      console.error('response code: ' + response.status)
+      console.error(`[ACCOUNT MANAGEMENT] ACCOUNT CREATION FAILED SENDING TO ORBIT FOR USER_ID ${user.id}`)
+      console.error(`response code: ${response.status}`)
       console.error(response.data)
     }
 
@@ -47,7 +47,7 @@ async function sendToOrbit(accountManagementObject, user) {
   } catch (error) {
     const endTime = new Date()
     const elapsedTime = endTime - startTime
-    console.error('[ACCOUNT MANAGEMENT] ACCOUNT CREATION FAILED SENDING TO ORBIT FOR USER_ID ' + user.id)
+    console.error(`[ACCOUNT MANAGEMENT] ACCOUNT CREATION FAILED SENDING TO ORBIT FOR USER_ID ${user.id}`)
     console.error(error.response ? error.response.data : error.message)
     console.log(`Orbit account management request response time: ${elapsedTime}ms`)
     console.error(`sendToOrbit: ${error}`)
@@ -55,7 +55,7 @@ async function sendToOrbit(accountManagementObject, user) {
 }
 
 module.exports.usercheck = (req, res) => {
-  if (typeof req.body['has-account'] == 'undefined') {
+  if (typeof req.body['has-account'] === 'undefined') {
     return res.render('usercheck.ejs', {
       queryString: req.query,
       applicationServiceURL: envVariables.applicationServiceURL,
@@ -64,25 +64,25 @@ module.exports.usercheck = (req, res) => {
     })
   }
   //copy any querystring
-  var queryString = ''
+  let queryString = ''
   if (req.body.next) {
-    queryString = '?next=' + req.body.next
+    queryString = `?next=${req.body.next}`
   }
   if (req.body['has-account'] === 'true') {
-    return res.redirect('/api/user/sign-in' + queryString)
+    return res.redirect(`/api/user/sign-in${queryString}`)
   } else {
-    return res.redirect('/api/user/register' + queryString)
+    return res.redirect(`/api/user/register${queryString}`)
   }
 }
 
 module.exports.show = (req, res) => {
   if (req.query.from) {
-    if (req.query.from == 'home') {
+    if (req.query.from === 'home') {
       req.session.back_link = envVariables.applicationServiceURL
-    } else if (req.query.from == 'start') {
-      req.session.back_link = envVariables.applicationServiceURL + 'start'
+    } else if (req.query.from === 'start') {
+      req.session.back_link = `${envVariables.applicationServiceURL}start`
     } else {
-      req.session.back_link = envVariables.applicationServiceURL + 'start'
+      req.session.back_link = `${envVariables.applicationServiceURL}start`
     }
   }
 
@@ -103,14 +103,14 @@ module.exports.register = (req, res) => {
   req.body.email = req.body.email.toLowerCase()
   req.body.confirm_email = req.body.confirm_email.toLowerCase()
 
-  var patt = new RegExp(envVariables.password_settings.passwordPattern)
-  var isemail = require('isemail')
-  var emailValid = isemail.validate(req.body.email)
+  const patt = new RegExp(envVariables.password_settings.passwordPattern)
+  const isemail = require('isemail')
+  const emailValid = isemail.validate(req.body.email)
 
-  var messages = []
-  var passwordErrorType = []
-  var errorDescription = []
-  var erroneousFields = [
+  const messages = []
+  const passwordErrorType = []
+  const errorDescription = []
+  let erroneousFields = [
     {
       email: false,
       confirm_email: false,
@@ -136,16 +136,16 @@ module.exports.register = (req, res) => {
 
   // check the password against the blacklists
   // location of the password blacklist and phraselist
-  var blackList = require('../../config/blacklist.js')
-  var phraselist = require('../../config/phraselist.js')
+  const blackList = require('../../config/blacklist.js')
+  const phraselist = require('../../config/phraselist.js')
   //return true if password is in the blacklist
-  var passwordInBlacklist = validator.isIn(req.body.password, blackList)
+  const passwordInBlacklist = validator.isIn(req.body.password, blackList)
   // normalise the password by removing all spaces and converting to lower case
-  var normalisedPassword = validator.blacklist(req.body.password, ' ').trim().toLowerCase()
+  const normalisedPassword = validator.blacklist(req.body.password, ' ').trim().toLowerCase()
   // check to see if a word in the phraselist appears in the normalised password
-  var passwordInPhraselist = false
+  let passwordInPhraselist = false
 
-  for (var phrase of phraselist) {
+  for (const phrase of phraselist) {
     if (normalisedPassword.includes(phrase.toLowerCase())) {
       passwordInPhraselist = true
       break
@@ -179,7 +179,7 @@ module.exports.register = (req, res) => {
   } else {
     if (req.body.password === '' && req.body.confirm_password === '') {
       messages.push({ confirm_password: 'Confirm your password \n' })
-    } else if (req.body.password != req.body.confirm_password) {
+    } else if (req.body.password !== req.body.confirm_password) {
       errorDescription.push('You must confirm the password \n')
       messages.push({ password: 'Enter a password \n' })
       messages.push({ confirm_password: 'Passwords did not match \n' })
@@ -208,9 +208,9 @@ module.exports.register = (req, res) => {
     erroneousFields[0].password = true
   }
 
-  var companyVerification = false
+  let companyVerification = false
   if (typeof req.body.company_verification_check !== 'undefined') {
-    var companyVerificationArr = req.body.company_verification_check
+    const companyVerificationArr = req.body.company_verification_check
     if (companyVerificationArr.indexOf('on') > -1) {
       companyVerification = true
     } else {
@@ -219,12 +219,12 @@ module.exports.register = (req, res) => {
   }
   req.body.company_verification_check = companyVerification
 
-  if (typeof req.body.business_yes_no == 'undefined') {
+  if (typeof req.body.business_yes_no === 'undefined') {
     errorDescription.push('You have not stated if you are registering on behalf of a business \n')
     messages.push({ business: 'Confirm whether you are registering on behalf of a business \n' })
     erroneousFields[0].business_yes_no = true
   } else {
-    if (req.body.business_yes_no == 'Yes') {
+    if (req.body.business_yes_no === 'Yes') {
       if (req.body.company_name.length < 1) {
         errorDescription.push('You have not provided a valid company name \n')
         messages.push({ company_name: 'Enter a valid company name \n' })
@@ -238,8 +238,8 @@ module.exports.register = (req, res) => {
     }
   }
 
-  var allInfoCorrectArr = req.body.all_info_correct
-  var allInfoCorrect = false
+  const allInfoCorrectArr = req.body.all_info_correct
+  let allInfoCorrect = false
   if (allInfoCorrectArr.indexOf('on') > -1) {
     allInfoCorrect = true
   } else {
@@ -281,24 +281,24 @@ module.exports.register = (req, res) => {
     } else {
       req.session.email = req.body.email
 
-      var email = req.body.email
-      var password = req.body.password
-      var confirm_password = req.body.confirm_password
-      var salt = bcrypt.genSaltSync(10)
+      const email = req.body.email
+      const password = req.body.password
+      const confirm_password = req.body.confirm_password
+      const salt = bcrypt.genSaltSync(10)
 
       /**
        * If no password/confirmpassword is provided, the hashed instances are set to empty strings
        * to force validation failure
        */
-      var hashedPassword = password !== null && password !== '' ? bcrypt.hashSync(password, salt) : ''
-      var hashedConfirmPassword =
+      const hashedPassword = password !== null && password !== '' ? bcrypt.hashSync(password, salt) : ''
+      const hashedConfirmPassword =
         confirm_password !== null && confirm_password !== '' ? bcrypt.hashSync(confirm_password, salt) : ''
 
       // get payment reference for this user account
       dbConnection
         .query('SELECT * FROM get_next_payment_reference()')
         .then(async (results) => {
-          var paymentReference
+          let paymentReference
 
           if (results[0]) {
             paymentReference = results[0][0].get_next_payment_reference
@@ -401,7 +401,7 @@ module.exports.register = (req, res) => {
     }
   })
 }
-module.exports.showAddressSkip = (req, res) => res.render('initial/address-skip.ejs')
+module.exports.showAddressSkip = (_req, res) => res.render('initial/address-skip.ejs')
 module.exports.completeRegistration = (req, res) => {
   Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
     Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((data) => {
@@ -423,10 +423,10 @@ module.exports.completeRegistration = (req, res) => {
             return res.render('initial/address-skip.ejs')
           })
           .then(() => {
-            var accountManagementObject = {
+            const accountManagementObject = {
               portalCustomerUpdate: {
                 userId: 'legalisation',
-                timestamp: new Date().getTime().toString(),
+                timestamp: Date.now().toString(),
                 portalCustomer: {
                   portalCustomerId: user.id,
                   forenames: req.body.first_name,
@@ -452,7 +452,7 @@ module.exports.completeRegistration = (req, res) => {
             console.log(error)
 
             // Custom error array builder for email match confirmation
-            var erroneousFields = []
+            const erroneousFields = []
 
             if (req.body.first_name === '') {
               erroneousFields.push('first_name')
@@ -461,7 +461,7 @@ module.exports.completeRegistration = (req, res) => {
               erroneousFields.push('last_name')
             }
 
-            if (typeof req.body.feedback_consent == 'undefined') {
+            if (typeof req.body.feedback_consent === 'undefined') {
               erroneousFields.push('feedback_consent')
             }
             if (req.body.telephone !== '' && req.body.telephone !== null) {
@@ -517,7 +517,7 @@ module.exports.completeRegistration = (req, res) => {
           })
           .catch((error) => {
             // Custom error array builder for email match confirmation
-            var erroneousFields = []
+            const erroneousFields = []
 
             if (req.body.first_name === '') {
               erroneousFields.push('first_name')

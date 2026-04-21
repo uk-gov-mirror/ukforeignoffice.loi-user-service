@@ -5,9 +5,9 @@
  *
  */
 
-var Sequelize = require('sequelize')
+const Sequelize = require('sequelize')
 
-var attributes = {
+const attributes = {
   id: {
     type: 'integer',
     primaryKey: true,
@@ -60,7 +60,7 @@ var attributes = {
                  Custom error builder for password field
                  */
         if (val !== this.confirm_password) {
-          var msg = []
+          const msg = []
 
           msg.push({
             errInfo: 'Password and password confirmation fields must match',
@@ -160,7 +160,7 @@ var attributes = {
   },
 }
 
-var options = {
+const options = {
   freezeTableName: true,
 }
 

@@ -81,8 +81,8 @@ const emailService = {
     const options = setOptions(postData, url)
 
     try {
-      const response = await axios.post(options.url, options.body, { headers: options.headers })
-      console.log('[USER CLEANUP JOB] WARNING EMAIL SENT SUCCESSFULLY FOR USER ' + userID)
+      const _response = await axios.post(options.url, options.body, { headers: options.headers })
+      console.log(`[USER CLEANUP JOB] WARNING EMAIL SENT SUCCESSFULLY FOR USER ${userID}`)
     } catch (err) {
       console.log(err)
     }
@@ -93,8 +93,8 @@ const emailService = {
     const options = setOptions(postData, url)
 
     try {
-      const response = await axios.post(options.url, options.body, { headers: options.headers })
-      console.log('[USER CLEANUP JOB] EXPIRY EMAIL SENT SUCCESSFULLY FOR USER ' + userID)
+      const _response = await axios.post(options.url, options.body, { headers: options.headers })
+      console.log(`[USER CLEANUP JOB] EXPIRY EMAIL SENT SUCCESSFULLY FOR USER ${userID}`)
     } catch (err) {
       console.log(err)
     }
@@ -104,8 +104,8 @@ const emailService = {
     const options = setOptions(emailData, url)
 
     try {
-      const response = await axios.post(options.url, options.body, { headers: options.headers })
-      console.log('BUSINESS SERVICE APPLICATION REQUEST SENT SUCCESSFULLY FOR USER ' + emailData.userID)
+      const _response = await axios.post(options.url, options.body, { headers: options.headers })
+      console.log(`BUSINESS SERVICE APPLICATION REQUEST SENT SUCCESSFULLY FOR USER ${emailData.userID}`)
     } catch (err) {
       console.log(err)
     }
@@ -116,11 +116,11 @@ const emailService = {
     const options = setOptions(postData, url)
 
     try {
-      const response = await axios.post(options.url, options.body, { headers: options.headers })
+      const _response = await axios.post(options.url, options.body, { headers: options.headers })
       if (decision === 'approve') {
-        console.log('BUSINESS SERVICE ACCESS APPROVAL EMAIL SENT SUCCESSFULLY FOR USER ' + emailData.id)
+        console.log(`BUSINESS SERVICE ACCESS APPROVAL EMAIL SENT SUCCESSFULLY FOR USER ${emailData.id}`)
       } else {
-        console.log('BUSINESS SERVICE ACCESS REJECTION EMAIL SENT SUCCESSFULLY FOR USER ' + emailData.id)
+        console.log(`BUSINESS SERVICE ACCESS REJECTION EMAIL SENT SUCCESSFULLY FOR USER ${emailData.id}`)
       }
     } catch (err) {
       console.log(err)

@@ -123,19 +123,19 @@ const jobs = {
     }
 
     async function sendWarningEmail(user, accountExpiryDateText, dayAndMonthText) {
-      console.log('[USER CLEANUP JOB] SENDING WARNING EMAIL FOR USER ' + user.id)
+      console.log(`[USER CLEANUP JOB] SENDING WARNING EMAIL FOR USER ${user.id}`)
       await emailService.expiryWarning(user.email, accountExpiryDateText, dayAndMonthText, user.id)
     }
 
     async function sendExpiryEmail(user) {
-      console.log('[USER CLEANUP JOB] SENDING EXPIRY EMAIL FOR USER ' + user.id)
+      console.log(`[USER CLEANUP JOB] SENDING EXPIRY EMAIL FOR USER ${user.id}`)
       await emailService.expiryConfirmation(user.email, user.id)
     }
 
     async function processAccountsNearingExpiry(accountsNearingExpiry) {
       try {
         for (const user of accountsNearingExpiry) {
-          console.log('[USER CLEANUP JOB] PROCESSING USER ' + user.id)
+          console.log(`[USER CLEANUP JOB] PROCESSING USER ${user.id}`)
 
           const expired = user.accountExpiry < now,
             expiringSoon = user.accountExpiry < gracePeriod,
@@ -153,9 +153,9 @@ const jobs = {
             await deleteAccountDetailsForUser(user)
             await deleteSavedAddressForUser(user)
             await deleteUserDetailsForUser(user)
-            console.log('[USER CLEANUP JOB] ACCOUNT DELETED SUCCESSFULLY FOR USER ' + user.id)
+            console.log(`[USER CLEANUP JOB] ACCOUNT DELETED SUCCESSFULLY FOR USER ${user.id}`)
           } else {
-            console.log('[USER CLEANUP JOB] NO ACTION REQUIRED FOR USER ' + user.id)
+            console.log(`[USER CLEANUP JOB] NO ACTION REQUIRED FOR USER ${user.id}`)
           }
         }
       } catch {

@@ -1,23 +1,23 @@
-var common = require('../../config/common.js'),
-  envVariables = common.config()
+const common = require('../../config/common.js')
+const envVariables = common.config()
 
-var ValidationService = {
+const ValidationService = {
   validateForm: (inputs) => {
-    var errors = inputs.error.errors
+    const errors = inputs.error.errors
 
-    var erroneousFields = inputs.erroneousFields
-    var errMsgs = []
+    const erroneousFields = inputs.erroneousFields
+    const errMsgs = []
 
-    var fieldName
-    var fieldError
-    var fieldSolution
-    var questionId
+    let fieldName
+    let fieldError
+    let fieldSolution
+    let questionId
 
-    fieldsAndErrors = []
+    const fieldsAndErrors = []
 
     if (errors.length > 0) {
-      for (var h = 0; h < errors.length; h++) {
-        var errArr = JSON.parse(errors[h].message)
+      for (let h = 0; h < errors.length; h++) {
+        const errArr = JSON.parse(errors[h].message)
 
         fieldName = errArr[0].questionId
         fieldError = errArr[0].errInfo
@@ -39,8 +39,8 @@ var ValidationService = {
   },
 
   buildErrorsArray: (errorArr) => {
-    fieldsAndErrorsCustom = []
-    errornousFields = []
+    const fieldsAndErrorsCustom = []
+    const errornousFields = []
     try {
       errorArr.errors.forEach((item) => {
         if (errornousFields.indexOf(item.path) === -1) {
@@ -50,7 +50,7 @@ var ValidationService = {
              * If it IS the password fields with an error, build the
              * errors array
              */
-            var passwordError = item.message
+            let passwordError = item.message
 
             if (errornousFields.length === 1 && errornousFields.indexOf('password') > -1) {
               passwordError = JSON.parse(passwordError)[0]
@@ -66,7 +66,7 @@ var ValidationService = {
             /**
              * Error due to duplicate email used
              */
-            var emailError = item.message
+            const emailError = item.message
 
             //if (errornousFields.length === 1 && errornousFields.indexOf('email') > -1) {
             //    emailError = JSON.parse(emailError);
@@ -112,19 +112,19 @@ var ValidationService = {
       return phonePattern.test(input)
     }
 
-    var country = req.body.country || ''
-    var phonePattern = /^[0-9+()# -]+$/
-    var isemail = require('isemail')
-    var Postcode = require('postcode')
-    var postcodeObject = Postcode.toNormalised(req.body.postcode)
-    var postcode = ' '
-    if (country != 'United Kingdom') {
+    const country = req.body.country || ''
+    const phonePattern = /^[0-9+()# -]+$/
+    const isemail = require('isemail')
+    const Postcode = require('postcode')
+    const postcodeObject = Postcode.toNormalised(req.body.postcode)
+    let postcode = ' '
+    if (country !== 'United Kingdom') {
       postcode =
         req.body.postcode.trim().length === 0 ? ' ' : req.body.postcode.length > 1 ? req.body.postcode : postcode
     } else {
       postcode = postcodeObject ? postcodeObject : ''
     }
-    erroneousFields = []
+    const erroneousFields = []
 
     error.errors.forEach((error) => {
       const parsedMessage = JSON.parse(error.message)
@@ -148,7 +148,7 @@ var ValidationService = {
     if (req.body.town === '') {
       erroneousFields.push('town')
     }
-    if (req.body.country === '' || typeof req.body.country == 'undefined') {
+    if (req.body.country === '' || typeof req.body.country === 'undefined') {
       erroneousFields.push('country')
     }
 
@@ -170,54 +170,54 @@ var ValidationService = {
       }
     }
 
-    var dataValues = []
+    const dataValues = []
     dataValues.push({
       full_name:
-        req.body.full_name !== '' && req.body.full_name !== undefined && req.body.full_name != 'undefined'
+        req.body.full_name !== '' && req.body.full_name !== undefined && req.body.full_name !== 'undefined'
           ? req.body.full_name
           : '',
       postcode: postcode,
       organisation:
-        req.body.organisation !== '' && req.body.organisation !== undefined && req.body.organisation != 'undefined'
+        req.body.organisation !== '' && req.body.organisation !== undefined && req.body.organisation !== 'undefined'
           ? req.body.organisation
           : '',
       house_name:
-        req.body.house_name !== '' && req.body.house_name !== undefined && req.body.house_name != 'undefined'
+        req.body.house_name !== '' && req.body.house_name !== undefined && req.body.house_name !== 'undefined'
           ? req.body.house_name
           : '',
       street:
-        req.body.street !== '' && req.body.street !== undefined && req.body.street != 'undefined'
+        req.body.street !== '' && req.body.street !== undefined && req.body.street !== 'undefined'
           ? req.body.street
           : '',
-      town: req.body.town !== '' && req.body.town !== undefined && req.body.town != 'undefined' ? req.body.town : '',
+      town: req.body.town !== '' && req.body.town !== undefined && req.body.town !== 'undefined' ? req.body.town : '',
       county:
-        req.body.county !== '' && req.body.county !== undefined && req.body.county != 'undefined'
+        req.body.county !== '' && req.body.county !== undefined && req.body.county !== 'undefined'
           ? req.body.county
           : '',
       country:
-        req.body.country !== '' && req.body.country !== undefined && req.body.country != 'undefined'
+        req.body.country !== '' && req.body.country !== undefined && req.body.country !== 'undefined'
           ? req.body.country
           : '',
       telephone:
-        req.body.telephone !== '' && req.body.telephone !== undefined && req.body.telephone != 'undefined'
+        req.body.telephone !== '' && req.body.telephone !== undefined && req.body.telephone !== 'undefined'
           ? req.body.telephone
           : '',
       mobileNo:
-        req.body.mobileNo !== '' && req.body.mobileNo !== undefined && req.body.mobileNo != 'undefined'
+        req.body.mobileNo !== '' && req.body.mobileNo !== undefined && req.body.mobileNo !== 'undefined'
           ? req.body.mobileNo
           : '',
       email:
-        req.body.email !== '' && req.body.email !== undefined && req.body.email != 'undefined' ? req.body.email : '',
+        req.body.email !== '' && req.body.email !== undefined && req.body.email !== 'undefined' ? req.body.email : '',
     })
     if (edit) {
-      var require_contact_details = 'no'
-      var back_link = ''
+      let require_contact_details = 'no'
+      let back_link = ''
       if (req.session.require_contact_details === 'yes') {
         require_contact_details = 'yes'
         back_link = req.session.require_contact_details_back_link
       }
       return res.render('address_pages/edit-address.ejs', {
-        uk: req.body.country == 'United Kingdom',
+        uk: req.body.country === 'United Kingdom',
         addresses: req.session.addresses,
         form_values: dataValues[0],
         address_id: req.body.address_id,
@@ -234,7 +234,7 @@ var ValidationService = {
         require_contact_details: require_contact_details,
         back_link: back_link,
       })
-    } else if (req.body.country == 'United Kingdom' && !JSON.parse(req.body.manual)) {
+    } else if (req.body.country === 'United Kingdom' && !JSON.parse(req.body.manual)) {
       return res.render('address_pages/UKAddress.ejs', {
         uk: true,
         addresses: req.session.addresses,
@@ -248,7 +248,7 @@ var ValidationService = {
         chosen_address: req.body.chosen_address,
         url: envVariables,
       })
-    } else if (req.body.country == 'United Kingdom' && JSON.parse(req.body.manual)) {
+    } else if (req.body.country === 'United Kingdom' && JSON.parse(req.body.manual)) {
       return res.render('address_pages/UKManualAddress.ejs', {
         form_values: dataValues[0],
         error_report: ValidationService.validateForm({ error: error, erroneousFields: erroneousFields }),

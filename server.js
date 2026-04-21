@@ -1,20 +1,22 @@
-const express = require('express'),
-  app = express(),
-  common = require('./config/common.js'),
-  environmentVariables = common.config(),
-  passport = require('passport'),
-  passportConfig = require('./app/passportConfig'),
-  viewAuthData = require('./app/middleware/viewAuthData'),
-  flash = require('connect-flash'),
-  appRouter = require('./app/routes.js')(express, environmentVariables),
-  bodyParser = require('body-parser'),
-  jsonParser = bodyParser.json(),
-  cookieParser = require('cookie-parser'),
-  csrf = require('csurf')
+const express = require('express')
+const app = express()
+const common = require('./config/common.js')
+const environmentVariables = common.config()
+const passport = require('passport')
+const passportConfig = require('./app/passportConfig')
+const viewAuthData = require('./app/middleware/viewAuthData')
+const flash = require('connect-flash')
+const appRouter = require('./app/routes.js')(express, environmentVariables)
+const bodyParser = require('body-parser')
+const jsonParser = bodyParser.json()
+const cookieParser = require('cookie-parser')
+const csrf = require('csurf')
 
+const defaultPort = 3001
 require('./config/logs')
 require('dotenv').config()
-const serverPort = process.argv[2] && !isNaN(process.argv[2]) ? process.argv[2] : process.env.PORT || 3001
+const serverPort =
+  process.argv[2] && !Number.isNaN(Number(process.argv[2])) ? process.argv[2] : process.env.PORT || defaultPort
 
 app.use(cookieParser())
 app.set('trust proxy', 1)
@@ -37,7 +39,7 @@ app.use(
   }),
 )
 
-app.use((req, res, next) => {
+app.use((_req, res, next) => {
   res.removeHeader('X-Powered-By')
   res.removeHeader('Server')
   return next()
@@ -49,7 +51,7 @@ app.use((req, res, next) => {
 const sessionSettings = JSON.parse(process.env.THESESSION)
 
 app.use((req, res, next) => {
-  if (req.cookies['LoggedIn']) {
+  if (req.cookies.LoggedIn) {
     res.cookie('LoggedIn', true, { maxAge: sessionSettings.cookieMaxAge, httpOnly: true })
   }
   return next()
@@ -109,7 +111,7 @@ app.use(
 // =====================================
 app.set('view engine', 'ejs')
 
-const crypto = require('crypto')
+const crypto = require('node:crypto')
 const cacheBust = crypto.randomBytes(4).toString('hex')
 
 app.use((req, res, next) => {
@@ -152,8 +154,7 @@ const jobs = require('./config/jobs.js')
 const hourlyInterval = environmentVariables.userAccountSettings.jobScheduleHour
 const randomSecond = Math.floor(Math.random() * 60)
 const randomMin = Math.floor(Math.random() * 60) //Math.random returns a number from 0 to < 1 (never will return 60)
-const jobScheduleRandom =
-  randomSecond + ' ' + randomMin + ' ' + environmentVariables.userAccountSettings.jobScheduleHour + ' * * *'
+const jobScheduleRandom = `${randomSecond} ${randomMin} ${environmentVariables.userAccountSettings.jobScheduleHour} * * *`
 schedule.scheduleJob(jobScheduleRandom, () => {
   jobs.accountExpiryCheck()
 })
@@ -161,24 +162,24 @@ schedule.scheduleJob(jobScheduleRandom, () => {
 passportConfig(app, passport)
 app.use('/api/user', appRouter)
 //Automatically update passport strategy
-var fs = require('fs-extra')
-fs.copy(__dirname + '/data/strategy.js', __dirname + '/node_modules/passport-local/lib/strategy.js', (err) => {})
+const fs = require('fs-extra')
+fs.copy(`${__dirname}/data/strategy.js`, `${__dirname}/node_modules/passport-local/lib/strategy.js`, (_err) => {})
 
 // =====================================
 // GOV STYLES
 // =====================================
 const oneDay = 24 * 60 * 60 * 1000 // 1 day in milliseconds
 
-app.use('/api/user/', express.static(__dirname + '/public', { maxAge: oneDay }))
-app.use('/api/user/styles', express.static(__dirname + '/styles', { maxAge: oneDay }))
-app.use('/api/user/fonts', express.static(__dirname + '/fonts', { maxAge: oneDay }))
-app.use('/api/user/images', express.static(__dirname + '/images', { maxAge: oneDay }))
-app.use('/api/user/js', express.static(__dirname + '/js', { maxAge: oneDay }))
+app.use('/api/user/', express.static(`${__dirname}/public`, { maxAge: oneDay }))
+app.use('/api/user/styles', express.static(`${__dirname}/styles`, { maxAge: oneDay }))
+app.use('/api/user/fonts', express.static(`${__dirname}/fonts`, { maxAge: oneDay }))
+app.use('/api/user/images', express.static(`${__dirname}/images`, { maxAge: oneDay }))
+app.use('/api/user/js', express.static(`${__dirname}/js`, { maxAge: oneDay }))
 
 // Serve GOV.UK Frontend v5 assets
 app.use(
   '/api/user/govuk-frontend',
-  express.static(__dirname + '/node_modules/govuk-frontend/dist/govuk', { maxAge: oneDay }),
+  express.static(`${__dirname}/node_modules/govuk-frontend/dist/govuk`, { maxAge: oneDay }),
 )
 
 // =====================================
@@ -198,7 +199,7 @@ process.on('unhandledRejection', (reason, promise) => {
 })
 
 app.listen(serverPort)
-console.log('Server started on port ' + serverPort)
+console.log(`Server started on port ${serverPort}`)
 console.log(
   `user account cleanup job will run every ${hourlyInterval} hours at ${randomMin} minutes and ${randomSecond} seconds past the hour`,
 )
