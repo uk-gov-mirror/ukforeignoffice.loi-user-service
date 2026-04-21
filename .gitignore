@@ -17,6 +17,5 @@ npm-debug.log
 /node_modules
 /reports
 selenium-debug.log
-linting.xml
 logs/fco-loi-user-service-info.log
 logs/fco-loi-user-service-error.log
