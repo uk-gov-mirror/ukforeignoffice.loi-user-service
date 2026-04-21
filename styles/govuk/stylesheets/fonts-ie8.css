@@ -2,29 +2,28 @@
 
 /*! Copyright (c) 2011 by Margaret Calvert & Henrik Kubel. All rights reserved. The font has been customised for exclusive use on gov.uk. This cut is not commercially available. */
 
-
 @font-face {
-  font-family: 'nta';
-  src: url(fonts/NTA-Light-20130221.eot?0.13.0#) format('embedded-opentype');
+  font-family: "nta";
+  src: url(fonts/NTA-Light-20130221.eot?0.13.0#) format("embedded-opentype");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'nta';
-  src: url(fonts/NTA-Bold-20130221.eot?0.13.0#) format('embedded-opentype');
+  font-family: "nta";
+  src: url(fonts/NTA-Bold-20130221.eot?0.13.0#) format("embedded-opentype");
   font-weight: bold;
 }
 
 @font-face {
-  font-family: 'ntatabularnumbers';
-  src: url(fonts/NTATabularNumbers-Light.eot?0.13.0#) format('embedded-opentype');
+  font-family: "ntatabularnumbers";
+  src: url(fonts/NTATabularNumbers-Light.eot?0.13.0#) format("embedded-opentype");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'ntatabularnumbers';
-  src: url(fonts/NTATabularNumbers-Bold.eot?0.13.0#) format('embedded-opentype');
+  font-family: "ntatabularnumbers";
+  src: url(fonts/NTATabularNumbers-Bold.eot?0.13.0#) format("embedded-opentype");
   font-weight: bold;
 }
