@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  quality:
+  format:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -19,4 +19,20 @@ jobs:
         with:
           version: 2.4.12
       - name: Run Biome
-        run: biome ci .
+        run: biome format .
+  linting:
+    name: Linting
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+        with:
+          version: 2.4.12
+      - name: Run Biome
+        run: biome lint .

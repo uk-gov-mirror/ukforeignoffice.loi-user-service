@@ -8,7 +8,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!fonts", "!js", "!styles", "!public"]
+    "includes": ["**", "!fonts", "!js/dependencies", "!styles", "!public"]
   },
   "formatter": {
     "enabled": true,
