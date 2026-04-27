@@ -538,9 +538,11 @@ module.exports.deleteAddress= function(req,res) {
 
 async function postcodeLookup(normalisedPostcode) {
     const postcode = normalisedPostcode.replace(/ /g, '');
+    const url = `${envVariables.postcodeLookUpApiOptions.uri.replace(/\/$/, '')}/lookup/${postcode}`
+
     const options = {
         ...envVariables.postcodeLookUpApiOptions,
-        url: `${envVariables.postcodeLookUpApiOptions.uri}/lookup/${postcode}`
+        url
     };
 
     try {
