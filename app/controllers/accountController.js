@@ -375,6 +375,7 @@ module.exports.changeDetails = async function(req, res) {
             };
 
             sendToOrbit(accountManagementObject, user);
+            req.session.account = null;
             return res.redirect('/api/user/account');
         } else {
             await Model.AccountDetails.create(accountDetails);
@@ -504,9 +505,12 @@ module.exports.changeMfa = async function(req, res) {
             return res.redirect('/api/user/account');
         }
 
+        req.session.account = null;
+
         if (mfaPreference === 'Email') {
             await Model.User.update({ mfaPreference: mfaPreference }, { where: { email: req.session.email } });
             req.flash('info', 'Your MFA preference has been updated to Email.');
+            req.session.user = null;
             return res.redirect('/api/user/account');
         } else {
             let validMobile = mobilePattern.test(mobileNoFromForm) ? mobileNoFromForm : false;
@@ -631,6 +635,8 @@ module.exports.validateSMS = async function (req, res) {
             await oneTimePasscodeService.updateAccountMobileNumber(user_id, mobileNoFromForm)
 
             req.flash('info', 'Your MFA preference has been updated to SMS.');
+            req.session.account = null;
+            req.session.user = null;
             res.redirect('/api/user/account')
         } else {
             errorsArray.push({
@@ -693,6 +699,8 @@ module.exports.changeCompanyDetails = async function(req, res) {
         if (!user) throw new Error('User not found');
 
         const data = await Model.AccountDetails.findOne({ where: { user_id: user.id } });
+
+        req.session.account = null;
 
         if (data) {
             await Model.AccountDetails.update(accountDetails, { where: { user_id: user.id } });
