@@ -1,6 +1,4 @@
-var passport = require('passport'),
-  async = require('async'),
-  crypto = require('crypto'),
+const passport = require('passport'),
   registerController = require('./controllers/registerController.js'),
   passwordController = require('./controllers/passwordController.js'),
   accountController = require('./controllers/accountController.js'),
@@ -8,23 +6,24 @@ var passport = require('passport'),
   requestBusinessServiceAccessController = require('./controllers/requestBusinessServiceAccessController.js'),
   Model = require('./model/models.js'),
   moment = require('moment'),
-  nextpage,
   oneTimePasscodeService = require('./services/oneTimePasscodeService')
+
+let nextpage
 
 const { Op } = require('sequelize')
 const emailService = require('./services/emailService')
 const sessionSettings = JSON.parse(process.env.THESESSION)
 
-module.exports = function (express, envVariables) {
-  var router = express.Router()
+module.exports = (express, envVariables) => {
+  const router = express.Router()
 
-  var isAuthenticated = function (req, res, next) {
+  const isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) return next()
     req.flash('error', 'You have to be logged in to access the page.')
     res.redirect('/api/user/sign-in')
   }
 
-  var isSecondFactorAuthenticated = function (req, res, next) {
+  const isSecondFactorAuthenticated = (req, res, next) => {
     if ((req.session.method === 'totp' && req.session.secondFactorSuccess === true) || req.session.method === 'plain') {
       return next()
     } else {
@@ -35,16 +34,16 @@ module.exports = function (express, envVariables) {
     }
   }
 
-  var sessionValid = function (req, res, next) {
+  const sessionValid = (req, res, next) => {
     if (!req.session.passport) {
       res.clearCookie('LoggedIn')
-      return res.redirect(envVariables.applicationServiceURL + 'session-expired?LoggedIn=true')
+      return res.redirect(`${envVariables.applicationServiceURL}session-expired?LoggedIn=true`)
     } else {
       return next()
     }
   }
 
-  var isAdmin = function (req, res, next) {
+  const isAdmin = (req, res, next) => {
     if (req?.session?.user?.isAdmin) {
       return next()
     } else {
@@ -55,17 +54,17 @@ module.exports = function (express, envVariables) {
     }
   }
 
-  router.get('/', function (req, res) {
+  router.get('/', (_req, res) => {
     res.redirect(envVariables.applicationServiceURL)
   })
 
-  router.get('/usercheck', function (req, res) {
-    return res.render('usercheck.ejs', {
+  router.get('/usercheck', (req, res) =>
+    res.render('usercheck.ejs', {
       queryString: req.query,
       applicationServiceURL: envVariables.applicationServiceURL,
       error: false,
-    })
-  })
+    }),
+  )
 
   router.post('/usercheck', registerController.usercheck)
 
@@ -73,43 +72,43 @@ module.exports = function (express, envVariables) {
 
   router.post('/register', registerController.register)
 
-  router.get('/sign-in', function (req, res) {
-    let sessionCookie = req.cookies[sessionSettings.key]
+  router.get('/sign-in', (req, res) => {
+    const sessionCookie = req.cookies[sessionSettings.key]
     if (!sessionCookie) {
-      return res.redirect(envVariables.applicationServiceURL + 'select-service?newSession=true')
+      return res.redirect(`${envVariables.applicationServiceURL}select-service?newSession=true`)
     }
     if (req.query.expired) {
       req.flash('info', 'You have been successfully signed out.')
     }
     //check if there was an activation error
-    var error = req.flash('error')
-    var error_subitem = ''
-    if (error == 'Activation failed') {
+    let error = req.flash('error')
+    let error_subitem = ''
+    if (error === 'Activation failed') {
       return res.redirect('/api/user/emailconfirm')
-    } else if (error == 'There was a problem signing in') {
+    } else if (error === 'There was a problem signing in') {
       error_subitem = 'Check your email and password and try again'
-    } else if (error == 'Account expired') {
+    } else if (error === 'Account expired') {
       error = 'Your account has expired.'
     }
     if (error.length > 0) {
-      var info_text = error
-      if (info_text == 'There was a problem signing in') {
+      let info_text = error
+      if (info_text === 'There was a problem signing in') {
         info_text = 'The specified email and password combination does not exist'
       }
-      console.info('Failed Sign In Attempt: ' + info_text)
+      console.info(`Failed Sign In Attempt: ${info_text}`)
     }
     //render page and pass in flash data if any exists
-    var back_link = '/api/user/usercheck'
+    let back_link = '/api/user/usercheck'
 
     if (req.query.from) {
-      if (req.query.from == 'home') {
+      if (req.query.from === 'home') {
         back_link = envVariables.applicationServiceURL
-      } else if (req.query.from == 'start') {
-        back_link = envVariables.applicationServiceURL + 'start'
-      } else if (req.query.from == 'docChecker') {
-        back_link = envVariables.applicationServiceURL + 'choose-documents-or-skip'
+      } else if (req.query.from === 'start') {
+        back_link = `${envVariables.applicationServiceURL}start`
+      } else if (req.query.from === 'docChecker') {
+        back_link = `${envVariables.applicationServiceURL}choose-documents-or-skip`
       } else {
-        back_link = envVariables.applicationServiceURL + 'start'
+        back_link = `${envVariables.applicationServiceURL}start`
       }
     }
 
@@ -135,7 +134,7 @@ module.exports = function (express, envVariables) {
 
   router.post(
     '/sign-in',
-    function (req, res, next) {
+    (req, res, next) => {
       req.body.email = req.body.email.toLowerCase()
 
       req.session.email = req.body.email
@@ -162,31 +161,31 @@ module.exports = function (express, envVariables) {
       failureFlash: true,
       keepSessionInfo: true,
     }),
-    async function (req, res) {
+    async (req, res) => {
       // check to see if the user has requested too many new codes
       // or if they have entered the passcode incorrectly too many times
       // each code generation or incorrect passcode attempt increases
       // the oneTimePasscodeAttempts value
       if (req.user.oneTimePasscodeAttempts <= 10) {
-        let userNeedsToEnterAPasscode = moment(req.user.oneTimePasscodeExpiry).isBefore(moment())
+        const userNeedsToEnterAPasscode = moment(req.user.oneTimePasscodeExpiry).isBefore(moment())
 
         if (userNeedsToEnterAPasscode) {
           req.session.method = 'totp'
 
           // one time passcodes expire 10 mins after being issued
-          let oneTimePasscodeExists = await oneTimePasscodeService.checkIfOneTimePasscodeExists(req.user.id)
+          const oneTimePasscodeExists = await oneTimePasscodeService.checkIfOneTimePasscodeExists(req.user.id)
 
           if (oneTimePasscodeExists) {
             // if the one time passcode for the user is old we need to
             // delete it and generate a new one
             if (moment(Date.parse(oneTimePasscodeExists.passcode_expiry)).isBefore(Date.now())) {
               await oneTimePasscodeService.deleteOneTimePasscode(req.user.id)
-              let one_time_passcode = await oneTimePasscodeService.generateOneTimePasscode()
+              const one_time_passcode = await oneTimePasscodeService.generateOneTimePasscode()
               await oneTimePasscodeService.storeNewOneTimePasscode(req.user.id, one_time_passcode)
               if (req.user.mfaPreference === 'Email') {
                 await emailService.sendOneTimePasscodeEmail(one_time_passcode, req.user.email, req.user.id)
               } else {
-                let mobileNumberLookup = await oneTimePasscodeService.checkMobileNumber(req.user.id)
+                const mobileNumberLookup = await oneTimePasscodeService.checkMobileNumber(req.user.id)
                 await emailService.sendOneTimePasscodeSMS(
                   one_time_passcode,
                   mobileNumberLookup.dataValues.mobileNo,
@@ -195,12 +194,12 @@ module.exports = function (express, envVariables) {
               }
             }
           } else {
-            let one_time_passcode = await oneTimePasscodeService.generateOneTimePasscode()
+            const one_time_passcode = await oneTimePasscodeService.generateOneTimePasscode()
             await oneTimePasscodeService.storeNewOneTimePasscode(req.user.id, one_time_passcode)
             if (req.user.mfaPreference === 'Email') {
               await emailService.sendOneTimePasscodeEmail(one_time_passcode, req.user.email, req.user.id)
             } else {
-              let mobileNumberLookup = await oneTimePasscodeService.checkMobileNumber(req.user.id)
+              const mobileNumberLookup = await oneTimePasscodeService.checkMobileNumber(req.user.id)
               await emailService.sendOneTimePasscodeSMS(
                 one_time_passcode,
                 mobileNumberLookup.dataValues.mobileNo,
@@ -224,11 +223,11 @@ module.exports = function (express, envVariables) {
     },
   )
 
-  router.get('/enter-totp', isAuthenticated, async function (req, res) {
-    let user_id = req.session.passport.user
-    let userData = await oneTimePasscodeService.getUserData(user_id)
-    let accountData = await oneTimePasscodeService.getAccountData(user_id)
-    let mobileNumberLookup = await oneTimePasscodeService.checkMobileNumber(user_id)
+  router.get('/enter-totp', isAuthenticated, async (req, res) => {
+    const user_id = req.session.passport.user
+    const userData = await oneTimePasscodeService.getUserData(user_id)
+    const accountData = await oneTimePasscodeService.getAccountData(user_id)
+    const mobileNumberLookup = await oneTimePasscodeService.checkMobileNumber(user_id)
 
     if (req.query.resendPasscode === 'true') {
       let oneTimePasscodeAttempts = userData.oneTimePasscodeAttempts
@@ -236,7 +235,7 @@ module.exports = function (express, envVariables) {
       await oneTimePasscodeService.updateAccountPasscodeAttempts(oneTimePasscodeAttempts, user_id)
 
       if (oneTimePasscodeAttempts <= 10) {
-        let one_time_passcode = await oneTimePasscodeService.generateOneTimePasscode()
+        const one_time_passcode = await oneTimePasscodeService.generateOneTimePasscode()
         await oneTimePasscodeService.deleteOneTimePasscode(user_id)
         await oneTimePasscodeService.storeNewOneTimePasscode(user_id, one_time_passcode)
         if (userData.mfaPreference === 'Email') {
@@ -286,14 +285,14 @@ module.exports = function (express, envVariables) {
     }
   })
 
-  router.post('/enter-totp', isAuthenticated, async function (req, res) {
-    let passcode = req.body.passcode
-    let user_id = req.session.passport.user
-    let errorsArray = []
-    let userData = await oneTimePasscodeService.getUserData(user_id)
-    let mobileNumberLookup = await oneTimePasscodeService.checkMobileNumber(user_id)
+  router.post('/enter-totp', isAuthenticated, async (req, res) => {
+    const passcode = req.body.passcode
+    const user_id = req.session.passport.user
+    const errorsArray = []
+    const userData = await oneTimePasscodeService.getUserData(user_id)
+    const mobileNumberLookup = await oneTimePasscodeService.checkMobileNumber(user_id)
 
-    async function validateFormInput(passcode) {
+    function validateFormInput(passcode) {
       if (passcode.length === 0) {
         errorsArray.push({
           fieldName: 'passcode',
@@ -309,15 +308,15 @@ module.exports = function (express, envVariables) {
       return errorsArray.length === 0
     }
 
-    let noErrorsPresent = await validateFormInput(passcode)
+    const noErrorsPresent = await validateFormInput(passcode)
 
     if (noErrorsPresent) {
-      let verificationIsSuccessful = await oneTimePasscodeService.verifyUser(user_id, passcode)
+      const verificationIsSuccessful = await oneTimePasscodeService.verifyUser(user_id, passcode)
       if (verificationIsSuccessful) {
         req.session.secondFactorSuccess = true
         await oneTimePasscodeService.deleteOneTimePasscode(user_id)
         await oneTimePasscodeService.updateAccountPasscodeExpiryTime(user_id)
-        console.info('SUCCESSFUL LOGIN FOR USER ' + user_id)
+        console.info(`SUCCESSFUL LOGIN FOR USER ${user_id}`)
         res.cookie('LoggedIn', true, { maxAge: 1800000, httpOnly: true })
         res.redirect('/api/user/dashboard')
       } else {
@@ -356,38 +355,38 @@ module.exports = function (express, envVariables) {
     }
   })
 
-  router.get('/dashboard', isAuthenticated, isSecondFactorAuthenticated, function (req, res) {
+  router.get('/dashboard', isAuthenticated, isSecondFactorAuthenticated, (req, res) => {
     //set payment reference for user
-    Model.User.findOne({ where: { email: req.session.email } }).then(function (user) {
+    Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
       if (user.passwordExpiry < new Date()) {
         return res.redirect('/api/user/set-new-password')
       }
 
       if (req.query.complete) {
-        Model.AccountDetails.update({ complete: true }, { where: { user_id: user.id } }).then(function () {
+        Model.AccountDetails.update({ complete: true }, { where: { user_id: user.id } }).then(() => {
           req.session.initial = false
           req.session.payment_reference = user.payment_reference
-          var queryString = '?'
+          let queryString = '?'
           queryString += 'message=' + 'Your account is now set up and you can start a new application.'
 
-          return res.redirect(envVariables.applicationServiceURL + 'loading-dashboard' + queryString)
+          return res.redirect(`${envVariables.applicationServiceURL}loading-dashboard${queryString}`)
         })
       } else {
-        Model.AccountDetails.findOne({ where: { user_id: user.id } }).then(function (account) {
-          if (account !== null && account.complete) {
+        Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => {
+          if (account?.complete) {
             // set payment reference in session
             req.session.payment_reference = user.payment_reference
-            var queryString = '?'
+            let queryString = '?'
             if (nextpage) {
-              queryString += 'name=' + nextpage
+              queryString += `name=${nextpage}`
             }
             if (req.query.message) {
               if (nextpage) {
                 queryString += '&'
               }
-              queryString += 'message=' + req.query.message
+              queryString += `message=${req.query.message}`
             }
-            return res.redirect(envVariables.applicationServiceURL + 'loading-dashboard' + queryString)
+            return res.redirect(`${envVariables.applicationServiceURL}loading-dashboard${queryString}`)
           } else {
             // set payment reference in session
             req.session.payment_reference = user.payment_reference
@@ -398,25 +397,25 @@ module.exports = function (express, envVariables) {
     })
   })
 
-  router.get('/sign-out', function (req, res) {
+  router.get('/sign-out', (req, res) => {
     req.session.destroy()
     res.clearCookie('express.sid')
     res.clearCookie('LoggedIn')
-    return res.redirect(envVariables.applicationServiceURL + 'select-service?newSession=true&expired=true')
+    return res.redirect(`${envVariables.applicationServiceURL}select-service?newSession=true&expired=true`)
   })
 
-  router.get('/forgot', function (req, res) {
-    var locked = typeof req.query.locked != 'undefined' ? JSON.parse(req.query.locked) : false
+  router.get('/forgot', (req, res) => {
+    var locked = typeof req.query.locked !== 'undefined' ? JSON.parse(req.query.locked) : false
     res.render('forgot', { message: req.flash('info'), locked: locked })
   })
 
   router.post('/forgot', passwordController.forgotPassword)
 
-  router.get('/session-expired', function (req, res) {
+  router.get('/session-expired', (_req, res) => {
     res.render('session-expired', { startNewApplicationUrl: envVariables.applicationServiceURL })
   })
 
-  router.get('/reset/:token', function (req, res) {
+  router.get('/reset/:token', (req, res) => {
     // Added this code to prevent HEAD requests triggering
     // the logic in Production
     if (req.method !== 'GET') {
@@ -425,7 +424,7 @@ module.exports = function (express, envVariables) {
 
     Model.User.findOne({
       where: { resetPasswordToken: req.params.token, resetPasswordExpires: { [Op.gt]: new Date() } },
-    }).then(function (user) {
+    }).then((user) => {
       if (!user) {
         req.flash('info', 'The link for resetting your password has expired. Enter your email to get sent a new link.')
         console.info('Password reset requested. Reset link expired.')
@@ -437,7 +436,7 @@ module.exports = function (express, envVariables) {
 
   router.post('/reset/:token', passwordController.resetPassword)
 
-  router.get('/set-new-password', sessionValid, isSecondFactorAuthenticated, function (req, res) {
+  router.get('/set-new-password', sessionValid, isSecondFactorAuthenticated, (_req, res) => {
     res.render('set-new-password.ejs', { error: false })
   })
 
@@ -445,17 +444,17 @@ module.exports = function (express, envVariables) {
 
   router.get('/activate/:token', registerController.activate)
 
-  router.get('/emailconfirm', function (req, res) {
-    return res.render('emailconfirm.ejs', {
+  router.get('/emailconfirm', (req, res) =>
+    res.render('emailconfirm.ejs', {
       email: req.session.email,
       applicationServiceURL: envVariables.applicationServiceURL,
       info: req.flash('info'),
-    })
-  })
+    }),
+  )
 
   router.post('/resend-confirmation', registerController.resendActivationEmail)
 
-  router.get('/complete-details', sessionValid, isSecondFactorAuthenticated, function (req, res) {
+  router.get('/complete-details', sessionValid, isSecondFactorAuthenticated, (req, res) => {
     res.render('initial/complete-details', { error_report: false, form_values: false, error: req.flash('error') })
   })
   router.get('/complete-registration', sessionValid, isSecondFactorAuthenticated, registerController.showAddressSkip)

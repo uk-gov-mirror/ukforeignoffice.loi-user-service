@@ -952,7 +952,7 @@ module.exports = [
   'M1tsugt0',
   'M1tsugt0&#092;',
   'M477k3ll3r',
-  'MA8\TtY&mc',
+  'MA8TtY&mc',
   'MAndervi12',
   'ME1234re',
   'METALlica1',

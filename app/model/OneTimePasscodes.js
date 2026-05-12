@@ -1,6 +1,6 @@
-let Sequelize = require('sequelize')
+const _Sequelize = require('sequelize')
 
-let attributes = {
+const attributes = {
   user_id: {
     type: 'integer',
     primaryKey: true,
@@ -16,7 +16,7 @@ let attributes = {
   },
 }
 
-let options = {
+const options = {
   freezeTableName: true,
   // disable createdAt and updatedAt columns
   timestamps: false,

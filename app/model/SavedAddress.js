@@ -8,9 +8,9 @@
  *
  */
 
-var Sequelize = require('sequelize')
+const Sequelize = require('sequelize')
 
-var attributes = {
+const attributes = {
   id: {
     type: Sequelize.INTEGER(),
     allowNull: false,
@@ -202,7 +202,7 @@ var attributes = {
   },
 }
 
-var options = {
+const options = {
   freezeTableName: true,
 }
 

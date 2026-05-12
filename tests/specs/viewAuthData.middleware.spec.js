@@ -3,7 +3,7 @@ let viewAuthData
 let Model
 let originalFindOne
 
-before('Setup', async function () {
+before('Setup', async () => {
   const chai = await import('chai')
   expect = chai.expect
 
@@ -12,12 +12,12 @@ before('Setup', async function () {
   originalFindOne = Model.AccountDetails.findOne
 })
 
-afterEach(function () {
+afterEach(() => {
   Model.AccountDetails.findOne = originalFindOne
 })
 
-describe('viewAuthData middleware', function () {
-  it('sets unauthenticated defaults when user is not logged in', async function () {
+describe('viewAuthData middleware', () => {
+  it('sets unauthenticated defaults when user is not logged in', async () => {
     const req = {
       isAuthenticated: () => false,
       session: {},
@@ -25,7 +25,7 @@ describe('viewAuthData middleware', function () {
     const res = { locals: {} }
 
     let nextError
-    await viewAuthData(req, res, function (err) {
+    await viewAuthData(req, res, (err) => {
       nextError = err
     })
 
@@ -35,9 +35,9 @@ describe('viewAuthData middleware', function () {
     expect(res.locals.account).to.equal(null)
   })
 
-  it('uses session account when present for authenticated users', async function () {
+  it('uses session account when present for authenticated users', async () => {
     let findOneCalled = false
-    Model.AccountDetails.findOne = async function () {
+    Model.AccountDetails.findOne = () => {
       findOneCalled = true
       return null
     }
@@ -51,7 +51,7 @@ describe('viewAuthData middleware', function () {
     }
     const res = { locals: {} }
 
-    await viewAuthData(req, res, function () {})
+    await viewAuthData(req, res, () => {})
 
     expect(findOneCalled).to.equal(false)
     expect(res.locals.isAuthenticated).to.equal(true)
@@ -60,15 +60,13 @@ describe('viewAuthData middleware', function () {
     expect(req.session.user.id).to.equal(10)
   })
 
-  it('fetches account from database when session account is missing', async function () {
-    Model.AccountDetails.findOne = async function () {
-      return {
-        dataValues: {
-          user_id: 11,
-          first_name: 'Fetched',
-        },
-      }
-    }
+  it('fetches account from database when session account is missing', async () => {
+    Model.AccountDetails.findOne = async () => ({
+      dataValues: {
+        user_id: 11,
+        first_name: 'Fetched',
+      },
+    })
 
     const req = {
       isAuthenticated: () => true,
@@ -82,7 +80,7 @@ describe('viewAuthData middleware', function () {
     }
     const res = { locals: {} }
 
-    await viewAuthData(req, res, function () {})
+    await viewAuthData(req, res, () => {})
 
     expect(res.locals.isAuthenticated).to.equal(true)
     expect(res.locals.user.id).to.equal(11)
@@ -90,9 +88,9 @@ describe('viewAuthData middleware', function () {
     expect(req.session.account.first_name).to.equal('Fetched')
   })
 
-  it('passes errors to next when account lookup fails', async function () {
+  it('passes errors to next when account lookup fails', async () => {
     const expectedError = new Error('db failed')
-    Model.AccountDetails.findOne = async function () {
+    Model.AccountDetails.findOne = () => {
       throw expectedError
     }
 
@@ -104,7 +102,7 @@ describe('viewAuthData middleware', function () {
     const res = { locals: {} }
 
     let nextError
-    await viewAuthData(req, res, function (err) {
+    await viewAuthData(req, res, (err) => {
       nextError = err
     })
 
