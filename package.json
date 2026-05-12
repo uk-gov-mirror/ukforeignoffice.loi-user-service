@@ -40,6 +40,8 @@
     "supertest": "^6.3.4"
   },
   "scripts": {
+    "format": "biome check --write .",
+    "quality": "biome check --changed --since=develop",
     "start": "NODE_ENV=development node server.js 3001",
     "test": "NODE_ENV=test node node_modules/mocha/bin/_mocha --exit --timeout 10000 --recursive tests/"
   },
