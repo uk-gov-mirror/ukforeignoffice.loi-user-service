@@ -1,95 +1,95 @@
 let expect
 
-before('Setup', async function () {
+before('Setup', async () => {
   const chai = await import('chai')
   expect = chai.expect
 })
 
-describe('Phone Number Validation', function () {
+describe('Phone Number Validation', () => {
   // Testing the phone patterns used in controllers
-  const mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/
-  const phonePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/
+  const mobilePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){5,14}$/
+  const phonePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){5,14}$/
 
-  describe('Valid Phone Numbers', function () {
-    it('should accept UK mobile number', function () {
+  describe('Valid Phone Numbers', () => {
+    it('should accept UK mobile number', () => {
       expect(mobilePattern.test('07123456789')).to.be.true
     })
 
-    it('should accept international format with plus', function () {
+    it('should accept international format with plus', () => {
       expect(mobilePattern.test('+447123456789')).to.be.true
     })
 
-    it('should accept number with spaces', function () {
+    it('should accept number with spaces', () => {
       expect(mobilePattern.test('07123 456 789')).to.be.true
     })
 
-    it('should accept number with hyphens', function () {
+    it('should accept number with hyphens', () => {
       expect(phonePattern.test('0712-345-6789')).to.be.true
     })
 
-    it('should accept number with parentheses', function () {
+    it('should accept number with parentheses', () => {
       expect(phonePattern.test('(0712) 345 6789')).to.be.true
     })
 
-    it('should accept minimum length number (7 chars)', function () {
+    it('should accept minimum length number (7 chars)', () => {
       expect(mobilePattern.test('1234567')).to.be.true
     })
 
-    it('should accept maximum length number (16 chars)', function () {
+    it('should accept maximum length number (16 chars)', () => {
       expect(mobilePattern.test('1234567890123456')).to.be.true
     })
   })
 
-  describe('Invalid Phone Numbers', function () {
-    it('should reject empty string', function () {
+  describe('Invalid Phone Numbers', () => {
+    it('should reject empty string', () => {
       expect(mobilePattern.test('')).to.be.false
     })
 
-    it('should reject number too short (less than 7)', function () {
+    it('should reject number too short (less than 7)', () => {
       expect(mobilePattern.test('12345')).to.be.false
     })
 
-    it('should reject number with letters', function () {
+    it('should reject number with letters', () => {
       expect(mobilePattern.test('0712abc6789')).to.be.false
     })
 
-    it('should reject number starting with invalid character', function () {
+    it('should reject number starting with invalid character', () => {
       expect(mobilePattern.test('@7123456789')).to.be.false
     })
   })
 
-  describe('Edge Cases', function () {
-    it('should accept number starting with hash', function () {
+  describe('Edge Cases', () => {
+    it('should accept number starting with hash', () => {
       expect(mobilePattern.test('#123456789')).to.be.true
     })
 
-    it('should accept number with multiple spaces', function () {
+    it('should accept number with multiple spaces', () => {
       expect(mobilePattern.test('07 123 456 789')).to.be.true
     })
   })
 
-  describe('Length Validation (used in models)', function () {
+  describe('Length Validation (used in models)', () => {
     const isValidPhoneLength = (phone) => {
       return phone.length >= 6 && phone.length <= 25
     }
 
-    it('should accept phone number within length bounds', function () {
+    it('should accept phone number within length bounds', () => {
       expect(isValidPhoneLength('07123456789')).to.be.true
     })
 
-    it('should reject phone number too short', function () {
+    it('should reject phone number too short', () => {
       expect(isValidPhoneLength('12345')).to.be.false
     })
 
-    it('should reject phone number too long', function () {
+    it('should reject phone number too long', () => {
       expect(isValidPhoneLength('12345678901234567890123456')).to.be.false
     })
 
-    it('should accept phone at minimum length (6)', function () {
+    it('should accept phone at minimum length (6)', () => {
       expect(isValidPhoneLength('123456')).to.be.true
     })
 
-    it('should accept phone at maximum length (25)', function () {
+    it('should accept phone at maximum length (25)', () => {
       expect(isValidPhoneLength('1234567890123456789012345')).to.be.true
     })
   })

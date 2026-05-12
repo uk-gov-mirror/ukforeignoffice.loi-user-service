@@ -2,11 +2,11 @@ let expect
 let ejs
 let path
 
-before('Setup', async function () {
+before('Setup', async () => {
   const chai = await import('chai')
   expect = chai.expect
   ejs = require('ejs')
-  path = require('path')
+  path = require('node:path')
 })
 
 function buildBaseLocals(overrides = {}) {
@@ -41,41 +41,41 @@ function buildBaseLocals(overrides = {}) {
   }
 }
 
-async function renderView(viewRelativePath, locals) {
+function renderView(viewRelativePath, locals) {
   const filename = path.join(__dirname, '..', '..', 'views', viewRelativePath)
   return ejs.renderFile(filename, locals)
 }
 
-describe('Header Back Link Rendering', function () {
-  it('does not render an inner-header back link on /admin', async function () {
+describe('Header Back Link Rendering', () => {
+  it('does not render an inner-header back link on /admin', async () => {
     const html = await renderView('account_pages/admin.ejs', buildBaseLocals())
     expect(html).to.not.include('govuk-back-link inner-header-back-link')
   })
 
-  it('does not render an inner-header back link on /account', async function () {
+  it('does not render an inner-header back link on /account', async () => {
     const html = await renderView('account_pages/account.ejs', buildBaseLocals())
     expect(html).to.not.include('govuk-back-link inner-header-back-link')
   })
 
-  it('does not render an inner-header back link on /addresses', async function () {
+  it('does not render an inner-header back link on /addresses', async () => {
     const html = await renderView('account_pages/addresses.ejs', buildBaseLocals({ addresses: [] }))
     expect(html).to.not.include('govuk-back-link inner-header-back-link')
   })
 
-  it('renders an inner-header back link on /admin-search-email', async function () {
+  it('renders an inner-header back link on /admin-search-email', async () => {
     const html = await renderView('account_pages/admin-search-email.ejs', buildBaseLocals({ searchResults: null }))
     expect(html).to.include('class="govuk-back-link inner-header-back-link"')
     expect(html).to.include('href="/api/user/admin"')
   })
 
-  it('renders inner header navigation links for authenticated account pages', async function () {
+  it('renders inner header navigation links for authenticated account pages', async () => {
     const html = await renderView('account_pages/account.ejs', buildBaseLocals())
     expect(html).to.include('id="Account-Link"')
     expect(html).to.include('id="Addresses-Link"')
     expect(html).to.include('id="sign-out-link"')
   })
 
-  it('renders standard back link for unauthenticated pages when innerHeaderBackLink is set', async function () {
+  it('renders standard back link for unauthenticated pages when innerHeaderBackLink is set', async () => {
     const html = await renderView(
       'forgot.ejs',
       buildBaseLocals({
@@ -91,7 +91,7 @@ describe('Header Back Link Rendering', function () {
     expect(html).to.not.include('id="Account-Link"')
   })
 
-  it('does not render any back link on unauthenticated pages without innerHeaderBackLink', async function () {
+  it('does not render any back link on unauthenticated pages without innerHeaderBackLink', async () => {
     const html = await renderView(
       'session-expired.ejs',
       buildBaseLocals({

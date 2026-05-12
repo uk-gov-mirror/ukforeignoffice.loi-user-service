@@ -4,36 +4,36 @@ const Model = require('../model/models.js'),
   envVariables = common.config(),
   axios = require('axios')
 
-const mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){6,25}$/
-const phonePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){6,25}$/
+const mobilePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){6,25}$/
+const phonePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){6,25}$/
 
-module.exports.showUKQuestion = function (req, res) {
-  Model.User.findOne({ where: { email: req.session.email } }).then(function (user) {
-    Model.AccountDetails.findOne({ where: { user_id: user.id } }).then(function (account) {
-      return res.render('address_pages/UKQuestion.ejs', {
+module.exports.showUKQuestion = (req, res) => {
+  Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
+    Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) =>
+      res.render('address_pages/UKQuestion.ejs', {
         initial: req.session.initial,
         user: user,
         account: account,
         url: envVariables,
         error_report: req.flash('error'),
-      })
-    })
+      }),
+    )
   })
 }
 
-module.exports.submitUKQuestion = function (req, res) {
-  if (typeof req.body.is_uk == 'undefined') {
+module.exports.submitUKQuestion = (req, res) => {
+  if (typeof req.body.is_uk === 'undefined') {
     // ERROR HANDLING
     req.flash('error', 'Choose an option below')
-    var error_redirect = '/api/user/add-address'
+    const error_redirect = '/api/user/add-address'
     return res.redirect(error_redirect)
   } else if (JSON.parse(req.body.is_uk)) {
     showPostcodeLookup(req, res)
   } else {
-    return getCountries().then(function (countries) {
-      Model.User.findOne({ where: { email: req.session.email } }).then(function (user) {
-        Model.AccountDetails.findOne({ where: { user_id: user.id } }).then(function (account) {
-          return res.render('address_pages/IntlAddress.ejs', {
+    return getCountries().then((countries) => {
+      Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
+        Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) =>
+          res.render('address_pages/IntlAddress.ejs', {
             error_report: false,
             initial: req.session.initial,
             user: user,
@@ -44,17 +44,17 @@ module.exports.submitUKQuestion = function (req, res) {
             contact_telephone: account.telephone,
             contact_mobileNo: account.mobileNo,
             contact_email: user.email,
-          })
-        })
+          }),
+        )
       })
     })
   }
 }
 
 function showPostcodeLookup(req, res) {
-  Model.User.findOne({ where: { email: req.session.email } }).then(function (user) {
-    Model.AccountDetails.findOne({ where: { user_id: user.id } }).then(function (account) {
-      return res.render('address_pages/UKAddressPostcodeEntry.ejs', {
+  Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
+    Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) =>
+      res.render('address_pages/UKAddressPostcodeEntry.ejs', {
         initial: req.session.initial,
         user: user,
         account: account,
@@ -63,27 +63,27 @@ function showPostcodeLookup(req, res) {
         contact_telephone: account.telephone,
         contact_mobileNo: account.mobileNo,
         contact_email: user.email,
-      })
-    })
+      }),
+    )
   })
 }
 
 module.exports.showPostcodeLookup = showPostcodeLookup
 
-module.exports.findAddress = function (req, res) {
+module.exports.findAddress = (req, res) => {
   const Postcode = require('postcode')
   let postcode = ''
 
   if (!req.query.postcode && !req.body['find-postcode']) {
     return res.redirect('/api/user/add-address-uk?is_uk=true')
-  } else if (req.query && req.query.postcode) {
+  } else if (req.query?.postcode) {
     postcode = Postcode.toNormalised(req.query.postcode)
   } else {
     postcode = Postcode.toNormalised(req.body['find-postcode'])
   }
 
-  Model.User.findOne({ where: { email: req.session.email } }).then(function (user) {
-    Model.AccountDetails.findOne({ where: { user_id: user.id } }).then(function (account) {
+  Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
+    Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => {
       if (!postcode) {
         req.flash('error', 'Enter a valid postcode')
         return res.render('address_pages/UKAddressSelect.ejs', {
@@ -97,14 +97,14 @@ module.exports.findAddress = function (req, res) {
         })
       } else {
         postcodeLookup(postcode).then(
-          function (results) {
-            var addresses = []
+          (results) => {
+            let addresses = []
             if (results.message === 'No matching address found: no response') {
               req.flash('error', 'No addresses found')
               addresses = false
             } else {
               addresses = []
-              results.forEach(function (address) {
+              results.forEach((address) => {
                 addresses.push({
                   id: address.id,
                   text: `${address.text} ${address.description}`,
@@ -124,7 +124,7 @@ module.exports.findAddress = function (req, res) {
               error_report: req.flash('error'),
             })
           },
-          function (err) {
+          (err) => {
             console.log(err)
             req.flash('error', 'Enter your address manually instead')
             return res.render('address_pages/UKAddressSelect.ejs', {
@@ -144,7 +144,7 @@ module.exports.findAddress = function (req, res) {
   })
 }
 
-module.exports.retrieveAddress = function (addressId) {
+module.exports.retrieveAddress = (addressId) => {
   const timeout = envVariables.postcodeLookUpApiOptions.timeout
   return axios.get(`${envVariables.postcodeLookUpApiOptions.uri}retrieve/${addressId}`, { timeout })
 }
@@ -158,10 +158,10 @@ module.exports.retrieveAddress = function (addressId) {
  * 3. Prepare options and return UK address select view
  * @return results
  */
-module.exports.ajaxFindPostcode = function (req, res) {
-  var address_type = req.body.address_type
+module.exports.ajaxFindPostcode = (req, res) => {
+  const address_type = req.body.address_type
   if (!req.body) {
-    return res.redirect('your-' + address_type + '-address-uk?is_uk=true')
+    return res.redirect(`your-${address_type}-address-uk?is_uk=true`)
   }
   const Postcode = require('postcode')
   const postcode = Postcode.toNormalised(req.body['find-postcode'])
@@ -170,15 +170,15 @@ module.exports.ajaxFindPostcode = function (req, res) {
     return res.json({ error: 'Enter a valid postcode' })
   } else {
     postcodeLookup(postcode).then(
-      function (results) {
-        var return_error = false
-        var addresses = []
+      (results) => {
+        const return_error = false
+        let addresses = []
         if (results.message === 'No matching address found: no response') {
           req.flash('error', 'No addresses found')
           addresses = false
         } else {
           addresses = []
-          results.forEach(function (address) {
+          results.forEach((address) => {
             addresses.push({
               id: address.id,
               text: `${address.text} ${address.description}`,
@@ -189,7 +189,7 @@ module.exports.ajaxFindPostcode = function (req, res) {
         req.session.addresses = addresses
         return res.json({ error: return_error, addresses: addresses, postcode: postcode })
       },
-      function (err) {
+      (err) => {
         console.log(err)
         return res.json({ error: 'Enter your address manually instead' })
       },
@@ -197,8 +197,8 @@ module.exports.ajaxFindPostcode = function (req, res) {
   }
 }
 
-module.exports.ajaxSelectAddress = function (req, res) {
-  if (!req.session || !req.session.email) {
+module.exports.ajaxSelectAddress = (req, res) => {
+  if (!req.session?.email) {
     return res.status(400).json({ error: 'User session email is missing.' })
   }
 
@@ -219,11 +219,11 @@ module.exports.ajaxSelectAddress = function (req, res) {
       }))
     })
     .then(({ account, address }) => {
-      if (!address || !address.data) {
+      if (!address?.data) {
         console.error('Address data is missing.')
       }
       return res.json({
-        full_name: account.first_name + ' ' + account.last_name,
+        full_name: `${account.first_name} ${account.last_name}`,
         address: address.data,
       })
     })
@@ -233,8 +233,8 @@ module.exports.ajaxSelectAddress = function (req, res) {
     })
 }
 
-module.exports.selectAddress = function (req, res) {
-  let addressId = req.body.address
+module.exports.selectAddress = (req, res) => {
+  const addressId = req.body.address
 
   if (!req.method) {
     return res.redirect('/api/user/add-address-uk?is_uk=true')
@@ -287,10 +287,10 @@ module.exports.selectAddress = function (req, res) {
     })
 }
 
-module.exports.showManualAddress = function (req, res) {
-  Model.User.findOne({ where: { email: req.session.email } }).then(function (user) {
-    Model.AccountDetails.findOne({ where: { user_id: user.id } }).then(function (account) {
-      return res.render('address_pages/UKManualAddress.ejs', {
+module.exports.showManualAddress = (req, res) => {
+  Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
+    Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) =>
+      res.render('address_pages/UKManualAddress.ejs', {
         error_report: false,
         initial: req.session.initial,
         user: user,
@@ -300,22 +300,22 @@ module.exports.showManualAddress = function (req, res) {
         contact_telephone: account.telephone,
         contact_mobileNo: account.mobileNo,
         contact_email: user.email,
-      })
-    })
+      }),
+    )
   })
 }
 
-module.exports.saveAddress = function (req, res) {
-  Model.User.findOne({ where: { email: req.session.email } }).then(function (user) {
-    Model.AccountDetails.findOne({ where: { user_id: user.id } }).then(function (account) {
-      var country = req.body.country || ''
-      var email = req.body.email || null
-      var telephone = req.body.telephone || null
-      var mobileNo = req.body.mobileNo
-      var Postcode = require('postcode')
-      var postcodeObject = Postcode.toNormalised(req.body.postcode)
-      var postcode = ' '
-      if (country != 'United Kingdom') {
+module.exports.saveAddress = (req, res) => {
+  Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
+    Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => {
+      const country = req.body.country || ''
+      const email = req.body.email || null
+      const telephone = req.body.telephone || null
+      const mobileNo = req.body.mobileNo
+      const Postcode = require('postcode')
+      const postcodeObject = Postcode.toNormalised(req.body.postcode)
+      let postcode = ' '
+      if (country !== 'United Kingdom') {
         postcode =
           req.body.postcode.trim().length === 0 ? ' ' : req.body.postcode.length > 1 ? req.body.postcode : postcode
       } else {
@@ -323,7 +323,7 @@ module.exports.saveAddress = function (req, res) {
       }
 
       if (!req.body.house_name || req.body.house_name.length === 0) {
-        if (req.body.organisation && req.body.organisation.length > 0 && req.body.organisation != 'N/A') {
+        if (req.body.organisation && req.body.organisation.length > 0 && req.body.organisation !== 'N/A') {
           req.body.house_name = 'N/A'
         }
       }
@@ -342,7 +342,7 @@ module.exports.saveAddress = function (req, res) {
         mobileNo: mobilePattern.test(mobileNo) ? mobileNo : '',
         email: email,
       })
-        .then(function () {
+        .then(() => {
           if (req.session.initial === true) {
             req.session.initial = false
             console.log(`address successfully added for user ${user.id}`)
@@ -352,27 +352,27 @@ module.exports.saveAddress = function (req, res) {
             return res.redirect('/api/user/addresses')
           }
         })
-        .catch(function (error) {
-          return getCountries().then(function (countries) {
+        .catch((error) =>
+          getCountries().then((countries) => {
             ValidationService.buildAddressErrorArray(error, req, res, countries, user, account)
             return null
-          })
-        })
+          }),
+        )
     })
   })
 }
 
-module.exports.showEditAddress = function (req, res) {
-  Model.User.findOne({ where: { email: req.session.email } }).then(function (user) {
-    Model.AccountDetails.findOne({ where: { user_id: user.id } }).then(function (account) {
+module.exports.showEditAddress = (req, res) => {
+  Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
+    Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => {
       Model.SavedAddress.findOne({ where: { user_id: user.id, id: req.query.id } })
-        .then(function (address) {
+        .then((address) => {
           if (!address) {
             console.log('Address is null')
             return res.redirect('/api/user/addresses')
           }
-          var require_contact_details = 'no'
-          var back_link = ''
+          let require_contact_details = 'no'
+          let back_link = ''
 
           // if the user has been sent here from the application
           // service because they need to update their telephone
@@ -396,15 +396,15 @@ module.exports.showEditAddress = function (req, res) {
             address.email = user.email
           }
 
-          return getCountries().then(function (countries) {
-            return res.render('address_pages/edit-address.ejs', {
+          return getCountries().then((countries) =>
+            res.render('address_pages/edit-address.ejs', {
               initial: req.session.initial,
               user: user,
               account: account,
               url: envVariables,
               form_values: address,
               address_id: req.query.id,
-              uk: address.country == 'United Kingdom',
+              uk: address.country === 'United Kingdom',
               addresses: req.session.addresses,
               error_report: false,
               show_fields: true,
@@ -413,10 +413,10 @@ module.exports.showEditAddress = function (req, res) {
               countries: countries[0],
               require_contact_details: require_contact_details,
               back_link: back_link,
-            })
-          })
+            }),
+          )
         })
-        .catch(function (error) {
+        .catch((error) => {
           console.log(error)
           return res.redirect('/api/user/addresses')
         })
@@ -424,7 +424,7 @@ module.exports.showEditAddress = function (req, res) {
   })
 }
 
-module.exports.editAddress = function (req, res) {
+module.exports.editAddress = (req, res) => {
   var country = req.body.country || ''
   var email = req.body.email || null
   var mobileNo = req.body.mobileNo
@@ -432,20 +432,20 @@ module.exports.editAddress = function (req, res) {
   var Postcode = require('postcode')
   var postcodeObject = Postcode.toNormalised(req.body.postcode)
   var postcode = ' '
-  if (country != 'United Kingdom') {
+  if (country !== 'United Kingdom') {
     postcode = req.body.postcode.trim().length === 0 ? ' ' : req.body.postcode.length > 1 ? req.body.postcode : postcode
   } else {
     postcode = postcodeObject ? postcodeObject : ''
   }
 
   if (!req.body.house_name || req.body.house_name.length === 0) {
-    if (req.body.organisation && req.body.organisation.length > 0 && req.body.organisation != 'N/A') {
+    if (req.body.organisation && req.body.organisation.length > 0 && req.body.organisation !== 'N/A') {
       req.body.house_name = 'N/A'
     }
   }
 
-  Model.User.findOne({ where: { email: req.session.email } }).then(function (user) {
-    Model.AccountDetails.findOne({ where: { user_id: user.id } }).then(function (account) {
+  Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
+    Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => {
       Model.SavedAddress.update(
         {
           full_name: req.body.full_name,
@@ -462,7 +462,7 @@ module.exports.editAddress = function (req, res) {
         },
         { where: { user_id: user.id, id: req.body.address_id } },
       )
-        .then(function () {
+        .then(() => {
           // enter this section if the user was sent here because they
           // didnt have any telephone or email associated with this
           // selected address
@@ -483,26 +483,26 @@ module.exports.editAddress = function (req, res) {
 
             // go back to the application-service and update details
             // before being redirected to the correct page
-            return res.redirect(envVariables.applicationServiceURL + 'manage-saved-address')
+            return res.redirect(`${envVariables.applicationServiceURL}manage-saved-address`)
           } else {
             return res.redirect('/api/user/addresses')
           }
         })
-        .catch(function (error) {
-          return getCountries().then(function (countries) {
+        .catch((error) =>
+          getCountries().then((countries) => {
             ValidationService.buildAddressErrorArray(error, req, res, countries, user, account, true)
             return null
-          })
-        })
+          }),
+        )
     })
   })
 }
 
-module.exports.deleteAddress = function (req, res) {
-  Model.User.findOne({ where: { email: req.session.email } }).then(function (user) {
+module.exports.deleteAddress = (req, res) => {
+  Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
     Model.SavedAddress.destroy({ where: { user_id: user.id, id: req.query.id } })
-      .then(function (result) {
-        if (result == true) {
+      .then((result) => {
+        if (result === true) {
           console.log(`address successfully deleted for user ${user.id} and id ${req.query.id}`)
           req.flash('info', 'Address successfully deleted')
         } else {
@@ -510,7 +510,7 @@ module.exports.deleteAddress = function (req, res) {
         }
         return res.redirect('/api/user/addresses')
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error)
         return res.redirect('/api/user/addresses')
       })

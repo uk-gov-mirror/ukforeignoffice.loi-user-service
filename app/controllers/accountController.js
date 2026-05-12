@@ -8,16 +8,16 @@ const axios = require('axios')
 const moment = require('moment')
 const oneTimePasscodeService = require('../services/oneTimePasscodeService')
 const HelperService = require('../services/HelperService')
-const mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/
-const phonePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/
-const crypto = require('crypto')
-const util = require('util')
+const mobilePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){5,14}$/
+const phonePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){5,14}$/
+const crypto = require('node:crypto')
+const util = require('node:util')
 const { Op } = require('sequelize')
 const randomBytes = util.promisify(crypto.randomBytes)
 
 async function sendToOrbit(accountManagementObject, user) {
   try {
-    const edmsManagePortalCustomerUrl = config.edmsHost + '/api/v1/managePortalCustomer'
+    const edmsManagePortalCustomerUrl = `${config.edmsHost}/api/v1/managePortalCustomer`
     const edmsBearerToken = await HelperService.getEdmsAccessToken()
     const startTime = new Date()
 
@@ -32,10 +32,10 @@ async function sendToOrbit(accountManagementObject, user) {
     const elapsedTime = endTime - startTime
 
     if (response.status === 200) {
-      console.log('[ACCOUNT MANAGEMENT] ACCOUNT UPDATE SENT TO ORBIT SUCCESSFULLY FOR USER_ID ' + user.id)
+      console.log(`[ACCOUNT MANAGEMENT] ACCOUNT UPDATE SENT TO ORBIT SUCCESSFULLY FOR USER_ID ${user.id}`)
     } else {
-      console.error('[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ' + user.id)
-      console.error('response code: ' + response.status)
+      console.error(`[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ${user.id}`)
+      console.error(`response code: ${response.status}`)
       console.error(response.data)
     }
 
@@ -45,7 +45,7 @@ async function sendToOrbit(accountManagementObject, user) {
   }
 }
 
-module.exports.showAccount = async function (req, res) {
+module.exports.showAccount = async (req, res) => {
   try {
     const user = await Model.User.findOne({ where: { email: req.session.email } })
     if (!user) {
@@ -69,7 +69,7 @@ module.exports.showAccount = async function (req, res) {
   }
 }
 
-module.exports.showAdminSection = async function (req, res) {
+module.exports.showAdminSection = (req, res) => {
   try {
     return res.render('account_pages/admin.ejs', {
       user: req?.session?.user,
@@ -87,7 +87,7 @@ module.exports.showAdminSection = async function (req, res) {
   }
 }
 
-module.exports.showAdminSearchEmail = async function (req, res) {
+module.exports.showAdminSearchEmail = (req, res) => {
   try {
     return res.render('account_pages/admin.ejs', {
       user: req?.session?.user,
@@ -105,7 +105,7 @@ module.exports.showAdminSearchEmail = async function (req, res) {
   }
 }
 
-module.exports.ajaxSearchEmail = async function (req, res) {
+module.exports.ajaxSearchEmail = async (req, res) => {
   try {
     const emailQuery = req.query.email
 
@@ -128,7 +128,7 @@ module.exports.ajaxSearchEmail = async function (req, res) {
   }
 }
 
-module.exports.adminSearchEmail = async function (req, res) {
+module.exports.adminSearchEmail = async (req, res) => {
   try {
     const user = req?.session?.user
     if (!user) {
@@ -139,7 +139,7 @@ module.exports.adminSearchEmail = async function (req, res) {
       throw new Error('Account not found')
     }
 
-    let emailToSearchFor = req.body.searchEmail.trim()
+    const emailToSearchFor = req.body.searchEmail.trim()
     if (!emailToSearchFor) {
       return res.render('account_pages/admin.ejs', {
         user,
@@ -168,7 +168,7 @@ module.exports.adminSearchEmail = async function (req, res) {
   }
 }
 
-module.exports.showUpdatePermissions = async function (req, res) {
+module.exports.showUpdatePermissions = (req, res) => {
   try {
     return res.render('account_pages/admin.ejs', {
       user: req?.session?.user,
@@ -186,11 +186,11 @@ module.exports.showUpdatePermissions = async function (req, res) {
   }
 }
 
-module.exports.updatePermissions = async function (req, res) {
+module.exports.updatePermissions = async (req, res) => {
   try {
-    let accountLocked = req.body.accountLocked === 'true' || false
-    let dropOffEnabled = req.body.dropOffEnabled === 'true' || false
-    let premiumServiceEnabled = req.body.premiumServiceEnabled === 'true' || false
+    const accountLocked = req.body.accountLocked === 'true' || false
+    const dropOffEnabled = req.body.dropOffEnabled === 'true' || false
+    const premiumServiceEnabled = req.body.premiumServiceEnabled === 'true' || false
 
     const user = req?.session?.user
     if (!user) {
@@ -214,8 +214,8 @@ module.exports.updatePermissions = async function (req, res) {
       throw new Error(`User with ID ${userId} not found.`)
     }
 
-    let changes = []
-    let updateFields = { accountLocked, dropOffEnabled, premiumServiceEnabled }
+    const changes = []
+    const updateFields = { accountLocked, dropOffEnabled, premiumServiceEnabled }
 
     if (existingUser.accountLocked !== accountLocked) {
       changes.push(`Account Locked: ${existingUser.accountLocked} → ${accountLocked}`)
@@ -256,7 +256,7 @@ module.exports.updatePermissions = async function (req, res) {
   }
 }
 
-module.exports.showAddresses = async function (req, res) {
+module.exports.showAddresses = async (req, res) => {
   try {
     const user = await Model.User.findOne({ where: { email: req.session.email } })
     if (!user) {
@@ -284,7 +284,7 @@ module.exports.showAddresses = async function (req, res) {
   }
 }
 
-module.exports.showChangeDetails = async function (req, res) {
+module.exports.showChangeDetails = async (req, res) => {
   try {
     const user = await Model.User.findOne({ where: { email: req.session.email } })
     if (!user) {
@@ -297,8 +297,8 @@ module.exports.showChangeDetails = async function (req, res) {
       throw new Error('Account not found')
     }
 
-    let mfaPreference = user.mfaPreference
-    let disableMobileNumberEditing = mfaPreference === 'SMS'
+    const mfaPreference = user.mfaPreference
+    const disableMobileNumberEditing = mfaPreference === 'SMS'
 
     return res.render('account_pages/change-details.ejs', {
       error_report: false,
@@ -315,7 +315,7 @@ module.exports.showChangeDetails = async function (req, res) {
   }
 }
 
-module.exports.changeDetails = async function (req, res) {
+module.exports.changeDetails = async (req, res) => {
   try {
     const user = await Model.User.findOne({ where: { email: req.session.email } })
     if (!user) {
@@ -324,7 +324,7 @@ module.exports.changeDetails = async function (req, res) {
 
     const data = await Model.AccountDetails.findOne({ where: { user_id: user.id } })
 
-    let accountDetails = {
+    const accountDetails = {
       first_name: req.body.first_name,
       last_name: req.body.last_name,
       mobileNo: mobilePattern.test(req.body.mobileNo) ? req.body.mobileNo : '',
@@ -333,7 +333,7 @@ module.exports.changeDetails = async function (req, res) {
     }
 
     if (data) {
-      let companyName = user.premiumServiceEnabled ? data.company_name : ''
+      const companyName = user.premiumServiceEnabled ? data.company_name : ''
 
       if (user.mfaPreference === 'SMS') {
         accountDetails.mobileNo = data.mobileNo
@@ -341,10 +341,10 @@ module.exports.changeDetails = async function (req, res) {
 
       await Model.AccountDetails.update(accountDetails, { where: { user_id: user.id } })
 
-      var accountManagementObject = {
+      const accountManagementObject = {
         portalCustomerUpdate: {
           userId: 'legalisation',
-          timestamp: new Date().getTime().toString(),
+          timestamp: Date.now().toString(),
           portalCustomer: {
             portalCustomerId: user.id,
             forenames: accountDetails.first_name,
@@ -374,7 +374,7 @@ module.exports.changeDetails = async function (req, res) {
 
     const data = await Model.AccountDetails.findOne({ where: { user_id: user.id } })
 
-    let erroneousFields = []
+    const erroneousFields = []
 
     if (req.body.first_name === '') {
       erroneousFields.push('first_name')
@@ -417,11 +417,10 @@ module.exports.changeDetails = async function (req, res) {
   }
 }
 
-module.exports.showChangePassword = function (req, res) {
-  return res.render('account_pages/change-password.ejs', { error: false, url: envVariables })
-}
+module.exports.showChangePassword = (_req, res) =>
+  res.render('account_pages/change-password.ejs', { error: false, url: envVariables })
 
-module.exports.changePassword = async function (req, res) {
+module.exports.changePassword = async (req, res) => {
   try {
     const buf = await randomBytes(20)
     const token = buf.toString('hex')
@@ -454,7 +453,7 @@ module.exports.changePassword = async function (req, res) {
   }
 }
 
-module.exports.showChangeMfa = async function (req, res) {
+module.exports.showChangeMfa = async (req, res) => {
   try {
     const user = await Model.User.findOne({ where: { email: req.session.email } })
     if (!user) throw new Error('User not found')
@@ -478,7 +477,7 @@ module.exports.showChangeMfa = async function (req, res) {
   }
 }
 
-module.exports.changeMfa = async function (req, res) {
+module.exports.changeMfa = async (req, res) => {
   try {
     const user = await Model.User.findOne({ where: { email: req.session.email } })
     if (!user) throw new Error('User not found')
@@ -486,12 +485,12 @@ module.exports.changeMfa = async function (req, res) {
     const account = await Model.AccountDetails.findOne({ where: { user_id: user.id } })
     if (!account) throw new Error('Account details not found')
 
-    let mfaPreference = req.body['mfaPreference']
-    let mobileNoFromForm = req.body['mobileNo']
-    let mobileNoFromDB = account.mobileNo
-    let mobileNoDiffers = mobileNoFromForm !== mobileNoFromDB
+    const mfaPreference = req.body.mfaPreference
+    const mobileNoFromForm = req.body.mobileNo
+    const mobileNoFromDB = account.mobileNo
+    const mobileNoDiffers = mobileNoFromForm !== mobileNoFromDB
 
-    let errorsArray = []
+    const errorsArray = []
 
     // Don't need to change anything if the user is trying to
     // select the MFA method they are already using
@@ -510,22 +509,22 @@ module.exports.changeMfa = async function (req, res) {
       req.session.user = null
       return res.redirect('/api/user/account')
     } else {
-      let validMobile = mobilePattern.test(mobileNoFromForm) ? mobileNoFromForm : false
+      const validMobile = mobilePattern.test(mobileNoFromForm) ? mobileNoFromForm : false
 
       if (validMobile !== false) {
         // One-time passcodes expire 10 mins after being issued
-        let oneTimePasscodeExists = await oneTimePasscodeService.checkIfOneTimePasscodeExists(user.id)
+        const oneTimePasscodeExists = await oneTimePasscodeService.checkIfOneTimePasscodeExists(user.id)
 
         if (oneTimePasscodeExists) {
           // If the one-time passcode for the user is old, we need to delete it and generate a new one
           if (moment(Date.parse(oneTimePasscodeExists.passcode_expiry)).isBefore(Date.now())) {
             await oneTimePasscodeService.deleteOneTimePasscode(user.id)
-            let one_time_passcode = await oneTimePasscodeService.generateOneTimePasscode()
+            const one_time_passcode = await oneTimePasscodeService.generateOneTimePasscode()
             await oneTimePasscodeService.storeNewOneTimePasscode(user.id, one_time_passcode)
             await emailService.sendOneTimePasscodeSMS(one_time_passcode, validMobile, user.id)
           }
         } else {
-          let one_time_passcode = await oneTimePasscodeService.generateOneTimePasscode()
+          const one_time_passcode = await oneTimePasscodeService.generateOneTimePasscode()
           await oneTimePasscodeService.storeNewOneTimePasscode(req.user.id, one_time_passcode)
           await emailService.sendOneTimePasscodeSMS(one_time_passcode, validMobile, req.user.id)
         }
@@ -560,13 +559,13 @@ module.exports.changeMfa = async function (req, res) {
   }
 }
 
-module.exports.showValidateSMS = async function (req, res) {
-  let user_id = req.session.passport.user
-  let mobileNoFromForm = req.body['mobileNo']
-  let accountData = await oneTimePasscodeService.getAccountData(user_id)
+module.exports.showValidateSMS = async (req, res) => {
+  const user_id = req.session.passport.user
+  const mobileNoFromForm = req.body.mobileNo
+  const accountData = await oneTimePasscodeService.getAccountData(user_id)
 
   if (req.query.resendPasscode === 'true') {
-    let one_time_passcode = await oneTimePasscodeService.generateOneTimePasscode()
+    const one_time_passcode = await oneTimePasscodeService.generateOneTimePasscode()
     await oneTimePasscodeService.deleteOneTimePasscode(user_id)
     await oneTimePasscodeService.storeNewOneTimePasscode(user_id, one_time_passcode)
     await emailService.sendOneTimePasscodeSMS(one_time_passcode, accountData.mobileNo, user_id)
@@ -589,13 +588,13 @@ module.exports.showValidateSMS = async function (req, res) {
   }
 }
 
-module.exports.validateSMS = async function (req, res) {
-  let passcode = req.body.passcode
-  let mobileNoFromForm = req.body['mobileNo']
-  let user_id = req.session.passport.user
-  let errorsArray = []
+module.exports.validateSMS = async (req, res) => {
+  const passcode = req.body.passcode
+  const mobileNoFromForm = req.body.mobileNo
+  const user_id = req.session.passport.user
+  const errorsArray = []
 
-  async function validateFormInput(passcode) {
+  function validateFormInput(passcode) {
     if (passcode.length === 0) {
       errorsArray.push({
         fieldName: 'passcode',
@@ -611,10 +610,10 @@ module.exports.validateSMS = async function (req, res) {
     return errorsArray.length === 0
   }
 
-  let noErrorsPresent = await validateFormInput(passcode)
+  const noErrorsPresent = validateFormInput(passcode)
 
   if (noErrorsPresent) {
-    let verificationIsSuccessful = await oneTimePasscodeService.verifyUser(user_id, passcode)
+    const verificationIsSuccessful = await oneTimePasscodeService.verifyUser(user_id, passcode)
 
     if (verificationIsSuccessful) {
       await oneTimePasscodeService.deleteOneTimePasscode(user_id)
@@ -650,7 +649,7 @@ module.exports.validateSMS = async function (req, res) {
   }
 }
 
-module.exports.showChangeCompanyDetails = async function (req, res) {
+module.exports.showChangeCompanyDetails = async (req, res) => {
   try {
     const user = await Model.User.findOne({ where: { email: req.session.email } })
     if (!user) throw new Error('User not found')
@@ -672,7 +671,7 @@ module.exports.showChangeCompanyDetails = async function (req, res) {
   }
 }
 
-module.exports.changeCompanyDetails = async function (req, res) {
+module.exports.changeCompanyDetails = async (req, res) => {
   const accountDetails = {
     company_name: req.body.company_name,
   }
@@ -691,7 +690,7 @@ module.exports.changeCompanyDetails = async function (req, res) {
       const accountManagementObject = {
         portalCustomerUpdate: {
           userId: 'legalisation',
-          timestamp: new Date().getTime().toString(),
+          timestamp: Date.now().toString(),
           portalCustomer: {
             portalCustomerId: user.id,
             forenames: data.first_name,
@@ -726,6 +725,4 @@ module.exports.changeCompanyDetails = async function (req, res) {
   }
 }
 
-module.exports.changeEmail = async function (req, res) {
-  return res.render('account_pages/change-email.ejs')
-}
+module.exports.changeEmail = async (_req, res) => res.render('account_pages/change-email.ejs')

@@ -1,7 +1,7 @@
 let expect
 let ValidationService
 
-before('Setup', async function () {
+before('Setup', async () => {
   const chai = await import('chai')
   expect = chai.expect
 
@@ -10,9 +10,9 @@ before('Setup', async function () {
   ValidationService = require('../../app/services/ValidationService')
 })
 
-describe('ValidationService', function () {
-  describe('validateForm', function () {
-    it('should return an array with error messages and erroneous fields', function () {
+describe('ValidationService', () => {
+  describe('validateForm', () => {
+    it('should return an array with error messages and erroneous fields', () => {
       const mockError = {
         errors: [
           {
@@ -41,7 +41,7 @@ describe('ValidationService', function () {
       expect(result[1][0].erroneousFields).to.deep.equal(['email'])
     })
 
-    it('should handle multiple errors', function () {
+    it('should handle multiple errors', () => {
       const mockError = {
         errors: [
           {
@@ -76,7 +76,7 @@ describe('ValidationService', function () {
       expect(result[0][0].errMsgs[1].fieldName).to.equal('password')
     })
 
-    it('should return empty array when no errors present', function () {
+    it('should return empty array when no errors present', () => {
       const mockError = {
         errors: [],
       }
@@ -92,8 +92,8 @@ describe('ValidationService', function () {
     })
   })
 
-  describe('buildErrorsArray', function () {
-    it('should build error array for non-password fields', function () {
+  describe('buildErrorsArray', () => {
+    it('should build error array for non-password fields', () => {
       const errorArr = {
         errors: [
           {
@@ -116,7 +116,7 @@ describe('ValidationService', function () {
       expect(result[0].fieldError).to.equal('You have not provided your first name')
     })
 
-    it('should handle password field errors with JSON message', function () {
+    it('should handle password field errors with JSON message', () => {
       const errorArr = {
         errors: [
           {
@@ -140,7 +140,7 @@ describe('ValidationService', function () {
       expect(result[0].fieldError).to.equal('Password is invalid')
     })
 
-    it('should handle unique violation errors', function () {
+    it('should handle unique violation errors', () => {
       const errorArr = {
         errors: [
           {
@@ -161,7 +161,7 @@ describe('ValidationService', function () {
       expect(result[0].fieldName).to.equal('email')
     })
 
-    it('should not add duplicate fields to erroneousFields array', function () {
+    it('should not add duplicate fields to erroneousFields array', () => {
       const errorArr = {
         errors: [
           {
@@ -194,7 +194,7 @@ describe('ValidationService', function () {
       expect(erroneousFields.filter((f) => f === 'email').length).to.equal(1)
     })
 
-    it('should return array with empty erroneousFields for empty error array', function () {
+    it('should return array with empty erroneousFields for empty error array', () => {
       const errorArr = {
         errors: [],
       }

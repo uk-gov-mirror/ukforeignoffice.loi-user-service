@@ -2,13 +2,13 @@ const Model = require('../model/models')
 const moment = require('moment')
 const { Op } = require('sequelize')
 
-let OneTimePasscodeService = {
-  generateOneTimePasscode: async function () {
+const OneTimePasscodeService = {
+  generateOneTimePasscode: () => {
     // generate a 6 digit passcode
     return Math.floor(100000 + Math.random() * 900000)
   },
 
-  checkIfOneTimePasscodeExists: async function (user_id) {
+  checkIfOneTimePasscodeExists: async (user_id) => {
     try {
       return await Model.OneTimePasscodes.findOne({
         where: {
@@ -20,7 +20,7 @@ let OneTimePasscodeService = {
     }
   },
 
-  deleteOneTimePasscode: async function (user_id) {
+  deleteOneTimePasscode: async (user_id) => {
     try {
       return await Model.OneTimePasscodes.destroy({
         where: {
@@ -32,7 +32,7 @@ let OneTimePasscodeService = {
     }
   },
 
-  storeNewOneTimePasscode: async function (user_id, one_time_passcode) {
+  storeNewOneTimePasscode: async (user_id, one_time_passcode) => {
     try {
       return await Model.OneTimePasscodes.create({
         user_id: user_id,
@@ -44,7 +44,7 @@ let OneTimePasscodeService = {
     }
   },
 
-  verifyUser: async function (user_id, passcode) {
+  verifyUser: async (user_id, passcode) => {
     try {
       return await Model.OneTimePasscodes.findOne({
         where: {
@@ -60,7 +60,7 @@ let OneTimePasscodeService = {
     }
   },
 
-  updateAccountPasscodeExpiryTime: async function (user_id) {
+  updateAccountPasscodeExpiryTime: async (user_id) => {
     try {
       return await Model.User.update(
         {
@@ -78,7 +78,7 @@ let OneTimePasscodeService = {
     }
   },
 
-  updateMfaPreferenceToSMS: async function (user_id) {
+  updateMfaPreferenceToSMS: async (user_id) => {
     try {
       return await Model.User.update(
         {
@@ -95,7 +95,7 @@ let OneTimePasscodeService = {
     }
   },
 
-  checkMobileNumber: async function (user_id) {
+  checkMobileNumber: async (user_id) => {
     try {
       return await Model.AccountDetails.findOne({
         where: {
@@ -108,7 +108,7 @@ let OneTimePasscodeService = {
     }
   },
 
-  updateAccountMobileNumber: async function (user_id, phone_number) {
+  updateAccountMobileNumber: async (user_id, phone_number) => {
     try {
       return await Model.AccountDetails.update(
         {
@@ -125,7 +125,7 @@ let OneTimePasscodeService = {
     }
   },
 
-  updateAccountPasscodeAttempts: async function (attempts, user_id) {
+  updateAccountPasscodeAttempts: async (attempts, user_id) => {
     try {
       return await Model.User.update(
         {
@@ -142,7 +142,7 @@ let OneTimePasscodeService = {
     }
   },
 
-  getUserData: async function (user_id) {
+  getUserData: async (user_id) => {
     try {
       return await Model.User.findOne({
         where: {
@@ -154,7 +154,7 @@ let OneTimePasscodeService = {
     }
   },
 
-  getAccountData: async function (user_id) {
+  getAccountData: async (user_id) => {
     try {
       return await Model.AccountDetails.findOne({
         where: {
@@ -166,7 +166,7 @@ let OneTimePasscodeService = {
     }
   },
 
-  lockUserAccount: async function (user_id) {
+  lockUserAccount: async (user_id) => {
     try {
       return await Model.User.update(
         {

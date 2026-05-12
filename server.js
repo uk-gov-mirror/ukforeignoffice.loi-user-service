@@ -14,13 +14,16 @@ const express = require('express'),
 
 require('./config/logs')
 require('dotenv').config()
-const serverPort = process.argv[2] && !isNaN(process.argv[2]) ? process.argv[2] : process.env.PORT || 3001
+
+const argvPort = Number.parseInt(process.argv[2], 10)
+const envPort = Number.parseInt(process.env.PORT, 10)
+const serverPort = Number.isFinite(argvPort) ? argvPort : Number.isFinite(envPort) ? envPort : 3001
 
 app.use(cookieParser())
 app.set('trust proxy', 1)
 
 // Healthcheck - responds before session/csrf to avoid creating Redis sessions
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   if (req.path === '/api/user/healthcheck') {
     return res.json({ message: 'User Service is running' })
   }
@@ -37,7 +40,7 @@ app.use(
   }),
 )
 
-app.use(function (req, res, next) {
+app.use((_req, res, next) => {
   res.removeHeader('X-Powered-By')
   res.removeHeader('Server')
   return next()
@@ -48,8 +51,8 @@ app.use(function (req, res, next) {
 // =====================================
 const sessionSettings = JSON.parse(process.env.THESESSION)
 
-app.use(function (req, res, next) {
-  if (req.cookies['LoggedIn']) {
+app.use((req, res, next) => {
+  if (req.cookies.LoggedIn) {
     res.cookie('LoggedIn', true, { maxAge: sessionSettings.cookieMaxAge, httpOnly: true })
   }
   return next()
@@ -109,10 +112,10 @@ app.use(
 // =====================================
 app.set('view engine', 'ejs')
 
-const crypto = require('crypto')
+const crypto = require('node:crypto')
 const cacheBust = crypto.randomBytes(4).toString('hex')
 
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   res.locals = {
     cacheBust,
     piwikID: environmentVariables.live_variables.piwikId,
@@ -152,33 +155,32 @@ const jobs = require('./config/jobs.js')
 const hourlyInterval = environmentVariables.userAccountSettings.jobScheduleHour
 const randomSecond = Math.floor(Math.random() * 60)
 const randomMin = Math.floor(Math.random() * 60) //Math.random returns a number from 0 to < 1 (never will return 60)
-const jobScheduleRandom =
-  randomSecond + ' ' + randomMin + ' ' + environmentVariables.userAccountSettings.jobScheduleHour + ' * * *'
-schedule.scheduleJob(jobScheduleRandom, function () {
+const jobScheduleRandom = `${randomSecond} ${randomMin} ${environmentVariables.userAccountSettings.jobScheduleHour} * * *`
+schedule.scheduleJob(jobScheduleRandom, () => {
   jobs.accountExpiryCheck()
 })
 
 passportConfig(app, passport)
 app.use('/api/user', appRouter)
 //Automatically update passport strategy
-var fs = require('fs-extra')
-fs.copy(__dirname + '/data/strategy.js', __dirname + '/node_modules/passport-local/lib/strategy.js', function (err) {})
+const fs = require('fs-extra')
+fs.copy(`${__dirname}/data/strategy.js`, `${__dirname}/node_modules/passport-local/lib/strategy.js`, (_err) => {})
 
 // =====================================
 // GOV STYLES
 // =====================================
 const oneDay = 24 * 60 * 60 * 1000 // 1 day in milliseconds
 
-app.use('/api/user/', express.static(__dirname + '/public', { maxAge: oneDay }))
-app.use('/api/user/styles', express.static(__dirname + '/styles', { maxAge: oneDay }))
-app.use('/api/user/fonts', express.static(__dirname + '/fonts', { maxAge: oneDay }))
-app.use('/api/user/images', express.static(__dirname + '/images', { maxAge: oneDay }))
-app.use('/api/user/js', express.static(__dirname + '/js', { maxAge: oneDay }))
+app.use('/api/user/', express.static(`${__dirname}/public`, { maxAge: oneDay }))
+app.use('/api/user/styles', express.static(`${__dirname}/styles`, { maxAge: oneDay }))
+app.use('/api/user/fonts', express.static(`${__dirname}/fonts`, { maxAge: oneDay }))
+app.use('/api/user/images', express.static(`${__dirname}/images`, { maxAge: oneDay }))
+app.use('/api/user/js', express.static(`${__dirname}/js`, { maxAge: oneDay }))
 
 // Serve GOV.UK Frontend v5 assets
 app.use(
   '/api/user/govuk-frontend',
-  express.static(__dirname + '/node_modules/govuk-frontend/dist/govuk', { maxAge: oneDay }),
+  express.static(`${__dirname}/node_modules/govuk-frontend/dist/govuk`, { maxAge: oneDay }),
 )
 
 // =====================================
@@ -198,7 +200,7 @@ process.on('unhandledRejection', (reason, promise) => {
 })
 
 app.listen(serverPort)
-console.log('Server started on port ' + serverPort)
+console.log(`Server started on port ${serverPort}`)
 console.log(
   `user account cleanup job will run every ${hourlyInterval} hours at ${randomMin} minutes and ${randomSecond} seconds past the hour`,
 )

@@ -1,29 +1,29 @@
 let expect
 let oneTimePasscodeService
 
-before('Setup', async function () {
+before('Setup', async () => {
   const chai = await import('chai')
   expect = chai.expect
   oneTimePasscodeService = require('../../app/services/oneTimePasscodeService')
 })
 
-describe('OneTimePasscodeService', function () {
-  describe('generateOneTimePasscode', function () {
-    it('should generate a 6 digit passcode', async function () {
+describe('OneTimePasscodeService', () => {
+  describe('generateOneTimePasscode', () => {
+    it('should generate a 6 digit passcode', async () => {
       const passcode = await oneTimePasscodeService.generateOneTimePasscode()
 
       expect(passcode).to.be.a('number')
       expect(passcode.toString().length).to.equal(6)
     })
 
-    it('should generate a passcode between 100000 and 999999', async function () {
+    it('should generate a passcode between 100000 and 999999', async () => {
       const passcode = await oneTimePasscodeService.generateOneTimePasscode()
 
       expect(passcode).to.be.at.least(100000)
       expect(passcode).to.be.at.most(999999)
     })
 
-    it('should generate different passcodes on multiple calls', async function () {
+    it('should generate different passcodes on multiple calls', async () => {
       const passcodes = new Set()
 
       // Generate 10 passcodes
@@ -37,7 +37,7 @@ describe('OneTimePasscodeService', function () {
       expect(passcodes.size).to.be.at.least(2)
     })
 
-    it('should only generate numeric passcodes', async function () {
+    it('should only generate numeric passcodes', async () => {
       const passcode = await oneTimePasscodeService.generateOneTimePasscode()
 
       expect(Number.isInteger(passcode)).to.be.true

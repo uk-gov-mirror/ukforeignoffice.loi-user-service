@@ -1,4 +1,4 @@
-var Sequelize = require('sequelize'),
+const _Sequelize = require('sequelize'),
   common = require('../config/common.js'),
   envVariables = common.config()
 
