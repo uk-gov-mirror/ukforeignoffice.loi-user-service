@@ -64,7 +64,19 @@ app.use((_req, res, next) => {
 // =====================================
 // SESSION
 // =====================================
-const sessionSettings = JSON.parse(process.env.THESESSION)
+const sessionSettings = process.env.THESESSION
+  ? JSON.parse(process.env.THESESSION)
+  : {
+      secret: 'super_secret',
+      adapter: 'connect-redis',
+      host: 'localhost',
+      port: 6379,
+      password: '',
+      prefix: 'sess:',
+      key: 'express.sid',
+      domain: 'http://localhost/',
+      cookieMaxAge: 1800000,
+    }
 
 app.use((req, res, next) => {
   if (req.cookies.LoggedIn) {
