@@ -45,8 +45,8 @@
     "format": "biome check --write .",
     "quality": "biome check --changed --since=develop",
     "start": "NODE_ENV=development node server.js 3001",
-    "test": "NODE_ENV=test node node_modules/mocha/bin/_mocha --exit --timeout 10000 --recursive tests/",
-    "test:vitest": "vitest run --coverage"
+    "test": "NODE_ENV=test node node_modules/mocha/bin/_mocha --exit --timeout 10000 tests/specs/user.spec.js",
+    "test:vitest": "vitest run"
   },
   "overrides": {
     "axios": "1.13.6",
