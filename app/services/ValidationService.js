@@ -1,6 +1,8 @@
 const common = require('../../config/common.js'),
   envVariables = common.config()
 
+const { logger } = require('../../config/logs')
+
 const ValidationService = {
   validateForm: (inputs) => {
     const errors = inputs.error.errors
@@ -98,7 +100,7 @@ const ValidationService = {
 
       return fieldsAndErrorsCustom
     } catch (error) {
-      console.log('there was an error in the builderrorsarray ', error)
+      logger.error('there was an error in the builderrorsarray ', error)
       //sails.log(error);
     }
   },
@@ -124,7 +126,7 @@ const ValidationService = {
     } else {
       postcode = postcodeObject ? postcodeObject : ''
     }
-    erroneousFields = []
+    const erroneousFields = []
 
     error.errors.forEach((error) => {
       const parsedMessage = JSON.parse(error.message)

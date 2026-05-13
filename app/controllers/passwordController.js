@@ -5,7 +5,8 @@ const crypto = require('node:crypto'),
   validator = require('validator'),
   { Op } = require('sequelize'),
   emailService = require('../services/emailService'),
-  isEmail = require('isemail')
+  isEmail = require('isemail'),
+  { logger } = require('../../config/logs')
 
 module.exports.forgotPassword = async (req, res) => {
   try {
@@ -27,7 +28,7 @@ module.exports.forgotPassword = async (req, res) => {
     const emailValid = isEmail.validate(email)
 
     if (!emailValid) {
-      console.info('Password reset requested. Invalid email pattern.')
+      logger.info('Password reset requested. Invalid email pattern.')
       return res.render('forgot', { message: 'Please enter a valid email address.' })
     } else {
       req.session.flash = ''
@@ -38,7 +39,7 @@ module.exports.forgotPassword = async (req, res) => {
     }
 
     if (!user) {
-      console.info('Password reset requested. Email not found.')
+      logger.info('Password reset requested. Email not found.')
       return res.redirect('/api/user/sign-in')
     }
 
@@ -60,14 +61,14 @@ module.exports.forgotPassword = async (req, res) => {
       },
     )
 
-    console.info('Password reset requested.')
+    logger.info('Password reset requested.')
 
     // Send reset password email
     await emailService.resetPassword(email, token)
 
     return res.redirect('/api/user/sign-in')
   } catch (error) {
-    console.error('An error occurred in the forgotPassword function:', error)
+    logger.error('An error occurred in the forgotPassword function:', error)
     return res.redirect('/api/user/sign-in')
   }
 }
@@ -195,12 +196,12 @@ module.exports.resetPassword = async (req, res) => {
         },
       )
 
-      console.info('Password reset requested. Change successful.')
+      logger.info('Password reset requested. Change successful.')
       emailService.confirmPasswordChange(user.first_name, user.email)
 
       return res.redirect(reset ? '/api/user/sign-in' : '/api/user/dashboard')
     } catch (error) {
-      console.error(error)
+      logger.error('An error occurred while resetting the password:', error)
       return res.status(500).send({ message: 'An error occurred while resetting the password.' })
     }
   }

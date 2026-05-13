@@ -4,6 +4,7 @@ const Model = require('./model/models.js')
 const common = require('../config/common.js')
 const envVariables = common.config()
 const emailService = require('./services/emailService.js')
+const { logger } = require('../config/logs.js')
 
 module.exports = (app, passport) => {
   app.use(passport.initialize())
@@ -64,14 +65,14 @@ module.exports = (app, passport) => {
             )
 
             await emailService.lockedOut(user.first_name, email)
-            console.info(`ACCOUNT LOCKED - UserID: ${user.id}`)
+            logger.info(`ACCOUNT LOCKED - UserID: ${user.id}`)
             return done(null, false, { message: 'There was a problem signing in' })
           } else {
             return done(null, false, { message: 'There was a problem signing in' })
           }
         }
       } catch (error) {
-        console.error('Error during authentication process:', error)
+        logger.error('Error during authentication process:', error)
         return done(error)
       }
     }),

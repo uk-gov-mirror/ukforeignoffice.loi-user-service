@@ -6,6 +6,7 @@ const envVariables = common.config()
 const config = require('../../config/environment')
 const HelperService = require('../services/HelperService')
 const axios = require('axios')
+const { logger } = require('sequelize/lib/utils/logger')
 
 module.exports.showRequestBusinessServiceAccess = async (req, res) => {
   try {
@@ -21,7 +22,7 @@ module.exports.showRequestBusinessServiceAccess = async (req, res) => {
         try {
           return await Model.User.findOne({ where: { email: req.session.email } })
         } catch (error) {
-          console.log('showRequestBusinessServiceAccess.findUserAccount', error)
+          logger.error('showRequestBusinessServiceAccess.findUserAccount', error)
         }
       }
 
@@ -29,7 +30,7 @@ module.exports.showRequestBusinessServiceAccess = async (req, res) => {
         try {
           return await Model.AccountDetails.findOne({ where: { user_id: user.id } })
         } catch (error) {
-          console.log('showRequestBusinessServiceAccess.findUserAccountDetails', error)
+          logger.error('showRequestBusinessServiceAccess.findUserAccountDetails', error)
         }
       }
 
@@ -52,12 +53,12 @@ module.exports.showRequestBusinessServiceAccess = async (req, res) => {
             form_values: false,
           })
         } catch (error) {
-          console.log('showRequestBusinessServiceAccess.renderPage', error)
+          logger.error('showRequestBusinessServiceAccess.renderPage', error)
         }
       }
     }
   } catch (error) {
-    console.log('requestBusinessServiceAccessController.showRequestBusinessServiceAccess', error)
+    logger.error('requestBusinessServiceAccessController.showRequestBusinessServiceAccess', error)
   }
 }
 
@@ -93,7 +94,7 @@ module.exports.requestBusinessServiceAccess = async (req, res) => {
         try {
           return await Model.User.findOne({ where: { email: req.session.email } })
         } catch (error) {
-          console.log('requestBusinessServiceAccess.findUserAccount', error)
+          logger.error('requestBusinessServiceAccess.findUserAccount', error)
         }
       }
 
@@ -101,7 +102,7 @@ module.exports.requestBusinessServiceAccess = async (req, res) => {
         try {
           return await Model.AccountDetails.findOne({ where: { user_id: user.id } })
         } catch (error) {
-          console.log('showRequestBusinessServiceAccess.findUserAccountDetails', error)
+          logger.error('showRequestBusinessServiceAccess.findUserAccountDetails', error)
         }
       }
 
@@ -123,7 +124,7 @@ module.exports.requestBusinessServiceAccess = async (req, res) => {
             },
           )
         } catch (error) {
-          console.log('requestBusinessServiceAccess.assignTokenToUser', error)
+          logger.error('requestBusinessServiceAccess.assignTokenToUser', error)
         }
       }
 
@@ -140,7 +141,7 @@ module.exports.requestBusinessServiceAccess = async (req, res) => {
             },
           )
         } catch (error) {
-          console.log('requestBusinessServiceAccess.updateCompanyName', error)
+          logger.error('requestBusinessServiceAccess.updateCompanyName', error)
         }
       }
 
@@ -148,7 +149,7 @@ module.exports.requestBusinessServiceAccess = async (req, res) => {
         try {
           return await crypto.randomBytes(20)
         } catch (error) {
-          console.log('requestBusinessServiceAccess.generateUserToken', error)
+          logger.error('requestBusinessServiceAccess.generateUserToken', error)
         }
       }
 
@@ -204,7 +205,7 @@ module.exports.requestBusinessServiceAccess = async (req, res) => {
             renderPage(user, account, errorsArray)
           } else return true
         } catch (error) {
-          console.log('requestBusinessServiceAccess.validateFormInput', error)
+          logger.error('requestBusinessServiceAccess.validateFormInput', error)
         }
       }
 
@@ -220,7 +221,7 @@ module.exports.requestBusinessServiceAccess = async (req, res) => {
             form_values: req.body,
           })
         } catch (error) {
-          console.log('requestBusinessServiceAccess.renderPage', error)
+          logger.error('requestBusinessServiceAccess.renderPage', error)
         }
       }
 
@@ -232,12 +233,12 @@ module.exports.requestBusinessServiceAccess = async (req, res) => {
           )
           return res.redirect(`${envVariables.applicationServiceURL}select-service`)
         } catch (error) {
-          console.log('requestBusinessServiceAccess.redirectToSelectServicePage', error)
+          logger.error('requestBusinessServiceAccess.redirectToSelectServicePage', error)
         }
       }
     }
   } catch (error) {
-    console.log('requestBusinessAccessController.requestBusinessServiceAccess', error)
+    logger.error('requestBusinessAccessController.requestBusinessServiceAccess', error)
   }
 }
 
@@ -278,7 +279,7 @@ module.exports.approve = async (req, res) => {
           },
         })
       } catch (error) {
-        console.log('approve.findAccountMatchingToken', error)
+        logger.error('approve.findAccountMatchingToken', error)
       }
     }
 
@@ -290,7 +291,7 @@ module.exports.approve = async (req, res) => {
           },
         })
       } catch (error) {
-        console.log('approve.findAccountDetails', error)
+        logger.error('approve.findAccountDetails', error)
       }
     }
 
@@ -308,7 +309,7 @@ module.exports.approve = async (req, res) => {
           },
         )
       } catch (error) {
-        console.log('approve.grantPermissionsToUserAccount', error)
+        logger.error('approve.grantPermissionsToUserAccount', error)
       }
     }
 
@@ -348,34 +349,34 @@ module.exports.approve = async (req, res) => {
           const elapsedTime = endTime - startTime
 
           if (response.status === 200) {
-            console.log(
+            logger.info(
               '[ACCOUNT MANAGEMENT] ACCOUNT UPDATE SENT TO ORBIT SUCCESSFULLY FOR USER_ID ' +
                 userAccountMatchingToken.id,
             )
           } else {
-            console.error(
+            logger.error(
               `[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ${userAccountMatchingToken.id}`,
             )
-            console.error(`response code: ${response.status}`)
-            console.error(response.data)
+            logger.error(`response code: ${response.status}`)
+            logger.error(response.data)
           }
 
-          console.log(`Orbit account management request response time: ${elapsedTime}ms`)
+          logger.info(`Orbit account management request response time: ${elapsedTime}ms`)
         } catch (error) {
           const endTime = new Date()
           const elapsedTime = endTime - startTime
-          console.error(
+          logger.error(
             `[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ${userAccountMatchingToken.id}`,
           )
-          console.error(error.response ? error.response.data : error.message)
-          console.log(`Orbit account management request response time: ${elapsedTime}ms`)
+          logger.error(error.response ? error.response.data : error.message)
+          logger.info(`Orbit account management request response time: ${elapsedTime}ms`)
         }
       } catch (error) {
-        console.log('approve.sendAccountUpdateToOrbit', error)
+        logger.error('approve.sendAccountUpdateToOrbit', error)
       }
     }
   } catch (error) {
-    console.log('requestBusinessAccessController.approve', error)
+    logger.error('requestBusinessAccessController.approve', error)
   }
 }
 
@@ -395,7 +396,7 @@ module.exports.reject = async (req, res) => {
           },
         })
       } catch (error) {
-        console.log('reject.findAccountMatchingToken', error)
+        logger.error('reject.findAccountMatchingToken', error)
       }
     }
 
@@ -413,7 +414,7 @@ module.exports.reject = async (req, res) => {
           },
         )
       } catch (error) {
-        console.log('reject.rejectPermissionsToUserAccount', error)
+        logger.error('reject.rejectPermissionsToUserAccount', error)
       }
     }
 
@@ -430,7 +431,7 @@ module.exports.reject = async (req, res) => {
           },
         )
       } catch (error) {
-        console.log('reject.clearCompanyName', error)
+        logger.error('reject.clearCompanyName', error)
       }
     }
 
@@ -469,27 +470,27 @@ module.exports.reject = async (req, res) => {
         const elapsedTime = endTime - startTime
 
         if (response.status === 200) {
-          console.log(
+          logger.info(
             `[ACCOUNT MANAGEMENT] ACCOUNT UPDATE SENT TO ORBIT SUCCESSFULLY FOR USER_ID ${userAccountMatchingToken.id}`,
           )
         } else {
-          console.error(
+          logger.error(
             `[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ${userAccountMatchingToken.id}`,
           )
-          console.error(`response code: ${response.status}`)
-          console.error(response.data)
+          logger.error(`response code: ${response.status}`)
+          logger.error(response.data)
         }
 
-        console.log(`Orbit account management request response time: ${elapsedTime}ms`)
+        logger.info(`Orbit account management request response time: ${elapsedTime}ms`)
       } catch (error) {
         const endTime = new Date()
         const elapsedTime = endTime - startTime
-        console.error(
+        logger.error(
           `[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ${userAccountMatchingToken.id}`,
         )
-        console.error(error.response ? error.response.data : error.message)
-        console.log(`Orbit account management request response time: ${elapsedTime}ms`)
-        console.log('reject.sendAccountUpdateToOrbit', error)
+        logger.error(error.response ? error.response.data : error.message)
+        logger.info(`Orbit account management request response time: ${elapsedTime}ms`)
+        logger.error('reject.sendAccountUpdateToOrbit', error)
       }
     }
 
@@ -501,7 +502,7 @@ module.exports.reject = async (req, res) => {
           },
         })
       } catch (error) {
-        console.log('reject.findAccountDetails', error)
+        logger.error('reject.findAccountDetails', error)
       }
     }
 
@@ -527,6 +528,6 @@ module.exports.reject = async (req, res) => {
       })
     }
   } catch (error) {
-    console.log('requestBusinessAccessController.reject', error)
+    logger.error('requestBusinessAccessController.reject', error)
   }
 }

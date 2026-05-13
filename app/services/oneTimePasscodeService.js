@@ -1,6 +1,7 @@
 const Model = require('../model/models')
 const moment = require('moment')
 const { Op } = require('sequelize')
+const { logger } = require('../../config/logs')
 
 const OneTimePasscodeService = {
   generateOneTimePasscode: () => {
@@ -16,7 +17,7 @@ const OneTimePasscodeService = {
         },
       })
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 
@@ -28,7 +29,7 @@ const OneTimePasscodeService = {
         },
       })
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 
@@ -40,7 +41,7 @@ const OneTimePasscodeService = {
         passcode_expiry: moment(Date.now()).add(10, 'minutes'),
       })
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 
@@ -56,7 +57,7 @@ const OneTimePasscodeService = {
         },
       })
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 
@@ -74,7 +75,7 @@ const OneTimePasscodeService = {
         },
       )
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 
@@ -91,7 +92,7 @@ const OneTimePasscodeService = {
         },
       )
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 
@@ -104,7 +105,7 @@ const OneTimePasscodeService = {
         attributes: ['mobileNo'],
       })
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 
@@ -121,7 +122,7 @@ const OneTimePasscodeService = {
         },
       )
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 
@@ -138,7 +139,7 @@ const OneTimePasscodeService = {
         },
       )
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 
@@ -150,7 +151,7 @@ const OneTimePasscodeService = {
         },
       })
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 
@@ -162,7 +163,7 @@ const OneTimePasscodeService = {
         },
       })
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 
@@ -179,7 +180,7 @@ const OneTimePasscodeService = {
         },
       )
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 }

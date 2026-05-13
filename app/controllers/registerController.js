@@ -7,6 +7,7 @@ const bcrypt = require('bcryptjs'),
   common = require('../../config/common.js'),
   envVariables = common.config(),
   validator = require('validator'),
+  { logger } = require('../../config/logs'),
   dbConnection = require('../sequelize.js'),
   { Op } = require('sequelize'),
   emailService = require('../services/emailService'),
@@ -33,21 +34,21 @@ async function sendToOrbit(accountManagementObject, user) {
     const elapsedTime = endTime - startTime
 
     if (response.status === 200) {
-      console.log(`[ACCOUNT MANAGEMENT] ACCOUNT CREATION SENT TO ORBIT SUCCESSFULLY FOR USER_ID ${user.id}`)
+      logger.info(`[ACCOUNT MANAGEMENT] ACCOUNT CREATION SENT TO ORBIT SUCCESSFULLY FOR USER_ID ${user.id}`)
     } else {
-      console.error(`[ACCOUNT MANAGEMENT] ACCOUNT CREATION FAILED SENDING TO ORBIT FOR USER_ID ${user.id}`)
-      console.error(`response code: ${response.status}`)
-      console.error(response.data)
+      logger.error(`[ACCOUNT MANAGEMENT] ACCOUNT CREATION FAILED SENDING TO ORBIT FOR USER_ID ${user.id}`)
+      logger.error(`response code: ${response.status}`)
+      logger.error(response.data)
     }
 
-    console.log(`Orbit account management request response time: ${elapsedTime}ms`)
+    logger.info(`Orbit account management request response time: ${elapsedTime}ms`)
   } catch (error) {
     const endTime = new Date()
     const elapsedTime = endTime - startTime
-    console.error(`[ACCOUNT MANAGEMENT] ACCOUNT CREATION FAILED SENDING TO ORBIT FOR USER_ID ${user.id}`)
-    console.error(error.response ? error.response.data : error.message)
-    console.log(`Orbit account management request response time: ${elapsedTime}ms`)
-    console.error(`sendToOrbit: ${error}`)
+    logger.error(`[ACCOUNT MANAGEMENT] ACCOUNT CREATION FAILED SENDING TO ORBIT FOR USER_ID ${user.id}`)
+    logger.error(error.response ? error.response.data : error.message)
+    logger.info(`Orbit account management request response time: ${elapsedTime}ms`)
+    logger.error(`sendToOrbit: ${error}`)
   }
 }
 
@@ -366,15 +367,15 @@ module.exports.register = (req, res) => {
               )
               return res.redirect('/api/user/emailconfirm')
             } catch (error) {
-              console.error('Caught error:', error)
+              logger.error('Caught error:', error)
 
               if (error.name === 'SequelizeValidationError') {
-                console.error('Validation errors:')
+                logger.error('Validation errors:')
                 error.errors.forEach((err, index) => {
-                  console.error(`  ${index + 1}. Field: ${err.path}, Message: ${JSON.stringify(err.message)}`)
+                  logger.error(`  ${index + 1}. Field: ${err.path}, Message: ${JSON.stringify(err.message)}`)
                 })
               } else {
-                console.error('Unknown error:', error)
+                logger.error('Unknown error:', error)
               }
               return res.render('register.ejs', {
                 error_report: ValidationService.buildErrorsArray(error),
@@ -393,7 +394,7 @@ module.exports.register = (req, res) => {
           }
         })
         .catch((error) => {
-          console.log(error)
+          logger.error(error)
         })
     }
   })
@@ -446,7 +447,7 @@ module.exports.completeRegistration = (req, res) => {
             sendToOrbit(accountManagementObject, user)
           })
           .catch((error) => {
-            console.log(error)
+            logger.error(error)
 
             // Custom error array builder for email match confirmation
             var erroneousFields = []
@@ -587,7 +588,7 @@ module.exports.resendActivationEmail = async (req, res) => {
     req.flash('info', `If an account matches ${req.body.email} we'll send you another confirmation email.`)
     return res.redirect('/api/user/sign-in')
   } catch (error) {
-    console.log(error)
+    logger.error(error)
     req.flash('info', `If an account matches ${req.body.email} we'll send you another confirmation email.`)
     return res.redirect('/api/user/sign-in')
   }
@@ -630,7 +631,7 @@ module.exports.activate = async (req, res) => {
     req.flash('info', "You've successfully confirmed your email address. Now you can sign in to your account")
     return res.redirect('/api/user/sign-in')
   } catch (error) {
-    console.log(error)
+    logger.error(error)
   }
 }
 

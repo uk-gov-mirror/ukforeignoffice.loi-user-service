@@ -14,6 +14,7 @@ const edmsHost = process.env.EDMS_HOST
 const edmsBearerToken = JSON.parse(process.env.EDMS_BEARER_TOKEN)
 const edmsAuthHost = process.env.EDMS_AUTH_HOST
 const edmsAuthScope = process.env.EDMS_AUTH_SCOPE
+const { logger } = require('./logs')
 
 const sequelizeUsers = new Sequelize(
   sequelizeusers.sequelizeusers.dbName,
@@ -63,19 +64,19 @@ const serviceSequelize = new Sequelize(
 sequelizeUsers
   .authenticate()
   .then(() => {
-    console.log(`Connection has been established to ${sequelizeusers.sequelizeusers.dbName} successfully.`)
+    logger.info(`Connection has been established to ${sequelizeusers.sequelizeusers.dbName} successfully.`)
   })
   .catch((error) => {
-    console.error(`Unable to connect to the ${sequelizeusers.sequelizeusers.dbName} database: ${error}`)
+    logger.error(`Unable to connect to the ${sequelizeusers.sequelizeusers.dbName} database: ${error}`)
   })
 
 serviceSequelize
   .authenticate()
   .then(() => {
-    console.log(`Connection has been established to ${servicesequelize.servicesequelize.dbName} successfully.`)
+    logger.info(`Connection has been established to ${servicesequelize.servicesequelize.dbName} successfully.`)
   })
   .catch((error) => {
-    console.error(`Unable to connect to the ${servicesequelize.servicesequelize.dbName} database: ${error}`)
+    logger.error(`Unable to connect to the ${servicesequelize.servicesequelize.dbName} database: ${error}`)
   })
 
 const config = {

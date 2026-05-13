@@ -12,7 +12,7 @@ const express = require('express'),
   cookieParser = require('cookie-parser'),
   csrf = require('csurf')
 
-require('./config/logs')
+const { logger } = require('./config/logs.js')
 require('dotenv').config()
 
 const argvPort = Number.parseInt(process.argv[2], 10)
@@ -72,7 +72,7 @@ const redisClient = createClient({
 
 redisClient.connect((err) => {
   if (err) {
-    console.error('Redis client error:', err)
+    logger.error('Redis client error:', err)
     next(err)
   } else {
     next()
@@ -80,11 +80,11 @@ redisClient.connect((err) => {
 })
 
 redisClient.on('connect', () => {
-  console.log('Redis client connected successfully')
+  logger.info('Redis client connected successfully')
 })
 
 redisClient.on('error', (error) => {
-  console.error('Redis client error:', error)
+  logger.error('Redis client error:', error)
 })
 
 const redisStore = new RedisStore({ client: redisClient })
@@ -187,21 +187,21 @@ app.use(
 // START APP
 // =====================================
 process.on('uncaughtException', (error, origin) => {
-  console.error('----- Uncaught Exception -----')
-  console.error(error)
-  console.error('----- Exception Origin -----')
-  console.error(origin)
+  logger.error('----- Uncaught Exception -----')
+  logger.error(error)
+  logger.error('----- Exception Origin -----')
+  logger.error(origin)
 })
 
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('----- Unhandled Rejection -----')
-  console.error(`Promise: ${promise}`)
-  console.error(`Reason: ${reason}`)
+  logger.error('----- Unhandled Rejection -----')
+  logger.error(`Promise: ${promise}`)
+  logger.error(`Reason: ${reason}`)
 })
 
 app.listen(serverPort)
-console.log(`Server started on port ${serverPort}`)
-console.log(
+logger.info(`Server started on port ${serverPort}`)
+logger.info(
   `user account cleanup job will run every ${hourlyInterval} hours at ${randomMin} minutes and ${randomSecond} seconds past the hour`,
 )
 module.exports.getApp = app

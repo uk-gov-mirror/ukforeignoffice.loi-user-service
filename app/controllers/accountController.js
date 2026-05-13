@@ -13,6 +13,7 @@ const phonePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){5,14}$/
 const crypto = require('node:crypto')
 const util = require('node:util')
 const { Op } = require('sequelize')
+const { logger } = require('../../config/logs')
 const randomBytes = util.promisify(crypto.randomBytes)
 
 async function sendToOrbit(accountManagementObject, user) {
@@ -32,16 +33,16 @@ async function sendToOrbit(accountManagementObject, user) {
     const elapsedTime = endTime - startTime
 
     if (response.status === 200) {
-      console.log(`[ACCOUNT MANAGEMENT] ACCOUNT UPDATE SENT TO ORBIT SUCCESSFULLY FOR USER_ID ${user.id}`)
+      logger.info(`[ACCOUNT MANAGEMENT] ACCOUNT UPDATE SENT TO ORBIT SUCCESSFULLY FOR USER_ID ${user.id}`)
     } else {
-      console.error(`[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ${user.id}`)
-      console.error(`response code: ${response.status}`)
-      console.error(response.data)
+      logger.error(`[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ${user.id}`)
+      logger.error(`response code: ${response.status}`)
+      logger.error(response.data)
     }
 
-    console.log(`Orbit account management request response time: ${elapsedTime}ms`)
+    logger.info(`Orbit account management request response time: ${elapsedTime}ms`)
   } catch (error) {
-    console.error(`sendToOrbit: ${error}`)
+    logger.error(`sendToOrbit: ${error}`)
   }
 }
 
@@ -61,7 +62,7 @@ module.exports.showAccount = async (req, res) => {
       company_info: req.flash('company_info'),
     })
   } catch (error) {
-    console.error(`showAccount: ${error}`)
+    logger.error(`showAccount: ${error}`)
     return res.render('generic-error.ejs', {
       backLink: '#',
       error,
@@ -79,7 +80,7 @@ module.exports.showAdminSection = (req, res) => {
       error: null,
     })
   } catch (error) {
-    console.error(`showAdminSection: ${error}`)
+    logger.error(`showAdminSection: ${error}`)
     return res.render('generic-error.ejs', {
       backLink: '#',
       error,
@@ -97,7 +98,7 @@ module.exports.showAdminSearchEmail = (req, res) => {
       error: null,
     })
   } catch (error) {
-    console.error(`showAdminSearchEmail: ${error}`)
+    logger.error(`showAdminSearchEmail: ${error}`)
     return res.render('generic-error.ejs', {
       backLink: '#',
       error,
@@ -123,7 +124,7 @@ module.exports.ajaxSearchEmail = async (req, res) => {
 
     res.json(users)
   } catch (error) {
-    console.error('Error fetching users:', error)
+    logger.error(`ajaxSearchEmail: ${error}`)
     res.status(500).json({ error: 'Internal server error' })
   }
 }
@@ -160,7 +161,7 @@ module.exports.adminSearchEmail = async (req, res) => {
       info: req.flash('info'),
     })
   } catch (error) {
-    console.error(`adminSearchEmail: ${error}`)
+    logger.error(`adminSearchEmail: ${error}`)
     return res.render('generic-error.ejs', {
       backLink: req.get('Referer'),
       error,
@@ -178,7 +179,7 @@ module.exports.showUpdatePermissions = (req, res) => {
       error: null,
     })
   } catch (error) {
-    console.error(`showAdminSearchEmail: ${error}`)
+    logger.error(`showUpdatePermissions: ${error}`)
     return res.render('generic-error.ejs', {
       backLink: '#',
       error,
@@ -237,7 +238,7 @@ module.exports.updatePermissions = async (req, res) => {
     req.flash('info', `${email} has been updated successfully`)
 
     if (changes.length > 0) {
-      console.info(`[UPDATE PERMISSIONS] ${user.email} UPDATED ${email}: ${changes.join(', ')}`)
+      logger.info(`[UPDATE PERMISSIONS] ${user.email} UPDATED ${email}: ${changes.join(', ')}`)
     }
 
     return res.render('account_pages/admin.ejs', {
@@ -248,7 +249,7 @@ module.exports.updatePermissions = async (req, res) => {
       error: null,
     })
   } catch (error) {
-    console.error(`updatePermissions: ${error}`)
+    logger.error(`updatePermissions: ${error}`)
     return res.render('generic-error.ejs', {
       backLink: req.get('Referer'),
       error,
@@ -276,7 +277,7 @@ module.exports.showAddresses = async (req, res) => {
       info: req.flash('info'),
     })
   } catch (error) {
-    console.error(`showAddresses: ${error}`)
+    logger.error(`showAddresses: ${error}`)
     return res.render('generic-error.ejs', {
       backLink: '/api/user/account',
       error,
@@ -307,7 +308,7 @@ module.exports.showChangeDetails = async (req, res) => {
       disableMobileNumberEditing: disableMobileNumberEditing,
     })
   } catch (error) {
-    console.error(`showChangeDetails: ${error}`)
+    logger.error(`showChangeDetails: ${error}`)
     return res.render('generic-error.ejs', {
       backLink: '/api/user/account',
       error,
@@ -445,7 +446,7 @@ module.exports.changePassword = async (req, res) => {
     req.flash('info', "We've sent you an email with instructions on how to reset your password.")
     return res.redirect('/api/user/account')
   } catch (error) {
-    console.error(`changePassword: ${error}`)
+    logger.error(`changePassword: ${error}`)
     return res.render('generic-error.ejs', {
       backLink: '/api/user/account',
       error,
@@ -469,7 +470,7 @@ module.exports.showChangeMfa = async (req, res) => {
       mobileNo: account.mobileNo,
     })
   } catch (error) {
-    console.error(`showChangeMfa: ${error}`)
+    logger.error(`showChangeMfa: ${error}`)
     return res.render('generic-error.ejs', {
       backLink: '/api/user/account',
       error,
@@ -551,7 +552,7 @@ module.exports.changeMfa = async (req, res) => {
       }
     }
   } catch (error) {
-    console.error(`changeMfa: ${error}`)
+    logger.error(`changeMfa: ${error}`)
     return res.render('generic-error.ejs', {
       backLink: '/api/user/change-mfa',
       error,
@@ -663,7 +664,7 @@ module.exports.showChangeCompanyDetails = async (req, res) => {
       url: envVariables,
     })
   } catch (error) {
-    console.error(`showChangeCompanyDetails: ${error}`)
+    logger.error(`showChangeCompanyDetails: ${error}`)
     return res.render('generic-error.ejs', {
       backLink: '/api/user/account',
       error,
@@ -712,6 +713,7 @@ module.exports.changeCompanyDetails = async (req, res) => {
       return res.redirect('/api/user/account')
     }
   } catch (error) {
+    logger.error(`changeCompanyDetails: ${error}`)
     const erroneousFields = []
     if (req.body.company_name === '') {
       erroneousFields.push('company_name')

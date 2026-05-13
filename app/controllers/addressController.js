@@ -1,8 +1,12 @@
+// const { logger } = require('sequelize/lib/utils/logger')
+
 const Model = require('../model/models.js'),
   ValidationService = require('../services/ValidationService.js'),
   common = require('../../config/common.js'),
   envVariables = common.config(),
   axios = require('axios')
+
+const { logger } = require('../../config/logs.js')
 
 const mobilePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){6,25}$/
 const phonePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){6,25}$/
@@ -125,7 +129,7 @@ module.exports.findAddress = (req, res) => {
             })
           },
           (err) => {
-            console.log(err)
+            logger.info(err)
             req.flash('error', 'Enter your address manually instead')
             return res.render('address_pages/UKAddressSelect.ejs', {
               initial: req.session.initial,
@@ -190,7 +194,7 @@ module.exports.ajaxFindPostcode = (req, res) => {
         return res.json({ error: return_error, addresses: addresses, postcode: postcode })
       },
       (err) => {
-        console.log(err)
+        logger.error(err)
         return res.json({ error: 'Enter your address manually instead' })
       },
     )
@@ -205,13 +209,13 @@ module.exports.ajaxSelectAddress = (req, res) => {
   Model.User.findOne({ where: { email: req.session.email } })
     .then((user) => {
       if (!user) {
-        console.error('User not found.')
+        logger.error('User not found.')
       }
       return Model.AccountDetails.findOne({ where: { user_id: user.id } })
     })
     .then((account) => {
       if (!account) {
-        console.error('Account details not found.')
+        logger.error('Account details not found.')
       }
       return module.exports.retrieveAddress(req.body.chosen).then((address) => ({
         account,
@@ -220,7 +224,7 @@ module.exports.ajaxSelectAddress = (req, res) => {
     })
     .then(({ account, address }) => {
       if (!address?.data) {
-        console.error('Address data is missing.')
+        logger.error('Address data is missing.')
       }
       return res.json({
         full_name: `${account.first_name} ${account.last_name}`,
@@ -228,7 +232,7 @@ module.exports.ajaxSelectAddress = (req, res) => {
       })
     })
     .catch((error) => {
-      console.error('Error in ajaxSelectAddress:', error.message)
+      logger.error(`Error in ajaxSelectAddress: ${error.message}`)
       return res.status(500).json({ error: error.message })
     })
 }
@@ -245,7 +249,7 @@ module.exports.selectAddress = (req, res) => {
 
   Model.User.findOne({ where: { email: req.session.email } })
     .then((user) => {
-      if (!user) console.error('User not found')
+      if (!user) logger.error('User not found')
       return Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => ({ user, account }))
     })
     .then(({ user, account }) => {
@@ -281,7 +285,7 @@ module.exports.selectAddress = (req, res) => {
       })
     })
     .catch((error) => {
-      console.error('Error selecting address:', error)
+      logger.error(`Error selecting address: ${error.message}`)
       req.flash('error', 'An error occurred while selecting the address.')
       return res.redirect('/api/user/find-your-address')
     })
@@ -345,10 +349,10 @@ module.exports.saveAddress = (req, res) => {
         .then(() => {
           if (req.session.initial === true) {
             req.session.initial = false
-            console.log(`address successfully added for user ${user.id}`)
+            logger.info(`address successfully added for user ${user.id}`)
             return res.redirect('/api/user/dashboard?complete=true')
           } else {
-            console.log(`address successfully added for user ${user.id}`)
+            logger.info(`address successfully added for user ${user.id}`)
             return res.redirect('/api/user/addresses')
           }
         })
@@ -368,7 +372,7 @@ module.exports.showEditAddress = (req, res) => {
       Model.SavedAddress.findOne({ where: { user_id: user.id, id: req.query.id } })
         .then((address) => {
           if (!address) {
-            console.log('Address is null')
+            logger.error('Address is null')
             return res.redirect('/api/user/addresses')
           }
           let require_contact_details = 'no'
@@ -417,7 +421,7 @@ module.exports.showEditAddress = (req, res) => {
           )
         })
         .catch((error) => {
-          console.log(error)
+          logger.error(`Error editing address: ${error.message}`)
           return res.redirect('/api/user/addresses')
         })
     })
@@ -503,15 +507,15 @@ module.exports.deleteAddress = (req, res) => {
     Model.SavedAddress.destroy({ where: { user_id: user.id, id: req.query.id } })
       .then((result) => {
         if (result === true) {
-          console.log(`address successfully deleted for user ${user.id} and id ${req.query.id}`)
+          logger.info(`address successfully deleted for user ${user.id} and id ${req.query.id}`)
           req.flash('info', 'Address successfully deleted')
         } else {
-          console.log(`address not deleted for user ${user.id} and id ${req.query.id}`)
+          logger.info(`address not deleted for user ${user.id} and id ${req.query.id}`)
         }
         return res.redirect('/api/user/addresses')
       })
       .catch((error) => {
-        console.log(error)
+        logger.error(`Error deleting address: ${error.message}`)
         return res.redirect('/api/user/addresses')
       })
   })
@@ -530,7 +534,7 @@ async function postcodeLookup(normalisedPostcode) {
     const response = await axios(options)
     return response.data
   } catch (err) {
-    console.error(err)
+    logger.error(err)
   }
 }
 
