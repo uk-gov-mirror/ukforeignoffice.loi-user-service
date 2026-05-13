@@ -1,10 +1,8 @@
-let expect
+import { expect } from 'chai'
+import { getApp } from '../../server.js'
 
-before('Run Server', async () => {
-  const chai = await import('chai')
-  expect = chai.expect
-  // Adjust the relative path as necessary and include the file extension
-  ;(await import('../../server.js')).getApp
+before('Run Server', () => {
+  getApp()
 })
 
 describe('Healthcheck is working', () => {

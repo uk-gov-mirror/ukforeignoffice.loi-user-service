@@ -1,13 +1,6 @@
-/**
- * FCO LOI User Management
- * User Model
- *
- *
- */
+import Sequelize from 'sequelize'
 
-const Sequelize = require('sequelize')
-
-const attributes = {
+export const attributes = {
   id: {
     type: 'integer',
     primaryKey: true,
@@ -160,9 +153,8 @@ const attributes = {
   },
 }
 
-const options = {
+export const options = {
   freezeTableName: true,
 }
 
-module.exports.attributes = attributes
-module.exports.options = options
+export default { attributes, options }

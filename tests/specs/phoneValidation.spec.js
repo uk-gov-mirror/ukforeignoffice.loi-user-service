@@ -1,9 +1,4 @@
-let expect
-
-before('Setup', async () => {
-  const chai = await import('chai')
-  expect = chai.expect
-})
+import { expect } from 'chai'
 
 describe('Phone Number Validation', () => {
   // Testing the phone patterns used in controllers

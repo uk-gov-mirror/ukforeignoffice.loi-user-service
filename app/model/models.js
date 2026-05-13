@@ -1,8 +1,8 @@
-const UserMeta = require('./User.js'),
-  AccountDetailsMeta = require('./AccountDetails.js'),
-  SavedAddressMeta = require('./SavedAddress.js'),
-  OneTimePasscodesMeta = require('./OneTimePasscodes.js'),
-  usersDbConn = require('../sequelize.js')
+import usersDbConn from '../sequelize.js'
+import AccountDetailsMeta from './AccountDetails.js'
+import OneTimePasscodesMeta from './OneTimePasscodes.js'
+import SavedAddressMeta from './SavedAddress.js'
+import UserMeta from './User.js'
 
 const User = usersDbConn.define('Users', UserMeta.attributes, UserMeta.options)
 const AccountDetails = usersDbConn.define('AccountDetails', AccountDetailsMeta.attributes, AccountDetailsMeta.options)
@@ -15,7 +15,4 @@ const OneTimePasscodes = usersDbConn.define(
 
 // you can define relationships here
 
-module.exports.User = User
-module.exports.AccountDetails = AccountDetails
-module.exports.SavedAddress = SavedAddress
-module.exports.OneTimePasscodes = OneTimePasscodes
+export default { AccountDetails, OneTimePasscodes, SavedAddress, User }

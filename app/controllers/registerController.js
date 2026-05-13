@@ -1,21 +1,23 @@
-const bcrypt = require('bcryptjs'),
-  axios = require('axios'),
-  config = require('../../config/environment'),
-  crypto = require('node:crypto'),
-  Model = require('../model/models.js'),
-  ValidationService = require('../services/ValidationService.js'),
-  common = require('../../config/common.js'),
-  envVariables = common.config(),
-  validator = require('validator'),
-  { logger } = require('../../config/logs'),
-  dbConnection = require('../sequelize.js'),
-  { Op } = require('sequelize'),
-  emailService = require('../services/emailService'),
-  HelperService = require('../services/HelperService')
+import crypto from 'node:crypto'
+import axios from 'axios'
+import bcrypt from 'bcryptjs'
+import isemail from 'isemail'
+import { Op } from 'sequelize'
+import validator from 'validator'
+import blackList from '../../config/blacklist.js'
+import common from '../../config/common.js'
+import config from '../../config/environment.js'
+import { logger } from '../../config/logs.js'
+import phraselist from '../../config/phraselist.js'
+import Model from '../model/models.js'
+import dbConnection from '../sequelize.js'
+import emailService from '../services/emailService.js'
+import HelperService from '../services/HelperService.js'
+import ValidationService from '../services/ValidationService.js'
 
+const envVariables = common.config()
 const mobilePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){5,14}$/
 const phonePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){5,14}$/
-//old pattern /([0-9]|[\-+#() ]){6,}/;
 
 async function sendToOrbit(accountManagementObject, user) {
   try {
@@ -52,7 +54,7 @@ async function sendToOrbit(accountManagementObject, user) {
   }
 }
 
-module.exports.usercheck = (req, res) => {
+export const usercheck = (req, res) => {
   if (typeof req.body['has-account'] === 'undefined') {
     return res.render('usercheck.ejs', {
       queryString: req.query,
@@ -73,7 +75,7 @@ module.exports.usercheck = (req, res) => {
   }
 }
 
-module.exports.show = (req, res) => {
+export const show = (req, res) => {
   if (req.query.from) {
     if (req.query.from === 'home') {
       req.session.back_link = envVariables.applicationServiceURL
@@ -97,12 +99,12 @@ module.exports.show = (req, res) => {
   })
 }
 
-module.exports.register = (req, res) => {
+export const register = (req, res) => {
   req.body.email = req.body.email.toLowerCase()
   req.body.confirm_email = req.body.confirm_email.toLowerCase()
 
   const patt = new RegExp(envVariables.password_settings.passwordPattern)
-  const isemail = require('isemail')
+
   const emailValid = isemail.validate(req.body.email)
 
   const messages = []
@@ -133,9 +135,6 @@ module.exports.register = (req, res) => {
   }
 
   // check the password against the blacklists
-  // location of the password blacklist and phraselist
-  const blackList = require('../../config/blacklist.js')
-  const phraselist = require('../../config/phraselist.js')
   //return true if password is in the blacklist
   const passwordInBlacklist = validator.isIn(req.body.password, blackList)
   // normalise the password by removing all spaces and converting to lower case
@@ -399,8 +398,8 @@ module.exports.register = (req, res) => {
     }
   })
 }
-module.exports.showAddressSkip = (_req, res) => res.render('initial/address-skip.ejs')
-module.exports.completeRegistration = (req, res) => {
+export const showAddressSkip = (_req, res) => res.render('initial/address-skip.ejs')
+export const completeRegistration = (req, res) => {
   Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
     Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((data) => {
       if (data) {
@@ -548,7 +547,7 @@ module.exports.completeRegistration = (req, res) => {
   })
 }
 
-module.exports.resendActivationEmail = async (req, res) => {
+export const resendActivationEmail = async (req, res) => {
   try {
     // Generate new random activation token
     const token = crypto.randomBytes(20).toString('hex')
@@ -594,7 +593,7 @@ module.exports.resendActivationEmail = async (req, res) => {
   }
 }
 
-module.exports.activate = async (req, res) => {
+export const activate = async (req, res) => {
   try {
     // Added this code to prevent HEAD requests triggering
     // the logic in Production
@@ -637,4 +636,14 @@ module.exports.activate = async (req, res) => {
 
 function date_shift(date, days) {
   return new Date(date.getTime() + days * 24 * 60 * 60 * 1000)
+}
+
+export default {
+  usercheck,
+  show,
+  register,
+  showAddressSkip,
+  completeRegistration,
+  resendActivationEmail,
+  activate,
 }

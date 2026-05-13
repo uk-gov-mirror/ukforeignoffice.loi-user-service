@@ -1,4 +1,4 @@
-module.exports = [
+export default [
   '!QAZ1qaz',
   '!QAZ2wsx',
   '!QAZxsw2',

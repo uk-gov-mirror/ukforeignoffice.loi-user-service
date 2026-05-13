@@ -1,14 +1,18 @@
-const crypto = require('node:crypto'),
-  Model = require('../model/models.js'),
-  common = require('../../config/common.js'),
-  envVariables = common.config(),
-  validator = require('validator'),
-  { Op } = require('sequelize'),
-  emailService = require('../services/emailService'),
-  isEmail = require('isemail'),
-  { logger } = require('../../config/logs')
+import crypto from 'node:crypto'
+import bcrypt from 'bcryptjs'
+import isEmail from 'isemail'
+import { Op } from 'sequelize'
+import validator from 'validator'
+import blackList from '../../config/blacklist.js'
+import common from '../../config/common.js'
+import { logger } from '../../config/logs.js'
+import phraselist from '../../config/phraselist.js'
+import Model from '../model/models.js'
+import emailService from '../services/emailService.js'
 
-module.exports.forgotPassword = async (req, res) => {
+const envVariables = common.config()
+
+export const forgotPassword = async (req, res) => {
   try {
     // Create random reset token
     const token = await new Promise((resolve, reject) => {
@@ -73,13 +77,12 @@ module.exports.forgotPassword = async (req, res) => {
   }
 }
 
-module.exports.resetPassword = async (req, res) => {
+export const resetPassword = async (req, res) => {
   const reset = req.path !== '/set-new-password'
   const patt = new RegExp(envVariables.password_settings.passwordPattern)
   const messages = []
   const passwordErrorType = []
-  const blackList = require('../../config/blacklist.js')
-  const phraselist = require('../../config/phraselist.js')
+
   const passwordInBlacklist = validator.isIn(req.body.password, blackList)
   const normalisedPassword = validator.blacklist(req.body.password, ' ').trim().toLowerCase()
   let passwordInPhraselist = false
@@ -155,7 +158,6 @@ module.exports.resetPassword = async (req, res) => {
       }
 
       //Hash the new password
-      const bcrypt = require('bcryptjs')
       const salt = bcrypt.genSaltSync(10)
       const password = req.body.password,
         confirm_password = req.body.confirm_password
@@ -205,4 +207,9 @@ module.exports.resetPassword = async (req, res) => {
       return res.status(500).send({ message: 'An error occurred while resetting the password.' })
     }
   }
+}
+
+export default {
+  forgotPassword,
+  resetPassword,
 }

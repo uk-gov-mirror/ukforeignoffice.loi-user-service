@@ -1,11 +1,5 @@
-let expect
-let Model
-
-before('Setup', async () => {
-  const chai = await import('chai')
-  expect = chai.expect
-  Model = require('../../app/model/models')
-})
+import { expect } from 'chai'
+import Model from '../../app/model/models.js'
 
 describe('Model Structure', () => {
   describe('User Model', () => {

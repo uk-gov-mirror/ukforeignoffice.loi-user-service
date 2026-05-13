@@ -1,6 +1,6 @@
-const Model = require('../model/models')
+import Model from '../model/models.js'
 
-module.exports = async function viewAuthData(req, res, next) {
+export const viewAuthData = async (req, res, next) => {
   try {
     res.locals.isAuthenticated = false
     res.locals.user = null
@@ -30,3 +30,5 @@ module.exports = async function viewAuthData(req, res, next) {
     return next(error)
   }
 }
+
+export default viewAuthData

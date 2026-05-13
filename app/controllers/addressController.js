@@ -1,17 +1,15 @@
-// const { logger } = require('sequelize/lib/utils/logger')
+import axios from 'axios'
+import Postcode from 'postcode'
+import common from '../../config/common.js'
+import { logger } from '../../config/logs.js'
+import Model from '../model/models.js'
+import ValidationService from '../services/ValidationService.js'
 
-const Model = require('../model/models.js'),
-  ValidationService = require('../services/ValidationService.js'),
-  common = require('../../config/common.js'),
-  envVariables = common.config(),
-  axios = require('axios')
-
-const { logger } = require('../../config/logs.js')
-
+const envVariables = common.config()
 const mobilePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){6,25}$/
 const phonePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){6,25}$/
 
-module.exports.showUKQuestion = (req, res) => {
+export const showUKQuestion = (req, res) => {
   Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
     Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) =>
       res.render('address_pages/UKQuestion.ejs', {
@@ -25,7 +23,7 @@ module.exports.showUKQuestion = (req, res) => {
   })
 }
 
-module.exports.submitUKQuestion = (req, res) => {
+export const submitUKQuestion = (req, res) => {
   if (typeof req.body.is_uk === 'undefined') {
     // ERROR HANDLING
     req.flash('error', 'Choose an option below')
@@ -55,7 +53,7 @@ module.exports.submitUKQuestion = (req, res) => {
   }
 }
 
-function showPostcodeLookup(req, res) {
+export const showPostcodeLookup = (req, res) => {
   Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
     Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) =>
       res.render('address_pages/UKAddressPostcodeEntry.ejs', {
@@ -72,10 +70,7 @@ function showPostcodeLookup(req, res) {
   })
 }
 
-module.exports.showPostcodeLookup = showPostcodeLookup
-
-module.exports.findAddress = (req, res) => {
-  const Postcode = require('postcode')
+export const findAddress = (req, res) => {
   let postcode = ''
 
   if (!req.query.postcode && !req.body['find-postcode']) {
@@ -148,7 +143,7 @@ module.exports.findAddress = (req, res) => {
   })
 }
 
-module.exports.retrieveAddress = (addressId) => {
+export const retrieveAddress = (addressId) => {
   const timeout = envVariables.postcodeLookUpApiOptions.timeout
   return axios.get(`${envVariables.postcodeLookUpApiOptions.uri}retrieve/${addressId}`, { timeout })
 }
@@ -162,12 +157,11 @@ module.exports.retrieveAddress = (addressId) => {
  * 3. Prepare options and return UK address select view
  * @return results
  */
-module.exports.ajaxFindPostcode = (req, res) => {
+export const ajaxFindPostcode = (req, res) => {
   const address_type = req.body.address_type
   if (!req.body) {
     return res.redirect(`your-${address_type}-address-uk?is_uk=true`)
   }
-  const Postcode = require('postcode')
   const postcode = Postcode.toNormalised(req.body['find-postcode'])
 
   if (!postcode) {
@@ -201,7 +195,7 @@ module.exports.ajaxFindPostcode = (req, res) => {
   }
 }
 
-module.exports.ajaxSelectAddress = (req, res) => {
+export const ajaxSelectAddress = (req, res) => {
   if (!req.session?.email) {
     return res.status(400).json({ error: 'User session email is missing.' })
   }
@@ -217,7 +211,7 @@ module.exports.ajaxSelectAddress = (req, res) => {
       if (!account) {
         logger.error('Account details not found.')
       }
-      return module.exports.retrieveAddress(req.body.chosen).then((address) => ({
+      return retrieveAddress(req.body.chosen).then((address) => ({
         account,
         address,
       }))
@@ -237,7 +231,7 @@ module.exports.ajaxSelectAddress = (req, res) => {
     })
 }
 
-module.exports.selectAddress = (req, res) => {
+export const selectAddress = (req, res) => {
   const addressId = req.body.address
 
   if (!req.method) {
@@ -253,7 +247,7 @@ module.exports.selectAddress = (req, res) => {
       return Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => ({ user, account }))
     })
     .then(({ user, account }) => {
-      return module.exports.retrieveAddress(addressId).then((response) => {
+      return retrieveAddress(addressId).then((response) => {
         const address = response.data
 
         const formValues = {
@@ -291,7 +285,7 @@ module.exports.selectAddress = (req, res) => {
     })
 }
 
-module.exports.showManualAddress = (req, res) => {
+export const showManualAddress = (req, res) => {
   Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
     Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) =>
       res.render('address_pages/UKManualAddress.ejs', {
@@ -309,14 +303,13 @@ module.exports.showManualAddress = (req, res) => {
   })
 }
 
-module.exports.saveAddress = (req, res) => {
+export const saveAddress = (req, res) => {
   Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
     Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => {
       const country = req.body.country || ''
       const email = req.body.email || null
       const telephone = req.body.telephone || null
       const mobileNo = req.body.mobileNo
-      const Postcode = require('postcode')
       const postcodeObject = Postcode.toNormalised(req.body.postcode)
       let postcode = ' '
       if (country !== 'United Kingdom') {
@@ -366,7 +359,7 @@ module.exports.saveAddress = (req, res) => {
   })
 }
 
-module.exports.showEditAddress = (req, res) => {
+export const showEditAddress = (req, res) => {
   Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
     Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => {
       Model.SavedAddress.findOne({ where: { user_id: user.id, id: req.query.id } })
@@ -428,12 +421,12 @@ module.exports.showEditAddress = (req, res) => {
   })
 }
 
-module.exports.editAddress = (req, res) => {
+export const editAddress = (req, res) => {
   var country = req.body.country || ''
   var email = req.body.email || null
   var mobileNo = req.body.mobileNo
   var telephone = req.body.telephone || null
-  var Postcode = require('postcode')
+
   var postcodeObject = Postcode.toNormalised(req.body.postcode)
   var postcode = ' '
   if (country !== 'United Kingdom') {
@@ -502,7 +495,7 @@ module.exports.editAddress = (req, res) => {
   })
 }
 
-module.exports.deleteAddress = (req, res) => {
+export const deleteAddress = (req, res) => {
   Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
     Model.SavedAddress.destroy({ where: { user_id: user.id, id: req.query.id } })
       .then((result) => {
@@ -541,4 +534,20 @@ async function postcodeLookup(normalisedPostcode) {
 function getCountries() {
   countriesSQL = 'SELECT  name FROM "country" ORDER BY name ASC '
   return envVariables.serviceSequelize.query(countriesSQL)
+}
+
+export default {
+  showUKQuestion,
+  submitUKQuestion,
+  showPostcodeLookup,
+  findAddress,
+  retrieveAddress,
+  ajaxFindPostcode,
+  ajaxSelectAddress,
+  selectAddress,
+  showManualAddress,
+  saveAddress,
+  showEditAddress,
+  editAddress,
+  deleteAddress,
 }

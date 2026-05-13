@@ -1,12 +1,13 @@
-const LocalStrategy = require('passport-local').Strategy
-const bcrypt = require('bcryptjs')
-const Model = require('./model/models.js')
-const common = require('../config/common.js')
-const envVariables = common.config()
-const emailService = require('./services/emailService.js')
-const { logger } = require('../config/logs.js')
+import bcrypt from 'bcryptjs'
+import { Strategy as LocalStrategy } from 'passport-local'
+import common from '../config/common.js'
+import { logger } from '../config/logs.js'
+import Model from './model/models.js'
+import emailService from './services/emailService.js'
 
-module.exports = (app, passport) => {
+const envVariables = common.config()
+
+export default (app, passport) => {
   app.use(passport.initialize())
   app.use(passport.session())
 

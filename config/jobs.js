@@ -1,11 +1,13 @@
-const Model = require('../app/model/models.js'),
-  common = require('./common.js'),
-  moment = require('moment'),
-  envVariables = common.config(),
-  emailService = require('../app/services/emailService'),
-  { logger } = require('./logs')
+import moment from 'moment'
+import { Op } from 'sequelize'
+import Model from '../app/model/models.js'
+import emailService from '../app/services/emailService.js'
+import common from './common.js'
+import { logger } from './logs.js'
 
-const jobs = {
+const envVariables = common.config()
+
+export const jobs = {
   accountExpiryCheck: async () => {
     const now = new Date()
     const gracePeriod = new Date(now)
@@ -39,7 +41,6 @@ const jobs = {
     }
 
     async function findAccountsNearingExpiry() {
-      const { Op } = require('sequelize')
       try {
         return await Model.User.findAll({
           where: {
@@ -165,4 +166,4 @@ const jobs = {
     }
   },
 }
-module.exports = jobs
+export default jobs

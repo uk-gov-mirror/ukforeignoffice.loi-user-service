@@ -1,11 +1,5 @@
-let expect
-let Postcode
-
-before('Setup', async () => {
-  const chai = await import('chai')
-  expect = chai.expect
-  Postcode = require('postcode')
-})
+import { expect } from 'chai'
+import Postcode from 'postcode'
 
 describe('Postcode Validation', () => {
   // Testing the postcode validation used in addressController

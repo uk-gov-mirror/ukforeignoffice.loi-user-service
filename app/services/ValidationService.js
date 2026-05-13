@@ -1,9 +1,11 @@
-const common = require('../../config/common.js'),
-  envVariables = common.config()
+import isemail from 'isemail'
+import Postcode from 'postcode'
+import common from '../../config/common.js'
+import { logger } from '../../config/logs.js'
 
-const { logger } = require('../../config/logs')
+const envVariables = common.config()
 
-const ValidationService = {
+export const ValidationService = {
   validateForm: (inputs) => {
     const errors = inputs.error.errors
 
@@ -41,8 +43,8 @@ const ValidationService = {
   },
 
   buildErrorsArray: (errorArr) => {
-    fieldsAndErrorsCustom = []
-    errornousFields = []
+    const fieldsAndErrorsCustom = []
+    const errornousFields = []
     try {
       errorArr.errors.forEach((item) => {
         if (errornousFields.indexOf(item.path) === -1) {
@@ -116,8 +118,7 @@ const ValidationService = {
 
     var country = req.body.country || ''
     var phonePattern = /^[0-9+()# -]+$/
-    var isemail = require('isemail')
-    var Postcode = require('postcode')
+
     var postcodeObject = Postcode.toNormalised(req.body.postcode)
     var postcode = ' '
     if (country !== 'United Kingdom') {
@@ -273,4 +274,4 @@ const ValidationService = {
   },
 }
 
-module.exports = ValidationService
+export default ValidationService

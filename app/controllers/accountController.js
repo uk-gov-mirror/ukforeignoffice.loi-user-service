@@ -1,19 +1,20 @@
-const emailService = require('../services/emailService')
-const config = require('../../config/environment')
-const Model = require('../model/models.js')
-const ValidationService = require('../services/ValidationService.js'),
-  common = require('../../config/common.js')
+import crypto from 'node:crypto'
+import util from 'node:util'
+import axios from 'axios'
+import moment from 'moment'
+import { Op } from 'sequelize'
+import common from '../../config/common.js'
+import config from '../../config/environment.js'
+import { logger } from '../../config/logs.js'
+import Model from '../model/models.js'
+import emailService from '../services/emailService.js'
+import HelperService from '../services/HelperService.js'
+import oneTimePasscodeService from '../services/oneTimePasscodeService.js'
+import ValidationService from '../services/ValidationService.js'
+
 const envVariables = common.config()
-const axios = require('axios')
-const moment = require('moment')
-const oneTimePasscodeService = require('../services/oneTimePasscodeService')
-const HelperService = require('../services/HelperService')
 const mobilePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){5,14}$/
 const phonePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){5,14}$/
-const crypto = require('node:crypto')
-const util = require('node:util')
-const { Op } = require('sequelize')
-const { logger } = require('../../config/logs')
 const randomBytes = util.promisify(crypto.randomBytes)
 
 async function sendToOrbit(accountManagementObject, user) {
@@ -46,7 +47,7 @@ async function sendToOrbit(accountManagementObject, user) {
   }
 }
 
-module.exports.showAccount = async (req, res) => {
+export const showAccount = async (req, res) => {
   try {
     const user = await Model.User.findOne({ where: { email: req.session.email } })
     if (!user) {
@@ -70,7 +71,7 @@ module.exports.showAccount = async (req, res) => {
   }
 }
 
-module.exports.showAdminSection = (req, res) => {
+export const showAdminSection = (req, res) => {
   try {
     return res.render('account_pages/admin.ejs', {
       user: req?.session?.user,
@@ -88,7 +89,7 @@ module.exports.showAdminSection = (req, res) => {
   }
 }
 
-module.exports.showAdminSearchEmail = (req, res) => {
+export const showAdminSearchEmail = (req, res) => {
   try {
     return res.render('account_pages/admin.ejs', {
       user: req?.session?.user,
@@ -106,7 +107,7 @@ module.exports.showAdminSearchEmail = (req, res) => {
   }
 }
 
-module.exports.ajaxSearchEmail = async (req, res) => {
+export const ajaxSearchEmail = async (req, res) => {
   try {
     const emailQuery = req.query.email
 
@@ -129,7 +130,7 @@ module.exports.ajaxSearchEmail = async (req, res) => {
   }
 }
 
-module.exports.adminSearchEmail = async (req, res) => {
+export const adminSearchEmail = async (req, res) => {
   try {
     const user = req?.session?.user
     if (!user) {
@@ -169,7 +170,7 @@ module.exports.adminSearchEmail = async (req, res) => {
   }
 }
 
-module.exports.showUpdatePermissions = (req, res) => {
+export const showUpdatePermissions = (req, res) => {
   try {
     return res.render('account_pages/admin.ejs', {
       user: req?.session?.user,
@@ -187,7 +188,7 @@ module.exports.showUpdatePermissions = (req, res) => {
   }
 }
 
-module.exports.updatePermissions = async (req, res) => {
+export const updatePermissions = async (req, res) => {
   try {
     const accountLocked = req.body.accountLocked === 'true' || false
     const dropOffEnabled = req.body.dropOffEnabled === 'true' || false
@@ -257,7 +258,7 @@ module.exports.updatePermissions = async (req, res) => {
   }
 }
 
-module.exports.showAddresses = async (req, res) => {
+export const showAddresses = async (req, res) => {
   try {
     const user = await Model.User.findOne({ where: { email: req.session.email } })
     if (!user) {
@@ -285,7 +286,7 @@ module.exports.showAddresses = async (req, res) => {
   }
 }
 
-module.exports.showChangeDetails = async (req, res) => {
+export const showChangeDetails = async (req, res) => {
   try {
     const user = await Model.User.findOne({ where: { email: req.session.email } })
     if (!user) {
@@ -316,7 +317,7 @@ module.exports.showChangeDetails = async (req, res) => {
   }
 }
 
-module.exports.changeDetails = async (req, res) => {
+export const changeDetails = async (req, res) => {
   try {
     const user = await Model.User.findOne({ where: { email: req.session.email } })
     if (!user) {
@@ -418,10 +419,10 @@ module.exports.changeDetails = async (req, res) => {
   }
 }
 
-module.exports.showChangePassword = (_req, res) =>
+export const showChangePassword = (_req, res) =>
   res.render('account_pages/change-password.ejs', { error: false, url: envVariables })
 
-module.exports.changePassword = async (req, res) => {
+export const changePassword = async (req, res) => {
   try {
     const buf = await randomBytes(20)
     const token = buf.toString('hex')
@@ -454,7 +455,7 @@ module.exports.changePassword = async (req, res) => {
   }
 }
 
-module.exports.showChangeMfa = async (req, res) => {
+export const showChangeMfa = async (req, res) => {
   try {
     const user = await Model.User.findOne({ where: { email: req.session.email } })
     if (!user) throw new Error('User not found')
@@ -478,7 +479,7 @@ module.exports.showChangeMfa = async (req, res) => {
   }
 }
 
-module.exports.changeMfa = async (req, res) => {
+export const changeMfa = async (req, res) => {
   try {
     const user = await Model.User.findOne({ where: { email: req.session.email } })
     if (!user) throw new Error('User not found')
@@ -560,7 +561,7 @@ module.exports.changeMfa = async (req, res) => {
   }
 }
 
-module.exports.showValidateSMS = async (req, res) => {
+export const showValidateSMS = async (req, res) => {
   const user_id = req.session.passport.user
   const mobileNoFromForm = req.body.mobileNo
   const accountData = await oneTimePasscodeService.getAccountData(user_id)
@@ -589,7 +590,7 @@ module.exports.showValidateSMS = async (req, res) => {
   }
 }
 
-module.exports.validateSMS = async (req, res) => {
+export const validateSMS = async (req, res) => {
   const passcode = req.body.passcode
   const mobileNoFromForm = req.body.mobileNo
   const user_id = req.session.passport.user
@@ -650,7 +651,7 @@ module.exports.validateSMS = async (req, res) => {
   }
 }
 
-module.exports.showChangeCompanyDetails = async (req, res) => {
+export const showChangeCompanyDetails = async (req, res) => {
   try {
     const user = await Model.User.findOne({ where: { email: req.session.email } })
     if (!user) throw new Error('User not found')
@@ -672,7 +673,7 @@ module.exports.showChangeCompanyDetails = async (req, res) => {
   }
 }
 
-module.exports.changeCompanyDetails = async (req, res) => {
+export const changeCompanyDetails = async (req, res) => {
   const accountDetails = {
     company_name: req.body.company_name,
   }
@@ -727,4 +728,26 @@ module.exports.changeCompanyDetails = async (req, res) => {
   }
 }
 
-module.exports.changeEmail = async (_req, res) => res.render('account_pages/change-email.ejs')
+export const changeEmail = async (_req, res) => res.render('account_pages/change-email.ejs')
+
+export default {
+  showAccount,
+  showAdminSection,
+  showAdminSearchEmail,
+  ajaxSearchEmail,
+  adminSearchEmail,
+  showUpdatePermissions,
+  updatePermissions,
+  showAddresses,
+  showChangeDetails,
+  changeDetails,
+  showChangePassword,
+  changePassword,
+  showChangeMfa,
+  changeMfa,
+  showValidateSMS,
+  validateSMS,
+  showChangeCompanyDetails,
+  changeCompanyDetails,
+  changeEmail,
+}

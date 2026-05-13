@@ -1,11 +1,5 @@
-let expect
-let emailService
-
-before('Setup', async () => {
-  const chai = await import('chai')
-  expect = chai.expect
-  emailService = require('../../app/services/emailService')
-})
+import { expect } from 'chai'
+import emailService from '../../app/services/emailService.js'
 
 describe('emailService', () => {
   describe('module structure', () => {

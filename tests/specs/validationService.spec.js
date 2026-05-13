@@ -1,14 +1,5 @@
-let expect
-let ValidationService
-
-before('Setup', async () => {
-  const chai = await import('chai')
-  expect = chai.expect
-
-  // ValidationService will be loaded, and it requires config/common.js
-  // which is already set up for the test environment
-  ValidationService = require('../../app/services/ValidationService')
-})
+import { expect } from 'chai'
+import ValidationService from '../../app/services/ValidationService.js'
 
 describe('ValidationService', () => {
   describe('validateForm', () => {

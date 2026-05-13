@@ -1,11 +1,12 @@
-const common = require('../../config/common')
-const envVariables = common.config()
-const axios = require('axios')
-const NodeCache = require('node-cache')
-const cache = new NodeCache({ stdTTL: 3000 })
-const { logger } = require('../../config/logs')
+import axios from 'axios'
+import NodeCache from 'node-cache'
+import common from '../../config/common.js'
+import { logger } from '../../config/logs.js'
 
-const HelperService = {
+const envVariables = common.config()
+const cache = new NodeCache({ stdTTL: 3000 })
+
+export const HelperService = {
   getEdmsAccessToken: async function getEdmsAccessToken() {
     const cacheKey = 'access_token'
     const cachedToken = cache.get(cacheKey)
@@ -40,4 +41,4 @@ const HelperService = {
   },
 }
 
-module.exports = HelperService
+export default HelperService

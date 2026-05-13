@@ -1,14 +1,15 @@
-const Model = require('../model/models')
-const crypto = require('node:crypto')
-const common = require('../../config/common.js')
-const emailService = require('../services/emailService')
-const envVariables = common.config()
-const config = require('../../config/environment')
-const HelperService = require('../services/HelperService')
-const axios = require('axios')
-const { logger } = require('sequelize/lib/utils/logger')
+import crypto from 'node:crypto'
+import axios from 'axios'
+import common from '../../config/common.js'
+import config from '../../config/environment.js'
+import { logger } from '../../config/logs.js'
+import Model from '../model/models.js'
+import emailService from '../services/emailService.js'
+import HelperService from '../services/HelperService.js'
 
-module.exports.showRequestBusinessServiceAccess = async (req, res) => {
+const envVariables = common.config()
+
+export const showRequestBusinessServiceAccess = async (req, res) => {
   try {
     if (req.session.email) {
       const userAccount = await findUserAccount()
@@ -62,7 +63,7 @@ module.exports.showRequestBusinessServiceAccess = async (req, res) => {
   }
 }
 
-module.exports.requestBusinessServiceAccess = async (req, res) => {
+export const requestBusinessServiceAccess = async (req, res) => {
   try {
     if (req.session.email) {
       const emailData = {
@@ -242,7 +243,7 @@ module.exports.requestBusinessServiceAccess = async (req, res) => {
   }
 }
 
-module.exports.approve = async (req, res) => {
+export const approve = async (req, res) => {
   try {
     // Added this code to prevent HEAD requests triggering
     // the logic in Production
@@ -380,7 +381,7 @@ module.exports.approve = async (req, res) => {
   }
 }
 
-module.exports.reject = async (req, res) => {
+export const reject = async (req, res) => {
   try {
     // Added this code to prevent HEAD requests triggering
     // the logic in Production
@@ -531,3 +532,5 @@ module.exports.reject = async (req, res) => {
     logger.error('requestBusinessAccessController.reject', error)
   }
 }
+
+export default { approve, reject, showRequestBusinessServiceAccess, requestBusinessServiceAccess }

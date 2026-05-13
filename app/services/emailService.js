@@ -1,9 +1,10 @@
-const axios = require('axios')
-const common = require('../../config/common.js')
-const envVariables = common.config()
-const { logger } = require('../../config/logs')
+import axios from 'axios'
+import { config } from '../../config/common.js'
+import { logger } from '../../config/logs.js'
 
-const emailService = {
+const envVariables = config()
+
+export const emailService = {
   sendOneTimePasscodeEmail: async (oneTimePasscode, email, userId) => {
     const url = '/one_time_passcode_email'
     const postData = { to: email, oneTimePasscode: oneTimePasscode }
@@ -129,8 +130,6 @@ const emailService = {
   },
 }
 
-module.exports = emailService
-
 function setOptions(postData, url) {
   return {
     url: envVariables.notificationServiceURL + url,
@@ -142,3 +141,5 @@ function setOptions(postData, url) {
     body: postData,
   }
 }
+
+export default emailService

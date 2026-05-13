@@ -1,20 +1,20 @@
-const passport = require('passport'),
-  registerController = require('./controllers/registerController.js'),
-  passwordController = require('./controllers/passwordController.js'),
-  accountController = require('./controllers/accountController.js'),
-  addressController = require('./controllers/addressController.js'),
-  requestBusinessServiceAccessController = require('./controllers/requestBusinessServiceAccessController.js'),
-  Model = require('./model/models.js'),
-  moment = require('moment'),
-  oneTimePasscodeService = require('./services/oneTimePasscodeService')
+import moment from 'moment'
+import passport from 'passport'
+import { Op } from 'sequelize'
+import { logger } from '../config/logs.js'
+import accountController from './controllers/accountController.js'
+import addressController from './controllers/addressController.js'
+import passwordController from './controllers/passwordController.js'
+import registerController from './controllers/registerController.js'
+import requestBusinessServiceAccessController from './controllers/requestBusinessServiceAccessController.js'
+import Model from './model/models.js'
+import emailService from './services/emailService.js'
+import oneTimePasscodeService from './services/oneTimePasscodeService.js'
 
-let nextpage
-const { logger } = require('../config/logs.js')
-const { Op } = require('sequelize')
-const emailService = require('./services/emailService')
 const sessionSettings = JSON.parse(process.env.THESESSION)
+let nextpage
 
-module.exports = (express, envVariables) => {
+export default (express, envVariables) => {
   const router = express.Router()
 
   const isAuthenticated = (req, res, next) => {
