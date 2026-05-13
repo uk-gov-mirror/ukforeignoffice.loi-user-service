@@ -1,8 +1,9 @@
-const Model = require('../model/models')
-const moment = require('moment')
-const { Op } = require('sequelize')
+import moment from 'moment'
+import { Op } from 'sequelize'
+import { logger } from '../../config/logs.js'
+import Model from '../model/models.js'
 
-const OneTimePasscodeService = {
+export const OneTimePasscodeService = {
   generateOneTimePasscode: () => {
     // generate a 6 digit passcode
     return Math.floor(100000 + Math.random() * 900000)
@@ -16,7 +17,7 @@ const OneTimePasscodeService = {
         },
       })
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 
@@ -28,7 +29,7 @@ const OneTimePasscodeService = {
         },
       })
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 
@@ -40,7 +41,7 @@ const OneTimePasscodeService = {
         passcode_expiry: moment(Date.now()).add(10, 'minutes'),
       })
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 
@@ -56,7 +57,7 @@ const OneTimePasscodeService = {
         },
       })
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 
@@ -74,7 +75,7 @@ const OneTimePasscodeService = {
         },
       )
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 
@@ -91,7 +92,7 @@ const OneTimePasscodeService = {
         },
       )
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 
@@ -104,7 +105,7 @@ const OneTimePasscodeService = {
         attributes: ['mobileNo'],
       })
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 
@@ -121,7 +122,7 @@ const OneTimePasscodeService = {
         },
       )
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 
@@ -138,7 +139,7 @@ const OneTimePasscodeService = {
         },
       )
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 
@@ -150,7 +151,7 @@ const OneTimePasscodeService = {
         },
       })
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 
@@ -162,7 +163,7 @@ const OneTimePasscodeService = {
         },
       })
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 
@@ -179,9 +180,9 @@ const OneTimePasscodeService = {
         },
       )
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   },
 }
 
-module.exports = OneTimePasscodeService
+export default OneTimePasscodeService

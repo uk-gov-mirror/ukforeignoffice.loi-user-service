@@ -1,11 +1,5 @@
-let expect
-let isEmail
-
-before('Setup', async () => {
-  const chai = await import('chai')
-  expect = chai.expect
-  isEmail = require('isemail')
-})
+import { expect } from 'chai'
+import isEmail from 'isemail'
 
 describe('Email Validation', () => {
   // Testing the email validation logic used throughout the application

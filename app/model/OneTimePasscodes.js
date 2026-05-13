@@ -1,6 +1,4 @@
-const _Sequelize = require('sequelize')
-
-const attributes = {
+export const attributes = {
   user_id: {
     type: 'integer',
     primaryKey: true,
@@ -16,11 +14,10 @@ const attributes = {
   },
 }
 
-const options = {
+export const options = {
   freezeTableName: true,
   // disable createdAt and updatedAt columns
   timestamps: false,
 }
 
-module.exports.attributes = attributes
-module.exports.options = options
+export default { attributes, options }

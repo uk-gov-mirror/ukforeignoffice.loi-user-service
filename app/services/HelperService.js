@@ -1,16 +1,18 @@
-const common = require('../../config/common')
+import axios from 'axios'
+import NodeCache from 'node-cache'
+import common from '../../config/common.js'
+import { logger } from '../../config/logs.js'
+
 const envVariables = common.config()
-const axios = require('axios')
-const NodeCache = require('node-cache')
 const cache = new NodeCache({ stdTTL: 3000 })
 
-const HelperService = {
+export const HelperService = {
   getEdmsAccessToken: async function getEdmsAccessToken() {
     const cacheKey = 'access_token'
     const cachedToken = cache.get(cacheKey)
 
     if (cachedToken) {
-      console.log('Returning access token from cache')
+      logger.info('Returning access token from cache')
       return cachedToken
     }
 
@@ -31,12 +33,12 @@ const HelperService = {
 
       const { access_token } = response.data
       cache.set(cacheKey, access_token)
-      console.log('Returning access token from EDMS')
+      logger.info('Returning access token from EDMS')
       return access_token
     } catch (error) {
-      console.error('Error fetching access token from EDMS:', error)
+      logger.error('Error fetching access token from EDMS:', error)
     }
   },
 }
 
-module.exports = HelperService
+export default HelperService

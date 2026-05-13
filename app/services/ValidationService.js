@@ -1,7 +1,11 @@
-const common = require('../../config/common.js'),
-  envVariables = common.config()
+import isemail from 'isemail'
+import Postcode from 'postcode'
+import common from '../../config/common.js'
+import { logger } from '../../config/logs.js'
 
-const ValidationService = {
+const envVariables = common.config()
+
+export const ValidationService = {
   validateForm: (inputs) => {
     const errors = inputs.error.errors
 
@@ -39,8 +43,8 @@ const ValidationService = {
   },
 
   buildErrorsArray: (errorArr) => {
-    fieldsAndErrorsCustom = []
-    errornousFields = []
+    const fieldsAndErrorsCustom = []
+    const errornousFields = []
     try {
       errorArr.errors.forEach((item) => {
         if (errornousFields.indexOf(item.path) === -1) {
@@ -98,7 +102,7 @@ const ValidationService = {
 
       return fieldsAndErrorsCustom
     } catch (error) {
-      console.log('there was an error in the builderrorsarray ', error)
+      logger.error('there was an error in the builderrorsarray ', error)
       //sails.log(error);
     }
   },
@@ -112,19 +116,18 @@ const ValidationService = {
       return phonePattern.test(input)
     }
 
-    var country = req.body.country || ''
-    var phonePattern = /^[0-9+()# -]+$/
-    var isemail = require('isemail')
-    var Postcode = require('postcode')
-    var postcodeObject = Postcode.toNormalised(req.body.postcode)
-    var postcode = ' '
+    const country = req.body.country || ''
+    const phonePattern = /^[0-9+()# -]+$/
+
+    const postcodeObject = Postcode.toNormalised(req.body.postcode)
+    let postcode = ' '
     if (country !== 'United Kingdom') {
       postcode =
         req.body.postcode.trim().length === 0 ? ' ' : req.body.postcode.length > 1 ? req.body.postcode : postcode
     } else {
       postcode = postcodeObject ? postcodeObject : ''
     }
-    erroneousFields = []
+    const erroneousFields = []
 
     error.errors.forEach((error) => {
       const parsedMessage = JSON.parse(error.message)
@@ -170,7 +173,7 @@ const ValidationService = {
       }
     }
 
-    var dataValues = []
+    const dataValues = []
     dataValues.push({
       full_name:
         req.body.full_name !== '' && req.body.full_name !== undefined && req.body.full_name !== 'undefined'
@@ -271,4 +274,4 @@ const ValidationService = {
   },
 }
 
-module.exports = ValidationService
+export default ValidationService

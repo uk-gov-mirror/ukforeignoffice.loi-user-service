@@ -1,11 +1,5 @@
-let expect
-let oneTimePasscodeService
-
-before('Setup', async () => {
-  const chai = await import('chai')
-  expect = chai.expect
-  oneTimePasscodeService = require('../../app/services/oneTimePasscodeService')
-})
+import { expect } from 'chai'
+import oneTimePasscodeService from '../../app/services/oneTimePasscodeService.js'
 
 describe('OneTimePasscodeService', () => {
   describe('generateOneTimePasscode', () => {

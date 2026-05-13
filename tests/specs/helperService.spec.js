@@ -1,11 +1,5 @@
-let expect
-let HelperService
-
-before('Setup', async () => {
-  const chai = await import('chai')
-  expect = chai.expect
-  HelperService = require('../../app/services/HelperService')
-})
+import { expect } from 'chai'
+import HelperService from '../../app/services/HelperService.js'
 
 describe('HelperService', () => {
   describe('module structure', () => {

@@ -1,4 +1,9 @@
-require('dotenv').config()
+import { config as envConfig } from 'dotenv'
+import Sequelize from 'sequelize'
+import { logger } from './logs.js'
+
+envConfig()
+
 const cookiedomain = JSON.parse(process.env.COOKIEDOMAIN)
 const sequelizeusers = JSON.parse(process.env.SEQUELIZEUSERS)
 const servicesequelize = JSON.parse(process.env.SERVICESEQUELIZE)
@@ -9,7 +14,6 @@ const postcodelookupoptions = JSON.parse(process.env.POSTCODELOOKUPOPTIONS)
 const live_variables = JSON.parse(process.env.LIVEVARIABLES)
 const userAccountSettings = JSON.parse(process.env.USERACCOUNTSETTINGS)
 const pgPassword = process.env.PGPASSWORD
-const Sequelize = require('sequelize')
 const edmsHost = process.env.EDMS_HOST
 const edmsBearerToken = JSON.parse(process.env.EDMS_BEARER_TOKEN)
 const edmsAuthHost = process.env.EDMS_AUTH_HOST
@@ -63,22 +67,22 @@ const serviceSequelize = new Sequelize(
 sequelizeUsers
   .authenticate()
   .then(() => {
-    console.log(`Connection has been established to ${sequelizeusers.sequelizeusers.dbName} successfully.`)
+    logger.info(`Connection has been established to ${sequelizeusers.sequelizeusers.dbName} successfully.`)
   })
   .catch((error) => {
-    console.error(`Unable to connect to the ${sequelizeusers.sequelizeusers.dbName} database: ${error}`)
+    logger.error(`Unable to connect to the ${sequelizeusers.sequelizeusers.dbName} database: ${error}`)
   })
 
 serviceSequelize
   .authenticate()
   .then(() => {
-    console.log(`Connection has been established to ${servicesequelize.servicesequelize.dbName} successfully.`)
+    logger.info(`Connection has been established to ${servicesequelize.servicesequelize.dbName} successfully.`)
   })
   .catch((error) => {
-    console.error(`Unable to connect to the ${servicesequelize.servicesequelize.dbName} database: ${error}`)
+    logger.error(`Unable to connect to the ${servicesequelize.servicesequelize.dbName} database: ${error}`)
   })
 
-const config = {
+export const config = {
   cookieDomain: cookiedomain,
   sequelizeUsers,
   serviceSequelize,
@@ -95,4 +99,4 @@ const config = {
   edmsAuthScope,
 }
 
-module.exports = config
+export default config

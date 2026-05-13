@@ -1,8 +1,10 @@
-const axios = require('axios')
-const common = require('../../config/common.js')
-const envVariables = common.config()
+import axios from 'axios'
+import { config } from '../../config/common.js'
+import { logger } from '../../config/logs.js'
 
-const emailService = {
+const envVariables = config()
+
+export const emailService = {
   sendOneTimePasscodeEmail: async (oneTimePasscode, email, userId) => {
     const url = '/one_time_passcode_email'
     const postData = { to: email, oneTimePasscode: oneTimePasscode }
@@ -10,9 +12,9 @@ const emailService = {
 
     try {
       const response = await axios.post(options.url, options.body, { headers: options.headers })
-      console.log(`${response.status} - One time passcode email sent for user ${userId}`)
+      logger.info(`${response.status} - One time passcode email sent for user ${userId}`)
     } catch (err) {
-      console.log(err)
+      logger.error(err)
     }
   },
   sendOneTimePasscodeSMS: async (oneTimePasscode, phoneNumber, userId) => {
@@ -22,9 +24,9 @@ const emailService = {
 
     try {
       const response = await axios.post(options.url, options.body, { headers: options.headers })
-      console.log(`${response.status} - One time passcode SMS sent for user ${userId}`)
+      logger.info(`${response.status} - One time passcode SMS sent for user ${userId}`)
     } catch (err) {
-      console.log(err)
+      logger.error(err)
     }
   },
   lockedOut: async (name, email) => {
@@ -34,9 +36,9 @@ const emailService = {
 
     try {
       const response = await axios.post(options.url, options.body, { headers: options.headers })
-      console.log(`${response.status} - lockedOut email sent`)
+      logger.info(`${response.status} - lockedOut email sent`)
     } catch (err) {
-      console.log(err)
+      logger.error(err)
     }
   },
   resetPassword: async (email, token) => {
@@ -46,9 +48,9 @@ const emailService = {
 
     try {
       const response = await axios.post(options.url, options.body, { headers: options.headers })
-      console.log(`${response.status} - reset password email sent`)
+      logger.info(`${response.status} - reset password email sent`)
     } catch (err) {
-      console.log(err)
+      logger.error(err)
     }
   },
   confirmPasswordChange: async (name, email) => {
@@ -58,9 +60,9 @@ const emailService = {
 
     try {
       const response = await axios.post(options.url, options.body, { headers: options.headers })
-      console.log(`${response.status} - confirm password email sent`)
+      logger.info(`${response.status} - confirm password email sent`)
     } catch (err) {
-      console.log(err)
+      logger.error(err)
     }
   },
   emailConfirmation: async (email, token) => {
@@ -70,9 +72,9 @@ const emailService = {
 
     try {
       const response = await axios.post(options.url, options.body, { headers: options.headers })
-      console.log(`${response.status} - activation email sent`)
+      logger.info(`${response.status} - activation email sent`)
     } catch (err) {
-      console.log(err)
+      logger.error(err)
     }
   },
   expiryWarning: async (email, accountExpiryDateText, dayAndMonthText, userID) => {
@@ -82,9 +84,9 @@ const emailService = {
 
     try {
       const _response = await axios.post(options.url, options.body, { headers: options.headers })
-      console.log(`[USER CLEANUP JOB] WARNING EMAIL SENT SUCCESSFULLY FOR USER ${userID}`)
+      logger.info(`[USER CLEANUP JOB] WARNING EMAIL SENT SUCCESSFULLY FOR USER ${userID}`)
     } catch (err) {
-      console.log(err)
+      logger.error(err)
     }
   },
   expiryConfirmation: async (email, userID) => {
@@ -94,9 +96,9 @@ const emailService = {
 
     try {
       const _response = await axios.post(options.url, options.body, { headers: options.headers })
-      console.log(`[USER CLEANUP JOB] EXPIRY EMAIL SENT SUCCESSFULLY FOR USER ${userID}`)
+      logger.info(`[USER CLEANUP JOB] EXPIRY EMAIL SENT SUCCESSFULLY FOR USER ${userID}`)
     } catch (err) {
-      console.log(err)
+      logger.error(err)
     }
   },
   requestBusinessAccess: async (emailData) => {
@@ -105,9 +107,9 @@ const emailService = {
 
     try {
       const _response = await axios.post(options.url, options.body, { headers: options.headers })
-      console.log(`BUSINESS SERVICE APPLICATION REQUEST SENT SUCCESSFULLY FOR USER ${emailData.userID}`)
+      logger.info(`BUSINESS SERVICE APPLICATION REQUEST SENT SUCCESSFULLY FOR USER ${emailData.userID}`)
     } catch (err) {
-      console.log(err)
+      logger.error(err)
     }
   },
   businessServiceDecision: async (emailData, decision) => {
@@ -118,17 +120,15 @@ const emailService = {
     try {
       const _response = await axios.post(options.url, options.body, { headers: options.headers })
       if (decision === 'approve') {
-        console.log(`BUSINESS SERVICE ACCESS APPROVAL EMAIL SENT SUCCESSFULLY FOR USER ${emailData.id}`)
+        logger.info(`BUSINESS SERVICE ACCESS APPROVAL EMAIL SENT SUCCESSFULLY FOR USER ${emailData.id}`)
       } else {
-        console.log(`BUSINESS SERVICE ACCESS REJECTION EMAIL SENT SUCCESSFULLY FOR USER ${emailData.id}`)
+        logger.info(`BUSINESS SERVICE ACCESS REJECTION EMAIL SENT SUCCESSFULLY FOR USER ${emailData.id}`)
       }
     } catch (err) {
-      console.log(err)
+      logger.error(err)
     }
   },
 }
-
-module.exports = emailService
 
 function setOptions(postData, url) {
   return {
@@ -141,3 +141,5 @@ function setOptions(postData, url) {
     body: postData,
   }
 }
+
+export default emailService

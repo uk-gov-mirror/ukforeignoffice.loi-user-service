@@ -1,16 +1,6 @@
-/**
- * Created by preciousr on 04/03/2016.
- */
-/**
- * FCO LOI SavedAddress
- * SavedAddress Model
- *
- *
- */
+import Sequelize from 'sequelize'
 
-const Sequelize = require('sequelize')
-
-const attributes = {
+export const attributes = {
   id: {
     type: Sequelize.INTEGER(),
     allowNull: false,
@@ -202,9 +192,8 @@ const attributes = {
   },
 }
 
-const options = {
+export const options = {
   freezeTableName: true,
 }
 
-module.exports.attributes = attributes
-module.exports.options = options
+export default { attributes, options }

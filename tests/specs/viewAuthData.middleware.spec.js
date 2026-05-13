@@ -1,16 +1,12 @@
-let expect
-let viewAuthData
-let Model
-let originalFindOne
+import { expect } from 'chai'
+import viewAuthData from '../../app/middleware/viewAuthData.js'
+import Model from '../../app/model/models.js'
 
-before('Setup', async () => {
-  const chai = await import('chai')
-  expect = chai.expect
+const originalFindOne = Model.AccountDetails.findOne
 
-  viewAuthData = require('../../app/middleware/viewAuthData')
-  Model = require('../../app/model/models')
-  originalFindOne = Model.AccountDetails.findOne
-})
+// before('Setup', async () => {
+//   originalFindOne = Model.AccountDetails.findOne
+// })
 
 afterEach(() => {
   Model.AccountDetails.findOne = originalFindOne

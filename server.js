@@ -1,19 +1,34 @@
-const express = require('express'),
-  app = express(),
-  common = require('./config/common.js'),
-  environmentVariables = common.config(),
-  passport = require('passport'),
-  passportConfig = require('./app/passportConfig'),
-  viewAuthData = require('./app/middleware/viewAuthData'),
-  flash = require('connect-flash'),
-  appRouter = require('./app/routes.js')(express, environmentVariables),
-  bodyParser = require('body-parser'),
-  jsonParser = bodyParser.json(),
-  cookieParser = require('cookie-parser'),
-  csrf = require('csurf')
+import crypto from 'node:crypto'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import bodyParser from 'body-parser'
+import flash from 'connect-flash'
+import connectRedis from 'connect-redis'
+import cookieParser from 'cookie-parser'
+import csrf from 'csurf'
+import { config as environmentConfig } from 'dotenv'
+import express from 'express'
+import session from 'express-session'
+import fs from 'fs-extra'
+import schedule from 'node-schedule'
+import passport from 'passport'
+import { createClient } from 'redis'
+import viewAuthData from './app/middleware/viewAuthData.js'
+import passportConfig from './app/passportConfig.js'
+import appRoutes from './app/routes.js'
+import { config } from './config/common.js'
+import jobs from './config/jobs.js'
+import { logger } from './config/logs.js'
 
-require('./config/logs')
-require('dotenv').config()
+const __filename = fileURLToPath(import.meta.url)
+const directoryPath = path.dirname(__filename)
+const app = express()
+const environmentVariables = config()
+const appRouter = appRoutes(express, environmentVariables)
+const jsonParser = bodyParser.json()
+const RedisStore = connectRedis(session)
+
+environmentConfig() // Load environment variables from .env file
 
 const argvPort = Number.parseInt(process.argv[2], 10)
 const envPort = Number.parseInt(process.env.PORT, 10)
@@ -57,10 +72,6 @@ app.use((req, res, next) => {
   }
   return next()
 })
-
-const session = require('express-session')
-const RedisStore = require('connect-redis')(session)
-const { createClient } = require('redis')
 const { password, port, host } = sessionSettings
 const connectTimeout = 15000
 
@@ -72,7 +83,7 @@ const redisClient = createClient({
 
 redisClient.connect((err) => {
   if (err) {
-    console.error('Redis client error:', err)
+    logger.error('Redis client error:', err)
     next(err)
   } else {
     next()
@@ -80,11 +91,11 @@ redisClient.connect((err) => {
 })
 
 redisClient.on('connect', () => {
-  console.log('Redis client connected successfully')
+  logger.info('Redis client connected successfully')
 })
 
 redisClient.on('error', (error) => {
-  console.error('Redis client error:', error)
+  logger.error('Redis client error:', error)
 })
 
 const redisStore = new RedisStore({ client: redisClient })
@@ -112,7 +123,6 @@ app.use(
 // =====================================
 app.set('view engine', 'ejs')
 
-const crypto = require('node:crypto')
 const cacheBust = crypto.randomBytes(4).toString('hex')
 
 app.use((req, res, next) => {
@@ -147,8 +157,6 @@ app.use(
 // =====================================
 // JOB SCHEDULER
 // =====================================
-const schedule = require('node-schedule')
-const jobs = require('./config/jobs.js')
 
 // As there are 2 instances running, we need a random time, or two emails will be sent
 // for accounts nearing expiration. (Flag will be set by time of 2nd job execution to stop duplicate)
@@ -163,45 +171,48 @@ schedule.scheduleJob(jobScheduleRandom, () => {
 passportConfig(app, passport)
 app.use('/api/user', appRouter)
 //Automatically update passport strategy
-const fs = require('fs-extra')
-fs.copy(`${__dirname}/data/strategy.js`, `${__dirname}/node_modules/passport-local/lib/strategy.js`, (_err) => {})
+fs.copy(
+  `${directoryPath}/data/strategy.js`,
+  `${directoryPath}/node_modules/passport-local/lib/strategy.js`,
+  (_err) => {},
+)
 
 // =====================================
 // GOV STYLES
 // =====================================
 const oneDay = 24 * 60 * 60 * 1000 // 1 day in milliseconds
 
-app.use('/api/user/', express.static(`${__dirname}/public`, { maxAge: oneDay }))
-app.use('/api/user/styles', express.static(`${__dirname}/styles`, { maxAge: oneDay }))
-app.use('/api/user/fonts', express.static(`${__dirname}/fonts`, { maxAge: oneDay }))
-app.use('/api/user/images', express.static(`${__dirname}/images`, { maxAge: oneDay }))
-app.use('/api/user/js', express.static(`${__dirname}/js`, { maxAge: oneDay }))
+app.use('/api/user/', express.static(`${directoryPath}/public`, { maxAge: oneDay }))
+app.use('/api/user/styles', express.static(`${directoryPath}/styles`, { maxAge: oneDay }))
+app.use('/api/user/fonts', express.static(`${directoryPath}/fonts`, { maxAge: oneDay }))
+app.use('/api/user/images', express.static(`${directoryPath}/images`, { maxAge: oneDay }))
+app.use('/api/user/js', express.static(`${directoryPath}/js`, { maxAge: oneDay }))
 
 // Serve GOV.UK Frontend v5 assets
 app.use(
   '/api/user/govuk-frontend',
-  express.static(`${__dirname}/node_modules/govuk-frontend/dist/govuk`, { maxAge: oneDay }),
+  express.static(`${directoryPath}/node_modules/govuk-frontend/dist/govuk`, { maxAge: oneDay }),
 )
 
 // =====================================
 // START APP
 // =====================================
 process.on('uncaughtException', (error, origin) => {
-  console.error('----- Uncaught Exception -----')
-  console.error(error)
-  console.error('----- Exception Origin -----')
-  console.error(origin)
+  logger.error('----- Uncaught Exception -----')
+  logger.error(error)
+  logger.error('----- Exception Origin -----')
+  logger.error(origin)
 })
 
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('----- Unhandled Rejection -----')
-  console.error(`Promise: ${promise}`)
-  console.error(`Reason: ${reason}`)
+  logger.error('----- Unhandled Rejection -----')
+  logger.error(`Promise: ${promise}`)
+  logger.error(`Reason: ${reason}`)
 })
 
 app.listen(serverPort)
-console.log(`Server started on port ${serverPort}`)
-console.log(
+logger.info(`Server started on port ${serverPort}`)
+logger.info(
   `user account cleanup job will run every ${hourlyInterval} hours at ${randomMin} minutes and ${randomSecond} seconds past the hour`,
 )
-module.exports.getApp = app
+export const getApp = () => app

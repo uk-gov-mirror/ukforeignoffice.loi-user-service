@@ -1,6 +1,6 @@
-const { createLogger, transports, format } = require('winston')
+import { createLogger, format, transports } from 'winston'
 
-const logger = createLogger({
+export const logger = createLogger({
   transports: [
     // Log info to console
     new transports.Console({
@@ -29,9 +29,4 @@ const logger = createLogger({
   ],
 })
 
-// Overwrite some of the build-in console functions
-console.error = logger.error.bind()
-console.log = logger.info.bind()
-console.info = logger.info.bind()
-console.debug = logger.debug.bind()
-console.warn = logger.warn.bind()
+export default { logger }

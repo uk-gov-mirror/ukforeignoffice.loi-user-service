@@ -1,5 +1,5 @@
-const _Sequelize = require('sequelize'),
-  common = require('../config/common.js'),
-  envVariables = common.config()
+import common from '../config/common.js'
 
-module.exports = envVariables.sequelizeUsers
+const envVariables = common.config()
+
+export default envVariables.sequelizeUsers

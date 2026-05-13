@@ -1,20 +1,20 @@
-const passport = require('passport'),
-  registerController = require('./controllers/registerController.js'),
-  passwordController = require('./controllers/passwordController.js'),
-  accountController = require('./controllers/accountController.js'),
-  addressController = require('./controllers/addressController.js'),
-  requestBusinessServiceAccessController = require('./controllers/requestBusinessServiceAccessController.js'),
-  Model = require('./model/models.js'),
-  moment = require('moment'),
-  oneTimePasscodeService = require('./services/oneTimePasscodeService')
+import moment from 'moment'
+import passport from 'passport'
+import { Op } from 'sequelize'
+import { logger } from '../config/logs.js'
+import accountController from './controllers/accountController.js'
+import addressController from './controllers/addressController.js'
+import passwordController from './controllers/passwordController.js'
+import registerController from './controllers/registerController.js'
+import requestBusinessServiceAccessController from './controllers/requestBusinessServiceAccessController.js'
+import Model from './model/models.js'
+import emailService from './services/emailService.js'
+import oneTimePasscodeService from './services/oneTimePasscodeService.js'
 
+const sessionSettings = JSON.parse(process.env.THESESSION)
 let nextpage
 
-const { Op } = require('sequelize')
-const emailService = require('./services/emailService')
-const sessionSettings = JSON.parse(process.env.THESESSION)
-
-module.exports = (express, envVariables) => {
+export default (express, envVariables) => {
   const router = express.Router()
 
   const isAuthenticated = (req, res, next) => {
@@ -95,7 +95,7 @@ module.exports = (express, envVariables) => {
       if (info_text === 'There was a problem signing in') {
         info_text = 'The specified email and password combination does not exist'
       }
-      console.info(`Failed Sign In Attempt: ${info_text}`)
+      logger.info(`Failed Sign In Attempt: ${info_text}`)
     }
     //render page and pass in flash data if any exists
     let back_link = '/api/user/usercheck'
@@ -316,7 +316,7 @@ module.exports = (express, envVariables) => {
         req.session.secondFactorSuccess = true
         await oneTimePasscodeService.deleteOneTimePasscode(user_id)
         await oneTimePasscodeService.updateAccountPasscodeExpiryTime(user_id)
-        console.info(`SUCCESSFUL LOGIN FOR USER ${user_id}`)
+        logger.info(`SUCCESSFUL LOGIN FOR USER ${user_id}`)
         res.cookie('LoggedIn', true, { maxAge: 1800000, httpOnly: true })
         res.redirect('/api/user/dashboard')
       } else {
@@ -405,7 +405,7 @@ module.exports = (express, envVariables) => {
   })
 
   router.get('/forgot', (req, res) => {
-    var locked = typeof req.query.locked !== 'undefined' ? JSON.parse(req.query.locked) : false
+    const locked = typeof req.query.locked !== 'undefined' ? JSON.parse(req.query.locked) : false
     res.render('forgot', { message: req.flash('info'), locked: locked })
   })
 
@@ -427,7 +427,7 @@ module.exports = (express, envVariables) => {
     }).then((user) => {
       if (!user) {
         req.flash('info', 'The link for resetting your password has expired. Enter your email to get sent a new link.')
-        console.info('Password reset requested. Reset link expired.')
+        logger.info('Password reset requested. Reset link expired.')
         return res.render('forgot', { message: req.flash('info'), locked: false })
       }
       return res.render('reset', { resetPasswordToken: req.params.token, error: false })

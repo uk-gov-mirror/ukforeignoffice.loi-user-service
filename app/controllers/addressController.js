@@ -1,13 +1,15 @@
-const Model = require('../model/models.js'),
-  ValidationService = require('../services/ValidationService.js'),
-  common = require('../../config/common.js'),
-  envVariables = common.config(),
-  axios = require('axios')
+import axios from 'axios'
+import Postcode from 'postcode'
+import common from '../../config/common.js'
+import { logger } from '../../config/logs.js'
+import Model from '../model/models.js'
+import ValidationService from '../services/ValidationService.js'
 
+const envVariables = common.config()
 const mobilePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){6,25}$/
 const phonePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){6,25}$/
 
-module.exports.showUKQuestion = (req, res) => {
+export const showUKQuestion = (req, res) => {
   Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
     Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) =>
       res.render('address_pages/UKQuestion.ejs', {
@@ -21,7 +23,7 @@ module.exports.showUKQuestion = (req, res) => {
   })
 }
 
-module.exports.submitUKQuestion = (req, res) => {
+export const submitUKQuestion = (req, res) => {
   if (typeof req.body.is_uk === 'undefined') {
     // ERROR HANDLING
     req.flash('error', 'Choose an option below')
@@ -51,7 +53,7 @@ module.exports.submitUKQuestion = (req, res) => {
   }
 }
 
-function showPostcodeLookup(req, res) {
+export const showPostcodeLookup = (req, res) => {
   Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
     Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) =>
       res.render('address_pages/UKAddressPostcodeEntry.ejs', {
@@ -68,10 +70,7 @@ function showPostcodeLookup(req, res) {
   })
 }
 
-module.exports.showPostcodeLookup = showPostcodeLookup
-
-module.exports.findAddress = (req, res) => {
-  const Postcode = require('postcode')
+export const findAddress = (req, res) => {
   let postcode = ''
 
   if (!req.query.postcode && !req.body['find-postcode']) {
@@ -125,7 +124,7 @@ module.exports.findAddress = (req, res) => {
             })
           },
           (err) => {
-            console.log(err)
+            logger.info(err)
             req.flash('error', 'Enter your address manually instead')
             return res.render('address_pages/UKAddressSelect.ejs', {
               initial: req.session.initial,
@@ -144,7 +143,7 @@ module.exports.findAddress = (req, res) => {
   })
 }
 
-module.exports.retrieveAddress = (addressId) => {
+export const retrieveAddress = (addressId) => {
   const timeout = envVariables.postcodeLookUpApiOptions.timeout
   return axios.get(`${envVariables.postcodeLookUpApiOptions.uri}retrieve/${addressId}`, { timeout })
 }
@@ -158,12 +157,11 @@ module.exports.retrieveAddress = (addressId) => {
  * 3. Prepare options and return UK address select view
  * @return results
  */
-module.exports.ajaxFindPostcode = (req, res) => {
+export const ajaxFindPostcode = (req, res) => {
   const address_type = req.body.address_type
   if (!req.body) {
     return res.redirect(`your-${address_type}-address-uk?is_uk=true`)
   }
-  const Postcode = require('postcode')
   const postcode = Postcode.toNormalised(req.body['find-postcode'])
 
   if (!postcode) {
@@ -190,14 +188,14 @@ module.exports.ajaxFindPostcode = (req, res) => {
         return res.json({ error: return_error, addresses: addresses, postcode: postcode })
       },
       (err) => {
-        console.log(err)
+        logger.error(err)
         return res.json({ error: 'Enter your address manually instead' })
       },
     )
   }
 }
 
-module.exports.ajaxSelectAddress = (req, res) => {
+export const ajaxSelectAddress = (req, res) => {
   if (!req.session?.email) {
     return res.status(400).json({ error: 'User session email is missing.' })
   }
@@ -205,22 +203,22 @@ module.exports.ajaxSelectAddress = (req, res) => {
   Model.User.findOne({ where: { email: req.session.email } })
     .then((user) => {
       if (!user) {
-        console.error('User not found.')
+        logger.error('User not found.')
       }
       return Model.AccountDetails.findOne({ where: { user_id: user.id } })
     })
     .then((account) => {
       if (!account) {
-        console.error('Account details not found.')
+        logger.error('Account details not found.')
       }
-      return module.exports.retrieveAddress(req.body.chosen).then((address) => ({
+      return retrieveAddress(req.body.chosen).then((address) => ({
         account,
         address,
       }))
     })
     .then(({ account, address }) => {
       if (!address?.data) {
-        console.error('Address data is missing.')
+        logger.error('Address data is missing.')
       }
       return res.json({
         full_name: `${account.first_name} ${account.last_name}`,
@@ -228,12 +226,12 @@ module.exports.ajaxSelectAddress = (req, res) => {
       })
     })
     .catch((error) => {
-      console.error('Error in ajaxSelectAddress:', error.message)
+      logger.error(`Error in ajaxSelectAddress: ${error.message}`)
       return res.status(500).json({ error: error.message })
     })
 }
 
-module.exports.selectAddress = (req, res) => {
+export const selectAddress = (req, res) => {
   const addressId = req.body.address
 
   if (!req.method) {
@@ -245,11 +243,11 @@ module.exports.selectAddress = (req, res) => {
 
   Model.User.findOne({ where: { email: req.session.email } })
     .then((user) => {
-      if (!user) console.error('User not found')
+      if (!user) logger.error('User not found')
       return Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => ({ user, account }))
     })
     .then(({ user, account }) => {
-      return module.exports.retrieveAddress(addressId).then((response) => {
+      return retrieveAddress(addressId).then((response) => {
         const address = response.data
 
         const formValues = {
@@ -281,13 +279,13 @@ module.exports.selectAddress = (req, res) => {
       })
     })
     .catch((error) => {
-      console.error('Error selecting address:', error)
+      logger.error(`Error selecting address: ${error.message}`)
       req.flash('error', 'An error occurred while selecting the address.')
       return res.redirect('/api/user/find-your-address')
     })
 }
 
-module.exports.showManualAddress = (req, res) => {
+export const showManualAddress = (req, res) => {
   Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
     Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) =>
       res.render('address_pages/UKManualAddress.ejs', {
@@ -305,14 +303,13 @@ module.exports.showManualAddress = (req, res) => {
   })
 }
 
-module.exports.saveAddress = (req, res) => {
+export const saveAddress = (req, res) => {
   Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
     Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => {
       const country = req.body.country || ''
       const email = req.body.email || null
       const telephone = req.body.telephone || null
       const mobileNo = req.body.mobileNo
-      const Postcode = require('postcode')
       const postcodeObject = Postcode.toNormalised(req.body.postcode)
       let postcode = ' '
       if (country !== 'United Kingdom') {
@@ -345,10 +342,10 @@ module.exports.saveAddress = (req, res) => {
         .then(() => {
           if (req.session.initial === true) {
             req.session.initial = false
-            console.log(`address successfully added for user ${user.id}`)
+            logger.info(`address successfully added for user ${user.id}`)
             return res.redirect('/api/user/dashboard?complete=true')
           } else {
-            console.log(`address successfully added for user ${user.id}`)
+            logger.info(`address successfully added for user ${user.id}`)
             return res.redirect('/api/user/addresses')
           }
         })
@@ -362,13 +359,13 @@ module.exports.saveAddress = (req, res) => {
   })
 }
 
-module.exports.showEditAddress = (req, res) => {
+export const showEditAddress = (req, res) => {
   Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
     Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => {
       Model.SavedAddress.findOne({ where: { user_id: user.id, id: req.query.id } })
         .then((address) => {
           if (!address) {
-            console.log('Address is null')
+            logger.error('Address is null')
             return res.redirect('/api/user/addresses')
           }
           let require_contact_details = 'no'
@@ -417,21 +414,21 @@ module.exports.showEditAddress = (req, res) => {
           )
         })
         .catch((error) => {
-          console.log(error)
+          logger.error(`Error editing address: ${error.message}`)
           return res.redirect('/api/user/addresses')
         })
     })
   })
 }
 
-module.exports.editAddress = (req, res) => {
-  var country = req.body.country || ''
-  var email = req.body.email || null
-  var mobileNo = req.body.mobileNo
-  var telephone = req.body.telephone || null
-  var Postcode = require('postcode')
-  var postcodeObject = Postcode.toNormalised(req.body.postcode)
-  var postcode = ' '
+export const editAddress = (req, res) => {
+  const country = req.body.country || ''
+  const email = req.body.email || null
+  const mobileNo = req.body.mobileNo
+  const telephone = req.body.telephone || null
+
+  const postcodeObject = Postcode.toNormalised(req.body.postcode)
+  let postcode = ' '
   if (country !== 'United Kingdom') {
     postcode = req.body.postcode.trim().length === 0 ? ' ' : req.body.postcode.length > 1 ? req.body.postcode : postcode
   } else {
@@ -498,20 +495,20 @@ module.exports.editAddress = (req, res) => {
   })
 }
 
-module.exports.deleteAddress = (req, res) => {
+export const deleteAddress = (req, res) => {
   Model.User.findOne({ where: { email: req.session.email } }).then((user) => {
     Model.SavedAddress.destroy({ where: { user_id: user.id, id: req.query.id } })
       .then((result) => {
         if (result === true) {
-          console.log(`address successfully deleted for user ${user.id} and id ${req.query.id}`)
+          logger.info(`address successfully deleted for user ${user.id} and id ${req.query.id}`)
           req.flash('info', 'Address successfully deleted')
         } else {
-          console.log(`address not deleted for user ${user.id} and id ${req.query.id}`)
+          logger.info(`address not deleted for user ${user.id} and id ${req.query.id}`)
         }
         return res.redirect('/api/user/addresses')
       })
       .catch((error) => {
-        console.log(error)
+        logger.error(`Error deleting address: ${error.message}`)
         return res.redirect('/api/user/addresses')
       })
   })
@@ -530,11 +527,27 @@ async function postcodeLookup(normalisedPostcode) {
     const response = await axios(options)
     return response.data
   } catch (err) {
-    console.error(err)
+    logger.error(err)
   }
 }
 
 function getCountries() {
   countriesSQL = 'SELECT  name FROM "country" ORDER BY name ASC '
   return envVariables.serviceSequelize.query(countriesSQL)
+}
+
+export default {
+  showUKQuestion,
+  submitUKQuestion,
+  showPostcodeLookup,
+  findAddress,
+  retrieveAddress,
+  ajaxFindPostcode,
+  ajaxSelectAddress,
+  selectAddress,
+  showManualAddress,
+  saveAddress,
+  showEditAddress,
+  editAddress,
+  deleteAddress,
 }

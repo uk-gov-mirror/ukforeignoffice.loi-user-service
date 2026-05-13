@@ -1,10 +1,10 @@
-var browser = {
+const browser = {
     isIe: function () {
         return navigator.appVersion.indexOf("MSIE") != -1;
     },
     navigator: navigator.appVersion,
     getVersion: function() {
-        var version = 999; // we assume a sane browser
+        let version = 999; // we assume a sane browser
         if (navigator.appVersion.indexOf("MSIE") != -1)
             // bah, IE again, lets downgrade version number
             version = parseFloat(navigator.appVersion.split("MSIE")[1]);
@@ -65,10 +65,10 @@ $(document).ready(function() {
 
     $('.no-js-show').removeClass('no-js-show');
 
-    var $email = $('#email');
-    var $email_hint = $("#email_hint");
-    var $confirm_email = $('#email-confirm');
-    var $confirm_email_hint = $("#confirm_email_hint");
+    const $email = $('#email');
+    const $email_hint = $("#email_hint");
+    const $confirm_email = $('#email-confirm');
+    const $confirm_email_hint = $("#confirm_email_hint");
 
 
     $email.on('blur', function () {
@@ -79,7 +79,7 @@ $(document).ready(function() {
             suggested: function (element, suggestion) {
                 if (!$email_hint.html()) {
                     // First error - fill in/show entire hint element
-                    var suggestionMessage = "Did you mean <span class='suggestion'>" +
+                    const suggestionMessage = "Did you mean <span class='suggestion'>" +
                         "<a href='#' class='domain'>" +
                         "<span class='address'>" + suggestion.address + "</span>" +
                         "@" + suggestion.domain +
@@ -156,11 +156,11 @@ $('#find-address').click(function(event){
 
 function showPostCodeError(error){
     if (error === 'Enter your address manually instead'){
-        var html = '<h2 class="govuk-error-summary__title" id="error-summary-heading">Postcode search is not available at the moment</h2>' +
+        const html = '<h2 class="govuk-error-summary__title" id="error-summary-heading">Postcode search is not available at the moment</h2>' +
             '<div class="govuk-error-summary__body"><ul class="govuk-list govuk-error-summary__list"><li><a href="/api/user/your-address-manual">'+error+'</a></li></ul></div>';
         $('#postcode-error').removeClass('hide').html(html);
     }else{
-        var html = '<h2 class="govuk-error-summary__title" id="error-summary-heading">There is a problem</h2>' +
+        const html = '<h2 class="govuk-error-summary__title" id="error-summary-heading">There is a problem</h2>' +
             '<div class="govuk-error-summary__body"><ul class="govuk-list govuk-error-summary__list"><li><a href="#find-postcode">'+error+'</a></li></ul></div>';
         $('#postcode-error').removeClass('hide').html(html);
     }
@@ -194,7 +194,7 @@ function showResultAddresses(addresses){
             .attr('disabled','true')
             .attr('selected','true')
         );
-    for(var i=0;i<addresses.length;i++){
+    for(let i=0;i<addresses.length;i++){
         $('#address-list-box')
             .append($("<option></option>")
                 .attr("value", addresses[i].id)

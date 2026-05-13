@@ -1,15 +1,7 @@
-let expect
-let validator
-let blackList
-let phraselist
-
-before('Setup', async () => {
-  const chai = await import('chai')
-  expect = chai.expect
-  validator = require('validator')
-  blackList = require('../../config/blacklist.js')
-  phraselist = require('../../config/phraselist.js')
-})
+import { expect } from 'chai'
+import validator from 'validator'
+import blackList from '../../config/blacklist.js'
+import phraselist from '../../config/phraselist.js'
 
 describe('Password Validation Logic', () => {
   // This tests the password validation logic used in registerController and passwordController

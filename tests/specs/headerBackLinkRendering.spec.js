@@ -1,13 +1,10 @@
-let expect
-let ejs
-let path
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { expect } from 'chai'
+import ejs from 'ejs'
 
-before('Setup', async () => {
-  const chai = await import('chai')
-  expect = chai.expect
-  ejs = require('ejs')
-  path = require('node:path')
-})
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 function buildBaseLocals(overrides = {}) {
   return {
