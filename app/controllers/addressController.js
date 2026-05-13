@@ -422,13 +422,13 @@ export const showEditAddress = (req, res) => {
 }
 
 export const editAddress = (req, res) => {
-  var country = req.body.country || ''
-  var email = req.body.email || null
-  var mobileNo = req.body.mobileNo
-  var telephone = req.body.telephone || null
+  const country = req.body.country || ''
+  const email = req.body.email || null
+  const mobileNo = req.body.mobileNo
+  const telephone = req.body.telephone || null
 
-  var postcodeObject = Postcode.toNormalised(req.body.postcode)
-  var postcode = ' '
+  const postcodeObject = Postcode.toNormalised(req.body.postcode)
+  let postcode = ' '
   if (country !== 'United Kingdom') {
     postcode = req.body.postcode.trim().length === 0 ? ' ' : req.body.postcode.length > 1 ? req.body.postcode : postcode
   } else {

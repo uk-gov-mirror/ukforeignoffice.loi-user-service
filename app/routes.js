@@ -405,7 +405,7 @@ export default (express, envVariables) => {
   })
 
   router.get('/forgot', (req, res) => {
-    var locked = typeof req.query.locked !== 'undefined' ? JSON.parse(req.query.locked) : false
+    const locked = typeof req.query.locked !== 'undefined' ? JSON.parse(req.query.locked) : false
     res.render('forgot', { message: req.flash('info'), locked: locked })
   })
 

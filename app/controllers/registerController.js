@@ -235,8 +235,8 @@ export const register = (req, res) => {
     }
   }
 
-  var allInfoCorrectArr = req.body.all_info_correct
-  var allInfoCorrect = false
+  const allInfoCorrectArr = req.body.all_info_correct
+  let allInfoCorrect = false
   if (allInfoCorrectArr.indexOf('on') > -1) {
     allInfoCorrect = true
   } else {
@@ -420,7 +420,7 @@ export const completeRegistration = (req, res) => {
             return res.render('initial/address-skip.ejs')
           })
           .then(() => {
-            var accountManagementObject = {
+            const accountManagementObject = {
               portalCustomerUpdate: {
                 userId: 'legalisation',
                 timestamp: Date.now().toString(),
@@ -449,7 +449,7 @@ export const completeRegistration = (req, res) => {
             logger.error(error)
 
             // Custom error array builder for email match confirmation
-            var erroneousFields = []
+            const erroneousFields = []
 
             if (req.body.first_name === '') {
               erroneousFields.push('first_name')

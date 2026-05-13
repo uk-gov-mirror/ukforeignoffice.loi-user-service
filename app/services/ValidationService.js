@@ -116,11 +116,11 @@ export const ValidationService = {
       return phonePattern.test(input)
     }
 
-    var country = req.body.country || ''
-    var phonePattern = /^[0-9+()# -]+$/
+    const country = req.body.country || ''
+    const phonePattern = /^[0-9+()# -]+$/
 
-    var postcodeObject = Postcode.toNormalised(req.body.postcode)
-    var postcode = ' '
+    const postcodeObject = Postcode.toNormalised(req.body.postcode)
+    let postcode = ' '
     if (country !== 'United Kingdom') {
       postcode =
         req.body.postcode.trim().length === 0 ? ' ' : req.body.postcode.length > 1 ? req.body.postcode : postcode
@@ -173,7 +173,7 @@ export const ValidationService = {
       }
     }
 
-    var dataValues = []
+    const dataValues = []
     dataValues.push({
       full_name:
         req.body.full_name !== '' && req.body.full_name !== undefined && req.body.full_name !== 'undefined'
