@@ -1,12 +1,8 @@
-import { expect } from 'chai'
+import { afterEach, describe, expect, it } from 'vitest'
 import viewAuthData from '../../app/middleware/viewAuthData.js'
 import Model from '../../app/model/models.js'
 
 const originalFindOne = Model.AccountDetails.findOne
-
-// before('Setup', async () => {
-//   originalFindOne = Model.AccountDetails.findOne
-// })
 
 afterEach(() => {
   Model.AccountDetails.findOne = originalFindOne
@@ -25,10 +21,10 @@ describe('viewAuthData middleware', () => {
       nextError = err
     })
 
-    expect(nextError).to.equal(undefined)
-    expect(res.locals.isAuthenticated).to.equal(false)
-    expect(res.locals.user).to.equal(null)
-    expect(res.locals.account).to.equal(null)
+    expect(nextError).toBeUndefined()
+    expect(res.locals.isAuthenticated).toBe(false)
+    expect(res.locals.user).toBeNull()
+    expect(res.locals.account).toBeNull()
   })
 
   it('uses session account when present for authenticated users', async () => {
@@ -49,11 +45,11 @@ describe('viewAuthData middleware', () => {
 
     await viewAuthData(req, res, () => {})
 
-    expect(findOneCalled).to.equal(false)
-    expect(res.locals.isAuthenticated).to.equal(true)
-    expect(res.locals.user.id).to.equal(10)
-    expect(res.locals.account.first_name).to.equal('Cached')
-    expect(req.session.user.id).to.equal(10)
+    expect(findOneCalled).toBe(false)
+    expect(res.locals.isAuthenticated).toBe(true)
+    expect(res.locals.user.id).toBe(10)
+    expect(res.locals.account.first_name).toBe('Cached')
+    expect(req.session.user.id).toBe(10)
   })
 
   it('fetches account from database when session account is missing', async () => {
@@ -78,10 +74,10 @@ describe('viewAuthData middleware', () => {
 
     await viewAuthData(req, res, () => {})
 
-    expect(res.locals.isAuthenticated).to.equal(true)
-    expect(res.locals.user.id).to.equal(11)
-    expect(res.locals.account.first_name).to.equal('Fetched')
-    expect(req.session.account.first_name).to.equal('Fetched')
+    expect(res.locals.isAuthenticated).toBe(true)
+    expect(res.locals.user.id).toBe(11)
+    expect(res.locals.account.first_name).toBe('Fetched')
+    expect(req.session.account.first_name).toBe('Fetched')
   })
 
   it('passes errors to next when account lookup fails', async () => {
@@ -102,6 +98,6 @@ describe('viewAuthData middleware', () => {
       nextError = err
     })
 
-    expect(nextError).to.equal(expectedError)
+    expect(nextError).toBe(expectedError)
   })
 })

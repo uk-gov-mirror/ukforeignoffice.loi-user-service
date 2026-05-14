@@ -1,11 +1,9 @@
-import { expect } from 'chai'
 import validator from 'validator'
+import { describe, expect, it } from 'vitest'
 import blackList from '../../config/blacklist.js'
 import phraselist from '../../config/phraselist.js'
 
 describe('Password Validation Logic', () => {
-  // This tests the password validation logic used in registerController and passwordController
-
   function isPasswordInBlacklist(password) {
     return validator.isIn(password, blackList)
   }
@@ -25,115 +23,110 @@ describe('Password Validation Logic', () => {
     return patt.test(password)
   }
 
-  // Standard password pattern from the application
   const passwordPattern = '(?=.*[a-zA-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9\\s]).{8,}'
 
   describe('Password Pattern Validation', () => {
     it('should accept valid password with uppercase, number and special char', () => {
       const password = 'SecureP@ss1'
-      expect(isPasswordValid(password, passwordPattern)).to.be.true
+      expect(isPasswordValid(password, passwordPattern)).toBe(true)
     })
 
     it('should accept password with minimum 8 characters', () => {
       const password = 'Pass@rd1'
-      expect(isPasswordValid(password, passwordPattern)).to.be.true
+      expect(isPasswordValid(password, passwordPattern)).toBe(true)
     })
 
     it('should reject password shorter than 8 characters', () => {
       const password = 'Pa@1abc'
-      expect(isPasswordValid(password, passwordPattern)).to.be.false
+      expect(isPasswordValid(password, passwordPattern)).toBe(false)
     })
 
     it('should reject password without special character', () => {
       const password = 'Password1'
-      expect(isPasswordValid(password, passwordPattern)).to.be.false
+      expect(isPasswordValid(password, passwordPattern)).toBe(false)
     })
 
     it('should reject password without number', () => {
       const password = 'Password@'
-      expect(isPasswordValid(password, passwordPattern)).to.be.false
+      expect(isPasswordValid(password, passwordPattern)).toBe(false)
     })
 
     it('should reject password without letters', () => {
       const password = '12345678@'
-      expect(isPasswordValid(password, passwordPattern)).to.be.false
+      expect(isPasswordValid(password, passwordPattern)).toBe(false)
     })
 
     it('should accept password with various special characters', () => {
-      expect(isPasswordValid('Passw0rd!', passwordPattern)).to.be.true
-      expect(isPasswordValid('Passw0rd@', passwordPattern)).to.be.true
-      expect(isPasswordValid('Passw0rd#', passwordPattern)).to.be.true
-      expect(isPasswordValid('Passw0rd$', passwordPattern)).to.be.true
-      expect(isPasswordValid('Passw0rd%', passwordPattern)).to.be.true
+      expect(isPasswordValid('Passw0rd!', passwordPattern)).toBe(true)
+      expect(isPasswordValid('Passw0rd@', passwordPattern)).toBe(true)
+      expect(isPasswordValid('Passw0rd#', passwordPattern)).toBe(true)
+      expect(isPasswordValid('Passw0rd$', passwordPattern)).toBe(true)
+      expect(isPasswordValid('Passw0rd%', passwordPattern)).toBe(true)
     })
 
     it('should accept long passwords', () => {
       const password = 'ThisIsAVeryLongPasswordWith@Number1'
-      expect(isPasswordValid(password, passwordPattern)).to.be.true
+      expect(isPasswordValid(password, passwordPattern)).toBe(true)
     })
   })
 
   describe('Blacklist Check', () => {
     it('should detect password in blacklist', () => {
-      // Using a known password from the blacklist
       const blacklistedPassword = 'Password1'
-      expect(isPasswordInBlacklist(blacklistedPassword)).to.be.true
+      expect(isPasswordInBlacklist(blacklistedPassword)).toBe(true)
     })
 
     it('should allow password not in blacklist', () => {
       const safePassword = 'MyUnique$ecureP@ss123xyz'
-      expect(isPasswordInBlacklist(safePassword)).to.be.false
+      expect(isPasswordInBlacklist(safePassword)).toBe(false)
     })
 
     it('should be case-sensitive when checking blacklist', () => {
-      // The blacklist check is case-sensitive by default
-      const password = 'password1' // lowercase version
-      // Check if it differs from uppercase version in blacklist
+      const password = 'password1'
       const result1 = isPasswordInBlacklist('Password1')
       const result2 = isPasswordInBlacklist(password)
-      // Just verify the function works, results depend on actual blacklist content
-      expect(typeof result1).to.equal('boolean')
-      expect(typeof result2).to.equal('boolean')
+      expect(typeof result1).toBe('boolean')
+      expect(typeof result2).toBe('boolean')
     })
   })
 
   describe('Phraselist Check', () => {
     it('should detect common phrase "password" in password', () => {
       const password = 'MyPassword123!'
-      expect(isPasswordInPhraselist(password)).to.be.true
+      expect(isPasswordInPhraselist(password)).toBe(true)
     })
 
     it('should detect common phrase "123456" in password', () => {
       const password = 'Test123456!abc'
-      expect(isPasswordInPhraselist(password)).to.be.true
+      expect(isPasswordInPhraselist(password)).toBe(true)
     })
 
     it('should detect common phrase "qwerty" in password', () => {
       const password = 'Myqwerty@1'
-      expect(isPasswordInPhraselist(password)).to.be.true
+      expect(isPasswordInPhraselist(password)).toBe(true)
     })
 
     it('should allow password without common phrases', () => {
       const password = 'Xk9@mLpT2zRv'
-      expect(isPasswordInPhraselist(password)).to.be.false
+      expect(isPasswordInPhraselist(password)).toBe(false)
     })
 
     it('should be case-insensitive when checking phraselist', () => {
       const password1 = 'MyPASSWORD123!'
       const password2 = 'mypassword123!'
-      expect(isPasswordInPhraselist(password1)).to.be.true
-      expect(isPasswordInPhraselist(password2)).to.be.true
+      expect(isPasswordInPhraselist(password1)).toBe(true)
+      expect(isPasswordInPhraselist(password2)).toBe(true)
     })
 
     it('should detect phrase regardless of position', () => {
-      expect(isPasswordInPhraselist('dragon!Test1')).to.be.true // start
-      expect(isPasswordInPhraselist('Test!dragon1')).to.be.true // end
-      expect(isPasswordInPhraselist('Te!dragon1st')).to.be.true // middle
+      expect(isPasswordInPhraselist('dragon!Test1')).toBe(true)
+      expect(isPasswordInPhraselist('Test!dragon1')).toBe(true)
+      expect(isPasswordInPhraselist('Te!dragon1st')).toBe(true)
     })
 
     it('should normalise spaces before checking', () => {
       const password = 'pass word123!'
-      expect(isPasswordInPhraselist(password)).to.be.true
+      expect(isPasswordInPhraselist(password)).toBe(true)
     })
   })
 
@@ -143,9 +136,8 @@ describe('Password Validation Logic', () => {
       const patternValid = isPasswordValid(password, passwordPattern)
       const inBlacklist = isPasswordInBlacklist(password)
 
-      // Pattern might pass, but we care about blacklist check
-      expect(typeof patternValid).to.equal('boolean')
-      expect(typeof inBlacklist).to.equal('boolean')
+      expect(typeof patternValid).toBe('boolean')
+      expect(typeof inBlacklist).toBe('boolean')
     })
 
     it('should reject password that is valid pattern but contains common phrase', () => {
@@ -153,8 +145,8 @@ describe('Password Validation Logic', () => {
       const patternValid = isPasswordValid(password, passwordPattern)
       const inPhraselist = isPasswordInPhraselist(password)
 
-      expect(patternValid).to.be.true
-      expect(inPhraselist).to.be.true
+      expect(patternValid).toBe(true)
+      expect(inPhraselist).toBe(true)
     })
 
     it('should accept secure password that passes all checks', () => {
@@ -163,39 +155,38 @@ describe('Password Validation Logic', () => {
       const inBlacklist = isPasswordInBlacklist(password)
       const inPhraselist = isPasswordInPhraselist(password)
 
-      expect(patternValid).to.be.true
-      expect(inBlacklist).to.be.false
-      expect(inPhraselist).to.be.false
+      expect(patternValid).toBe(true)
+      expect(inBlacklist).toBe(false)
+      expect(inPhraselist).toBe(false)
     })
   })
 
   describe('Edge Cases', () => {
     it('should handle empty password', () => {
       const password = ''
-      expect(isPasswordValid(password, passwordPattern)).to.be.false
-      expect(isPasswordInBlacklist(password)).to.be.false
-      expect(isPasswordInPhraselist(password)).to.be.false
+      expect(isPasswordValid(password, passwordPattern)).toBe(false)
+      expect(isPasswordInBlacklist(password)).toBe(false)
+      expect(isPasswordInPhraselist(password)).toBe(false)
     })
 
     it('should handle password with only spaces', () => {
       const password = '        '
-      expect(isPasswordValid(password, passwordPattern)).to.be.false
+      expect(isPasswordValid(password, passwordPattern)).toBe(false)
     })
 
     it('should handle password with unicode characters', () => {
-      const password = 'Pässwörd@1'
-      expect(isPasswordValid(password, passwordPattern)).to.be.true
+      const password = 'P\u00e4ssw\u00f6rd@1'
+      expect(isPasswordValid(password, passwordPattern)).toBe(true)
     })
 
     it('should handle very long password', () => {
       const password = `${'A'.repeat(50)}@1`
-      expect(isPasswordValid(password, passwordPattern)).to.be.true
+      expect(isPasswordValid(password, passwordPattern)).toBe(true)
     })
 
     it('should handle password with newline characters', () => {
       const password = 'Pass\nword@1'
-      // The pattern should still work
-      expect(typeof isPasswordValid(password, passwordPattern)).to.equal('boolean')
+      expect(typeof isPasswordValid(password, passwordPattern)).toBe('boolean')
     })
   })
 })

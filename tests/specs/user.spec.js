@@ -1,31 +1,24 @@
-import { expect } from 'chai'
+import { beforeAll, describe, expect, it } from 'vitest'
 import { getApp } from '../../server.js'
 
-before('Run Server', () => {
+beforeAll(() => {
   getApp()
 })
 
 describe('Healthcheck is working', () => {
-  const url = 'http://localhost:3001/api/user/healthcheck'
+  const port = process.env.PORT ?? 3001
+  const url = `http://localhost:${port}/api/user/healthcheck`
 
   describe('GET /healthcheck', () => {
-    it('returns status 200', (done) => {
-      fetch(url)
-        .then((response) => {
-          expect(response.status).to.equal(200)
-          done()
-        })
-        .catch((err) => done(err))
+    it('returns status 200', async () => {
+      const response = await fetch(url)
+      expect(response.status).toBe(200)
     })
 
-    it('JSON body is correct', (done) => {
-      fetch(url)
-        .then((response) => response.json()) // Convert to JSON
-        .then((data) => {
-          expect(data.message).to.equal('User Service is running')
-          done()
-        })
-        .catch((err) => done(err))
+    it('JSON body is correct', async () => {
+      const response = await fetch(url)
+      const data = await response.json()
+      expect(data.message).toBe('User Service is running')
     })
   })
 })

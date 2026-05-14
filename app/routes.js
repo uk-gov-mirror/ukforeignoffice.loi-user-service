@@ -11,7 +11,19 @@ import Model from './model/models.js'
 import emailService from './services/emailService.js'
 import oneTimePasscodeService from './services/oneTimePasscodeService.js'
 
-const sessionSettings = JSON.parse(process.env.THESESSION)
+const sessionSettings = process.env.THESESSION
+  ? JSON.parse(process.env.THESESSION)
+  : {
+      secret: 'super_secret',
+      adapter: 'connect-redis',
+      host: 'localhost',
+      port: 6379,
+      password: '',
+      prefix: 'sess:',
+      key: 'express.sid',
+      domain: 'http://localhost/',
+      cookieMaxAge: 1800000,
+    }
 let nextpage
 
 export default (express, envVariables) => {
