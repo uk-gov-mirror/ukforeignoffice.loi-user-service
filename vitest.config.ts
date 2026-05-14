@@ -7,7 +7,6 @@ export default defineConfig({
       PORT: 6009,
     },
     exclude: [...configDefaults.exclude],
-    include: ['tests/vitest/specs/**/*.spec.js'],
     coverage: {
       provider: 'v8',
       all: true,

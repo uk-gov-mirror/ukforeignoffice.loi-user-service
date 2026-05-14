@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { expect } from 'chai'
 import ejs from 'ejs'
+import { describe, expect, it } from 'vitest'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -46,30 +46,30 @@ function renderView(viewRelativePath, locals) {
 describe('Header Back Link Rendering', () => {
   it('does not render an inner-header back link on /admin', async () => {
     const html = await renderView('account_pages/admin.ejs', buildBaseLocals())
-    expect(html).to.not.include('govuk-back-link inner-header-back-link')
+    expect(html).not.toContain('govuk-back-link inner-header-back-link')
   })
 
   it('does not render an inner-header back link on /account', async () => {
     const html = await renderView('account_pages/account.ejs', buildBaseLocals())
-    expect(html).to.not.include('govuk-back-link inner-header-back-link')
+    expect(html).not.toContain('govuk-back-link inner-header-back-link')
   })
 
   it('does not render an inner-header back link on /addresses', async () => {
     const html = await renderView('account_pages/addresses.ejs', buildBaseLocals({ addresses: [] }))
-    expect(html).to.not.include('govuk-back-link inner-header-back-link')
+    expect(html).not.toContain('govuk-back-link inner-header-back-link')
   })
 
   it('renders an inner-header back link on /admin-search-email', async () => {
     const html = await renderView('account_pages/admin-search-email.ejs', buildBaseLocals({ searchResults: null }))
-    expect(html).to.include('class="govuk-back-link inner-header-back-link"')
-    expect(html).to.include('href="/api/user/admin"')
+    expect(html).toContain('class="govuk-back-link inner-header-back-link"')
+    expect(html).toContain('href="/api/user/admin"')
   })
 
   it('renders inner header navigation links for authenticated account pages', async () => {
     const html = await renderView('account_pages/account.ejs', buildBaseLocals())
-    expect(html).to.include('id="Account-Link"')
-    expect(html).to.include('id="Addresses-Link"')
-    expect(html).to.include('id="sign-out-link"')
+    expect(html).toContain('id="Account-Link"')
+    expect(html).toContain('id="Addresses-Link"')
+    expect(html).toContain('id="sign-out-link"')
   })
 
   it('renders standard back link for unauthenticated pages when innerHeaderBackLink is set', async () => {
@@ -83,9 +83,9 @@ describe('Header Back Link Rendering', () => {
         locked: false,
       }),
     )
-    expect(html).to.include('class="govuk-back-link"')
-    expect(html).to.not.include('inner-header-back-link')
-    expect(html).to.not.include('id="Account-Link"')
+    expect(html).toContain('class="govuk-back-link"')
+    expect(html).not.toContain('inner-header-back-link')
+    expect(html).not.toContain('id="Account-Link"')
   })
 
   it('does not render any back link on unauthenticated pages without innerHeaderBackLink', async () => {
@@ -98,6 +98,6 @@ describe('Header Back Link Rendering', () => {
         startNewApplicationUrl: '/start-new',
       }),
     )
-    expect(html).to.not.include('class="govuk-back-link"')
+    expect(html).not.toContain('class="govuk-back-link"')
   })
 })
