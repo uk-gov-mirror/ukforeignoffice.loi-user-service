@@ -1,5 +1,5 @@
 import crypto from 'node:crypto'
-import bcrypt from 'bcryptjs'
+import {genSaltSync, hashSync } from 'bcryptjs'
 import isEmail from 'isemail'
 import { Op } from 'sequelize'
 import validator from 'validator'
@@ -158,12 +158,12 @@ export const resetPassword = async (req, res) => {
       }
 
       //Hash the new password
-      const salt = bcrypt.genSaltSync(10)
+      const salt = genSaltSync(10)
       const password = req.body.password,
         confirm_password = req.body.confirm_password
-      const hashedPassword = password !== null && password !== '' ? bcrypt.hashSync(password, salt) : ''
+      const hashedPassword = password !== null && password !== '' ? hashSync(password, salt) : ''
       const hashedConfirmPassword =
-        confirm_password !== null && confirm_password !== '' ? bcrypt.hashSync(confirm_password, salt) : ''
+        confirm_password !== null && confirm_password !== '' ? hashSync(confirm_password, salt) : ''
 
       function password_expiry(date, days) {
         const result = new Date(date)
@@ -172,7 +172,7 @@ export const resetPassword = async (req, res) => {
       }
 
       //Check that password is different from old password
-      if (user.password === bcrypt.hashSync(password, user.salt)) {
+      if (user.password === hashSync(password, user.salt)) {
         return res.render(reset ? 'reset.ejs' : 'set-new-password.ejs', {
           error: ['Your new password must be different from your last password.'],
           passwordErrorType: passwordErrorType,
