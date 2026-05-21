@@ -1,12 +1,10 @@
 import crypto from 'node:crypto'
 import axios from 'axios'
 import bcrypt from 'bcryptjs'
-import isemail from 'isemail'
 import { Op } from 'sequelize'
 import validator from 'validator'
 import blackList from '../../config/blacklist.js'
-import common from '../../config/common.js'
-import config from '../../config/environment.js'
+import { config, validations } from '../../config/common.js'
 import { logger } from '../../config/logs.js'
 import phraselist from '../../config/phraselist.js'
 import Model from '../model/models.js'
@@ -15,7 +13,7 @@ import emailService from '../services/emailService.js'
 import HelperService from '../services/HelperService.js'
 import ValidationService from '../services/ValidationService.js'
 
-const envVariables = common.config()
+const envVariables = config()
 const mobilePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){5,14}$/
 const phonePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){5,14}$/
 
@@ -105,7 +103,7 @@ export const register = (req, res) => {
 
   const patt = new RegExp(envVariables.password_settings.passwordPattern)
 
-  const emailValid = isemail.validate(req.body.email)
+  const emailValid = validations.emailRegex.test(req.body.email)
 
   const messages = []
   const passwordErrorType = []

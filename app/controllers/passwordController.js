@@ -1,16 +1,15 @@
 import crypto from 'node:crypto'
 import { genSaltSync, hashSync } from 'bcryptjs'
-import isEmail from 'isemail'
 import { Op } from 'sequelize'
 import validator from 'validator'
 import blackList from '../../config/blacklist.js'
-import common from '../../config/common.js'
+import { config, validations }from '../../config/common.js'
 import { logger } from '../../config/logs.js'
 import phraselist from '../../config/phraselist.js'
 import Model from '../model/models.js'
 import emailService from '../services/emailService.js'
 
-const envVariables = common.config()
+const envVariables = config()
 
 export const forgotPassword = async (req, res) => {
   try {
@@ -29,7 +28,7 @@ export const forgotPassword = async (req, res) => {
     // Find User
     const email = req.body.email.toLowerCase()
     const user = await Model.User.findOne({ where: { email } })
-    const emailValid = isEmail.validate(email)
+    const emailValid = validations.emailRegex.test(email)
 
     if (!emailValid) {
       logger.info('Password reset requested. Invalid email pattern.')

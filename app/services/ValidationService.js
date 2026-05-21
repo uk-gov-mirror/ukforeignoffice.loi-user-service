@@ -1,4 +1,3 @@
-import isemail from 'isemail'
 import Postcode from 'postcode'
 import common from '../../config/common.js'
 import { logger } from '../../config/logs.js'
@@ -168,7 +167,7 @@ export const ValidationService = {
     }
 
     if (req.body.email !== '') {
-      if (!isemail.validate(req.body.email)) {
+      if (!common.validations.emailRegex.test(req.body.email)) {
         erroneousFields.push('email')
       }
     }
