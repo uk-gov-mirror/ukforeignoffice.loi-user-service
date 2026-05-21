@@ -5,4 +5,9 @@ export const config = () => {
   return environment //[node_env];
 }
 
-export default { config }
+export const validations = {
+  emailRegex:
+    /^(?!.*\.\.)[a-z0-9!#$%&'*+/=?^_\x60{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_\x60{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/i,
+}
+
+export default { config, validations }

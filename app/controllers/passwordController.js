@@ -1,16 +1,15 @@
 import crypto from 'node:crypto'
-import bcrypt from 'bcryptjs'
-import isEmail from 'isemail'
+import { genSaltSync, hashSync } from 'bcryptjs'
 import { Op } from 'sequelize'
 import validator from 'validator'
 import blackList from '../../config/blacklist.js'
-import common from '../../config/common.js'
+import { config, validations } from '../../config/common.js'
 import { logger } from '../../config/logs.js'
 import phraselist from '../../config/phraselist.js'
 import Model from '../model/models.js'
 import emailService from '../services/emailService.js'
 
-const envVariables = common.config()
+const envVariables = config()
 
 export const forgotPassword = async (req, res) => {
   try {
@@ -29,7 +28,7 @@ export const forgotPassword = async (req, res) => {
     // Find User
     const email = req.body.email.toLowerCase()
     const user = await Model.User.findOne({ where: { email } })
-    const emailValid = isEmail.validate(email)
+    const emailValid = validations.emailRegex.test(email)
 
     if (!emailValid) {
       logger.info('Password reset requested. Invalid email pattern.')
@@ -158,12 +157,12 @@ export const resetPassword = async (req, res) => {
       }
 
       //Hash the new password
-      const salt = bcrypt.genSaltSync(10)
+      const salt = genSaltSync(10)
       const password = req.body.password,
         confirm_password = req.body.confirm_password
-      const hashedPassword = password !== null && password !== '' ? bcrypt.hashSync(password, salt) : ''
+      const hashedPassword = password !== null && password !== '' ? hashSync(password, salt) : ''
       const hashedConfirmPassword =
-        confirm_password !== null && confirm_password !== '' ? bcrypt.hashSync(confirm_password, salt) : ''
+        confirm_password !== null && confirm_password !== '' ? hashSync(confirm_password, salt) : ''
 
       function password_expiry(date, days) {
         const result = new Date(date)
@@ -172,7 +171,7 @@ export const resetPassword = async (req, res) => {
       }
 
       //Check that password is different from old password
-      if (user.password === bcrypt.hashSync(password, user.salt)) {
+      if (user.password === hashSync(password, user.salt)) {
         return res.render(reset ? 'reset.ejs' : 'set-new-password.ejs', {
           error: ['Your new password must be different from your last password.'],
           passwordErrorType: passwordErrorType,

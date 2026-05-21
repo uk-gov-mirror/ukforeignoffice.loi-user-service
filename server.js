@@ -1,15 +1,15 @@
 import crypto from 'node:crypto'
+import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import bodyParser from 'body-parser'
 import flash from 'connect-flash'
-import connectRedis from 'connect-redis'
+import { RedisStore } from 'connect-redis'
 import cookieParser from 'cookie-parser'
 import csrf from 'csurf'
 import { config as environmentConfig } from 'dotenv'
 import express from 'express'
-import session from 'express-session'
-import fs from 'fs-extra'
+import expressSession from 'express-session'
 import schedule from 'node-schedule'
 import passport from 'passport'
 import { createClient } from 'redis'
@@ -26,7 +26,6 @@ const app = express()
 const environmentVariables = config()
 const appRouter = appRoutes(express, environmentVariables)
 const jsonParser = bodyParser.json()
-const RedisStore = connectRedis(session)
 
 environmentConfig() // Load environment variables from .env file
 
@@ -78,6 +77,8 @@ const sessionSettings = process.env.THESESSION
       cookieMaxAge: 1800000,
     }
 
+const sessionMiddleware = expressSession.default ?? expressSession
+
 app.use((req, res, next) => {
   if (req.cookies.LoggedIn) {
     res.cookie('LoggedIn', true, { maxAge: sessionSettings.cookieMaxAge, httpOnly: true })
@@ -113,7 +114,7 @@ redisClient.on('error', (error) => {
 const redisStore = new RedisStore({ client: redisClient })
 
 app.use(
-  session({
+  sessionMiddleware({
     store: redisStore,
     prefix: sessionSettings.prefix,
     saveUninitialized: false,
@@ -183,7 +184,7 @@ schedule.scheduleJob(jobScheduleRandom, () => {
 passportConfig(app, passport)
 app.use('/api/user', appRouter)
 //Automatically update passport strategy
-fs.copy(
+fs.copyFile(
   `${directoryPath}/data/strategy.js`,
   `${directoryPath}/node_modules/passport-local/lib/strategy.js`,
   (_err) => {},
