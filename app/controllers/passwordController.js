@@ -1,5 +1,5 @@
 import crypto from 'node:crypto'
-import {genSaltSync, hashSync } from 'bcryptjs'
+import { genSaltSync, hashSync } from 'bcryptjs'
 import isEmail from 'isemail'
 import { Op } from 'sequelize'
 import validator from 'validator'
