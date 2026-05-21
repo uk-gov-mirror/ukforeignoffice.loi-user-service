@@ -1,5 +1,5 @@
-import { validations } from '../../config/common.js'
 import { describe, expect, it } from 'vitest'
+import { validations } from '../../config/common.js'
 
 describe('Email Validation', () => {
   describe('Valid Email Formats', () => {
