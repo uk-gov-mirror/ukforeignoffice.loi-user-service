@@ -9,7 +9,7 @@ import csrf from 'csurf'
 import { config as environmentConfig } from 'dotenv'
 import express from 'express'
 import expressSession from 'express-session'
-import fs from 'fs-extra'
+import fs from 'node:fs'
 import schedule from 'node-schedule'
 import passport from 'passport'
 import { createClient } from 'redis'
@@ -184,7 +184,7 @@ schedule.scheduleJob(jobScheduleRandom, () => {
 passportConfig(app, passport)
 app.use('/api/user', appRouter)
 //Automatically update passport strategy
-fs.copy(
+fs.copyFile(
   `${directoryPath}/data/strategy.js`,
   `${directoryPath}/node_modules/passport-local/lib/strategy.js`,
   (_err) => {},
