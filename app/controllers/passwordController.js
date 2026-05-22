@@ -153,7 +153,7 @@ export const resetPassword = async (req, res) => {
       const user = await Model.User.findOne(where)
       if (!user && reset) {
         req.flash('error', 'Password reset token is invalid or has expired.')
-        return res.redirect('back')
+        return res.redirect(req.get('Referrer') || '/')
       }
 
       //Hash the new password
