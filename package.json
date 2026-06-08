@@ -40,6 +40,7 @@
     "format": "biome check --write .",
     "quality": "biome check --changed --since=develop",
     "start": "NODE_ENV=development node server.js 3001",
+    "dev": "NODE_ENV=development node server.js 3001",
     "test": "vitest run --coverage"
   },
   "overrides": {
