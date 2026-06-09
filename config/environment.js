@@ -2,7 +2,7 @@ import { config as envConfig } from 'dotenv'
 import Sequelize from 'sequelize'
 import { logger } from './logs.js'
 
-envConfig()
+envConfig({ silent: true })
 
 const cookiedomain = process.env.COOKIEDOMAIN
   ? JSON.parse(process.env.COOKIEDOMAIN)
