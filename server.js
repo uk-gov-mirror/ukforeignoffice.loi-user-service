@@ -96,7 +96,7 @@ const redisClient = createClient({
 
 redisClient.connect((err) => {
   if (err) {
-    logger.error('Redis client error:', err)
+    logger.error('Redis client error:', { err })
     next(err)
   } else {
     next()
@@ -108,7 +108,7 @@ redisClient.on('connect', () => {
 })
 
 redisClient.on('error', (error) => {
-  logger.error('Redis client error:', error)
+  logger.error('Redis client error:', { error })
 })
 
 const redisStore = new RedisStore({ client: redisClient })
@@ -211,16 +211,11 @@ app.use(
 // START APP
 // =====================================
 process.on('uncaughtException', (error, origin) => {
-  logger.error('----- Uncaught Exception -----')
-  logger.error(error)
-  logger.error('----- Exception Origin -----')
-  logger.error(origin)
+  logger.error('----- Uncaught Exception -----', { error, origin })
 })
 
 process.on('unhandledRejection', (reason, promise) => {
-  logger.error('----- Unhandled Rejection -----')
-  logger.error(`Promise: ${promise}`)
-  logger.error(`Reason: ${reason}`)
+  logger.error('----- Unhandled Rejection -----', { reason, promise })
 })
 
 app.listen(serverPort)

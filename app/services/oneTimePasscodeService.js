@@ -17,7 +17,7 @@ export const OneTimePasscodeService = {
         },
       })
     } catch (error) {
-      logger.error(error)
+      logger.error('Error in OneTimePasscodeService.checkIfOneTimePasscodeExists', { error })
     }
   },
 
@@ -29,7 +29,7 @@ export const OneTimePasscodeService = {
         },
       })
     } catch (error) {
-      logger.error(error)
+      logger.error('Error in OneTimePasscodeService.deleteOneTimePasscode', { error })
     }
   },
 
@@ -41,7 +41,7 @@ export const OneTimePasscodeService = {
         passcode_expiry: moment(Date.now()).add(10, 'minutes'),
       })
     } catch (error) {
-      logger.error(error)
+      logger.error('Error in OneTimePasscodeService.storeNewOneTimePasscode', { error })
     }
   },
 
@@ -57,7 +57,7 @@ export const OneTimePasscodeService = {
         },
       })
     } catch (error) {
-      logger.error(error)
+      logger.error('Error in OneTimePasscodeService.verifyUser', { error })
     }
   },
 
@@ -75,7 +75,7 @@ export const OneTimePasscodeService = {
         },
       )
     } catch (error) {
-      logger.error(error)
+      logger.error('Error in OneTimePasscodeService.updateAccountPasscodeExpiryTime', { error })
     }
   },
 
@@ -92,7 +92,7 @@ export const OneTimePasscodeService = {
         },
       )
     } catch (error) {
-      logger.error(error)
+      logger.error('Error in OneTimePasscodeService.updateMfaPreferenceToSMS', { error })
     }
   },
 
@@ -105,7 +105,7 @@ export const OneTimePasscodeService = {
         attributes: ['mobileNo'],
       })
     } catch (error) {
-      logger.error(error)
+      logger.error('Error in OneTimePasscodeService.checkMobileNumber', { error })
     }
   },
 
@@ -122,7 +122,7 @@ export const OneTimePasscodeService = {
         },
       )
     } catch (error) {
-      logger.error(error)
+      logger.error('Error in OneTimePasscodeService.updateAccountMobileNumber', { error })
     }
   },
 
@@ -139,7 +139,7 @@ export const OneTimePasscodeService = {
         },
       )
     } catch (error) {
-      logger.error(error)
+      logger.error('Error in OneTimePasscodeService.updateAccountPasscodeAttempts', { error })
     }
   },
 
@@ -151,7 +151,7 @@ export const OneTimePasscodeService = {
         },
       })
     } catch (error) {
-      logger.error(error)
+      logger.error('Error in OneTimePasscodeService.getUserData', { error })
     }
   },
 
@@ -163,7 +163,7 @@ export const OneTimePasscodeService = {
         },
       })
     } catch (error) {
-      logger.error(error)
+      logger.error('Error in OneTimePasscodeService.getAccountData', { error })
     }
   },
 
@@ -180,7 +180,7 @@ export const OneTimePasscodeService = {
         },
       )
     } catch (error) {
-      logger.error(error)
+      logger.error('Error in OneTimePasscodeService.lockUserAccount', { error })
     }
   },
 }

@@ -66,14 +66,14 @@ export default (app, passport) => {
             )
 
             await emailService.lockedOut(user.first_name, email)
-            logger.info(`ACCOUNT LOCKED - UserID: ${user.id}`)
+            logger.info(`ACCOUNT LOCKED - UserID: ${user.id}`, { userId: user.id })
             return done(null, false, { message: 'There was a problem signing in' })
           } else {
             return done(null, false, { message: 'There was a problem signing in' })
           }
         }
       } catch (error) {
-        logger.error('Error during authentication process:', error)
+        logger.error('Error during authentication process:', { error, userId: user.id })
         return done(error)
       }
     }),

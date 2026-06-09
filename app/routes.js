@@ -328,7 +328,7 @@ export default (express, envVariables) => {
         req.session.secondFactorSuccess = true
         await oneTimePasscodeService.deleteOneTimePasscode(user_id)
         await oneTimePasscodeService.updateAccountPasscodeExpiryTime(user_id)
-        logger.info(`SUCCESSFUL LOGIN FOR USER ${user_id}`)
+        logger.info(`SUCCESSFUL LOGIN FOR USER ${user_id}`, { userId: user_id })
         res.cookie('LoggedIn', true, { maxAge: 1800000, httpOnly: true })
         res.redirect('/api/user/dashboard')
       } else {
@@ -439,7 +439,7 @@ export default (express, envVariables) => {
     }).then((user) => {
       if (!user) {
         req.flash('info', 'The link for resetting your password has expired. Enter your email to get sent a new link.')
-        logger.info('Password reset requested. Reset link expired.')
+        logger.info('Password reset requested. Reset link expired.', { userId: user?.id })
         return res.render('forgot', { message: req.flash('info'), locked: false })
       }
       return res.render('reset', { resetPasswordToken: req.params.token, error: false })

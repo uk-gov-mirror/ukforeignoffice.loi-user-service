@@ -101,8 +101,7 @@ export const ValidationService = {
 
       return fieldsAndErrorsCustom
     } catch (error) {
-      logger.error('there was an error in the builderrorsarray ', error)
-      //sails.log(error);
+      logger.error('Error in ValidationService.buildErrorsArray', { error })
     }
   },
 

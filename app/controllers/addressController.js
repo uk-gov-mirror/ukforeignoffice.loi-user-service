@@ -124,7 +124,7 @@ export const findAddress = (req, res) => {
             })
           },
           (err) => {
-            logger.info(err)
+            logger.info({ error: err })
             req.flash('error', 'Enter your address manually instead')
             return res.render('address_pages/UKAddressSelect.ejs', {
               initial: req.session.initial,
@@ -188,7 +188,7 @@ export const ajaxFindPostcode = (req, res) => {
         return res.json({ error: return_error, addresses: addresses, postcode: postcode })
       },
       (err) => {
-        logger.error(err)
+        logger.error({ error: err })
         return res.json({ error: 'Enter your address manually instead' })
       },
     )
@@ -203,13 +203,13 @@ export const ajaxSelectAddress = (req, res) => {
   Model.User.findOne({ where: { email: req.session.email } })
     .then((user) => {
       if (!user) {
-        logger.error('User not found.')
+        logger.error('User not found.', { email: req.session.email })
       }
       return Model.AccountDetails.findOne({ where: { user_id: user.id } })
     })
     .then((account) => {
       if (!account) {
-        logger.error('Account details not found.')
+        logger.error('Account details not found.', { email: req.session.email, userId: user.id })
       }
       return retrieveAddress(req.body.chosen).then((address) => ({
         account,
@@ -226,7 +226,7 @@ export const ajaxSelectAddress = (req, res) => {
       })
     })
     .catch((error) => {
-      logger.error(`Error in ajaxSelectAddress: ${error.message}`)
+      logger.error(`Error in ajaxSelectAddress: ${error.message}`, { error })
       return res.status(500).json({ error: error.message })
     })
 }
@@ -243,7 +243,7 @@ export const selectAddress = (req, res) => {
 
   Model.User.findOne({ where: { email: req.session.email } })
     .then((user) => {
-      if (!user) logger.error('User not found')
+      if (!user) logger.error('User not found.', { email: req.session.email })
       return Model.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => ({ user, account }))
     })
     .then(({ user, account }) => {
@@ -279,7 +279,7 @@ export const selectAddress = (req, res) => {
       })
     })
     .catch((error) => {
-      logger.error(`Error selecting address: ${error.message}`)
+      logger.error(`Error selecting address: ${error.message}`, { error })
       req.flash('error', 'An error occurred while selecting the address.')
       return res.redirect('/api/user/find-your-address')
     })
@@ -342,10 +342,10 @@ export const saveAddress = (req, res) => {
         .then(() => {
           if (req.session.initial === true) {
             req.session.initial = false
-            logger.info(`address successfully added for user ${user.id}`)
+            logger.info(`address successfully added for user ${user.id}`, { userId: user.id })
             return res.redirect('/api/user/dashboard?complete=true')
           } else {
-            logger.info(`address successfully added for user ${user.id}`)
+            logger.info(`address successfully added for user ${user.id}`, { userId: user.id })
             return res.redirect('/api/user/addresses')
           }
         })
@@ -414,7 +414,10 @@ export const showEditAddress = (req, res) => {
           )
         })
         .catch((error) => {
-          logger.error(`Error editing address: ${error.message}`)
+          logger.error(`Error editing address: ${error.message}`, {
+            error,
+            userId: req?.session?.user?.id || user.id || 'unknown',
+          })
           return res.redirect('/api/user/addresses')
         })
     })
@@ -500,15 +503,24 @@ export const deleteAddress = (req, res) => {
     Model.SavedAddress.destroy({ where: { user_id: user.id, id: req.query.id } })
       .then((result) => {
         if (result === true) {
-          logger.info(`address successfully deleted for user ${user.id} and id ${req.query.id}`)
+          logger.info(`address successfully deleted for user ${user.id} and id ${req.query.id}`, {
+            userId: user.id,
+            addressId: req.query.id,
+          })
           req.flash('info', 'Address successfully deleted')
         } else {
-          logger.info(`address not deleted for user ${user.id} and id ${req.query.id}`)
+          logger.info(`address not deleted for user ${user.id} and id ${req.query.id}`, {
+            userId: user.id,
+            addressId: req.query.id,
+          })
         }
         return res.redirect('/api/user/addresses')
       })
       .catch((error) => {
-        logger.error(`Error deleting address: ${error.message}`)
+        logger.error(`Error deleting address: ${error.message}`, {
+          error,
+          userId: req?.session?.user?.id || user.id || 'unknown',
+        })
         return res.redirect('/api/user/addresses')
       })
   })
@@ -527,7 +539,7 @@ async function postcodeLookup(normalisedPostcode) {
     const response = await axios(options)
     return response.data
   } catch (err) {
-    logger.error(err)
+    logger.error(`Error in postcodeLookup`, { error: err, postcode })
   }
 }
 
