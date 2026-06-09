@@ -21,8 +21,8 @@ async function sendToOrbit(accountManagementObject, user) {
   try {
     const edmsManagePortalCustomerUrl = `${config.edmsHost}/api/v1/managePortalCustomer`
     const edmsBearerToken = await HelperService.getEdmsAccessToken()
-    const startTime = new Date()
 
+    const profiler = logger.startTimer('Orbit account management request')
     const response = await axios.post(edmsManagePortalCustomerUrl, accountManagementObject, {
       headers: {
         'content-type': 'application/json',
@@ -30,20 +30,22 @@ async function sendToOrbit(accountManagementObject, user) {
       },
     })
 
-    const endTime = new Date()
-    const elapsedTime = endTime - startTime
+    profiler.done({
+      message: `Orbit account management request response time for ${user?.id}:`,
+      userId: user?.id,
+      ...logger.defaultMeta,
+    })
 
     if (response.status === 200) {
       logger.info(`[ACCOUNT MANAGEMENT] ACCOUNT UPDATE SENT TO ORBIT SUCCESSFULLY FOR USER_ID ${user.id}`)
     } else {
-      logger.error(`[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ${user.id}`)
-      logger.error(`response code: ${response.status}`)
-      logger.error(response.data)
+      logger.error(`[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ${user.id}`, {
+        responseStatus: response.status,
+        responseData: response.data,
+      })
     }
-
-    logger.info(`Orbit account management request response time: ${elapsedTime}ms`)
   } catch (error) {
-    logger.error(`sendToOrbit: ${error}`)
+    logger.error(`Error is sendToOrbit`, { error, userId: user?.id })
   }
 }
 
@@ -63,7 +65,7 @@ export const showAccount = async (req, res) => {
       company_info: req.flash('company_info'),
     })
   } catch (error) {
-    logger.error(`showAccount: ${error}`)
+    logger.error(`Error in showAccount`, { error, userId: req?.session?.user?.id || user?.id || 'unknown' })
     return res.render('generic-error.ejs', {
       backLink: '#',
       error,
@@ -81,7 +83,7 @@ export const showAdminSection = (req, res) => {
       error: null,
     })
   } catch (error) {
-    logger.error(`showAdminSection: ${error}`)
+    logger.error(`Error in showAdminSection`, { error, userId: req?.session?.user?.id || 'unknown' })
     return res.render('generic-error.ejs', {
       backLink: '#',
       error,
@@ -99,7 +101,7 @@ export const showAdminSearchEmail = (req, res) => {
       error: null,
     })
   } catch (error) {
-    logger.error(`showAdminSearchEmail: ${error}`)
+    logger.error(`Error in showAdminSearchEmail`, { error, userId: req?.session?.user?.id || 'unknown' })
     return res.render('generic-error.ejs', {
       backLink: '#',
       error,
@@ -125,7 +127,7 @@ export const ajaxSearchEmail = async (req, res) => {
 
     res.json(users)
   } catch (error) {
-    logger.error(`ajaxSearchEmail: ${error}`)
+    logger.error(`Error in ajaxSearchEmail`, { error, userId: req?.session?.user?.id || 'unknown' })
     res.status(500).json({ error: 'Internal server error' })
   }
 }
@@ -162,7 +164,7 @@ export const adminSearchEmail = async (req, res) => {
       info: req.flash('info'),
     })
   } catch (error) {
-    logger.error(`adminSearchEmail: ${error}`)
+    logger.error(`Error in adminSearchEmail`, { error, userId: req?.session?.user?.id || 'unknown' })
     return res.render('generic-error.ejs', {
       backLink: req.get('Referer'),
       error,
@@ -180,7 +182,7 @@ export const showUpdatePermissions = (req, res) => {
       error: null,
     })
   } catch (error) {
-    logger.error(`showUpdatePermissions: ${error}`)
+    logger.error(`Error in showUpdatePermissions`, { error, userId: req?.session?.user?.id || 'unknown' })
     return res.render('generic-error.ejs', {
       backLink: '#',
       error,
@@ -239,7 +241,12 @@ export const updatePermissions = async (req, res) => {
     req.flash('info', `${email} has been updated successfully`)
 
     if (changes.length > 0) {
-      logger.info(`[UPDATE PERMISSIONS] ${user.email} UPDATED ${email}: ${changes.join(', ')}`)
+      logger.info(`[UPDATE PERMISSIONS] ${user.email} UPDATED ${email}: ${changes.join(', ')}`, {
+        changes,
+        updatedUserId: userId,
+        updatedUserEmail: email,
+        adminUserId: user.id,
+      })
     }
 
     return res.render('account_pages/admin.ejs', {
@@ -250,7 +257,7 @@ export const updatePermissions = async (req, res) => {
       error: null,
     })
   } catch (error) {
-    logger.error(`updatePermissions: ${error}`)
+    logger.error(`Error in updatePermissions`, { error, userId: req?.session?.user?.id || 'unknown' })
     return res.render('generic-error.ejs', {
       backLink: req.get('Referer'),
       error,
@@ -278,7 +285,7 @@ export const showAddresses = async (req, res) => {
       info: req.flash('info'),
     })
   } catch (error) {
-    logger.error(`showAddresses: ${error}`)
+    logger.error(`Error in showAddresses`, { error, userId: req?.session?.user?.id || 'unknown' })
     return res.render('generic-error.ejs', {
       backLink: '/api/user/account',
       error,
@@ -309,7 +316,7 @@ export const showChangeDetails = async (req, res) => {
       disableMobileNumberEditing: disableMobileNumberEditing,
     })
   } catch (error) {
-    logger.error(`showChangeDetails: ${error}`)
+    logger.error(`Error in showChangeDetails`, { error, userId: req?.session?.user?.id || 'unknown' })
     return res.render('generic-error.ejs', {
       backLink: '/api/user/account',
       error,
@@ -447,7 +454,7 @@ export const changePassword = async (req, res) => {
     req.flash('info', "We've sent you an email with instructions on how to reset your password.")
     return res.redirect('/api/user/account')
   } catch (error) {
-    logger.error(`changePassword: ${error}`)
+    logger.error(`Error in changePassword`, { error, userId: req?.session?.user?.id || 'unknown' })
     return res.render('generic-error.ejs', {
       backLink: '/api/user/account',
       error,
@@ -471,7 +478,7 @@ export const showChangeMfa = async (req, res) => {
       mobileNo: account.mobileNo,
     })
   } catch (error) {
-    logger.error(`showChangeMfa: ${error}`)
+    logger.error(`Error in showChangeMfa`, { error, userId: req?.session?.user?.id || user?.id || 'unknown' })
     return res.render('generic-error.ejs', {
       backLink: '/api/user/account',
       error,
@@ -553,7 +560,7 @@ export const changeMfa = async (req, res) => {
       }
     }
   } catch (error) {
-    logger.error(`changeMfa: ${error}`)
+    logger.error(`Error in changeMfa`, { error, userId: req?.session?.user?.id || user?.id || 'unknown' })
     return res.render('generic-error.ejs', {
       backLink: '/api/user/change-mfa',
       error,
@@ -665,7 +672,10 @@ export const showChangeCompanyDetails = async (req, res) => {
       url: envVariables,
     })
   } catch (error) {
-    logger.error(`showChangeCompanyDetails: ${error}`)
+    logger.error(`Error in showChangeCompanyDetails`, {
+      error,
+      userId: req?.session?.user?.id || user?.id || 'unknown',
+    })
     return res.render('generic-error.ejs', {
       backLink: '/api/user/account',
       error,
@@ -714,7 +724,7 @@ export const changeCompanyDetails = async (req, res) => {
       return res.redirect('/api/user/account')
     }
   } catch (error) {
-    logger.error(`changeCompanyDetails: ${error}`)
+    logger.error(`Error in changeCompanyDetails`, { error, userId: req?.session?.user?.id || 'unknown' })
     const erroneousFields = []
     if (req.body.company_name === '') {
       erroneousFields.push('company_name')

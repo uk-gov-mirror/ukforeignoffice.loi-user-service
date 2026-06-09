@@ -23,7 +23,7 @@ export const showRequestBusinessServiceAccess = async (req, res) => {
         try {
           return await Model.User.findOne({ where: { email: req.session.email } })
         } catch (error) {
-          logger.error('showRequestBusinessServiceAccess.findUserAccount', error)
+          logger.error('Error in showRequestBusinessServiceAccess.findUserAccount', { error })
         }
       }
 
@@ -31,7 +31,7 @@ export const showRequestBusinessServiceAccess = async (req, res) => {
         try {
           return await Model.AccountDetails.findOne({ where: { user_id: user.id } })
         } catch (error) {
-          logger.error('showRequestBusinessServiceAccess.findUserAccountDetails', error)
+          logger.error('Error in showRequestBusinessServiceAccess.findUserAccountDetails', { error })
         }
       }
 
@@ -54,12 +54,12 @@ export const showRequestBusinessServiceAccess = async (req, res) => {
             form_values: false,
           })
         } catch (error) {
-          logger.error('showRequestBusinessServiceAccess.renderPage', error)
+          logger.error('Error in showRequestBusinessServiceAccess.renderPage', { error })
         }
       }
     }
   } catch (error) {
-    logger.error('requestBusinessServiceAccessController.showRequestBusinessServiceAccess', error)
+    logger.error('Error in requestBusinessServiceAccessController.showRequestBusinessServiceAccess', { error })
   }
 }
 
@@ -95,7 +95,7 @@ export const requestBusinessServiceAccess = async (req, res) => {
         try {
           return await Model.User.findOne({ where: { email: req.session.email } })
         } catch (error) {
-          logger.error('requestBusinessServiceAccess.findUserAccount', error)
+          logger.error('Error in requestBusinessServiceAccess.findUserAccount', { error })
         }
       }
 
@@ -103,7 +103,7 @@ export const requestBusinessServiceAccess = async (req, res) => {
         try {
           return await Model.AccountDetails.findOne({ where: { user_id: user.id } })
         } catch (error) {
-          logger.error('showRequestBusinessServiceAccess.findUserAccountDetails', error)
+          logger.error('Error in requestBusinessServiceAccess.findUserAccountDetails', { error, userId: user?.id })
         }
       }
 
@@ -125,7 +125,7 @@ export const requestBusinessServiceAccess = async (req, res) => {
             },
           )
         } catch (error) {
-          logger.error('requestBusinessServiceAccess.assignTokenToUser', error)
+          logger.error('Error in requestBusinessServiceAccess.assignTokenToUser', { error, userId: user?.id })
         }
       }
 
@@ -142,7 +142,7 @@ export const requestBusinessServiceAccess = async (req, res) => {
             },
           )
         } catch (error) {
-          logger.error('requestBusinessServiceAccess.updateCompanyName', error)
+          logger.error('Error in requestBusinessServiceAccess.updateCompanyName', { error, userId: user?.id })
         }
       }
 
@@ -150,7 +150,7 @@ export const requestBusinessServiceAccess = async (req, res) => {
         try {
           return await crypto.randomBytes(20)
         } catch (error) {
-          logger.error('requestBusinessServiceAccess.generateUserToken', error)
+          logger.error('Error in requestBusinessServiceAccess.generateUserToken', { error })
         }
       }
 
@@ -206,7 +206,7 @@ export const requestBusinessServiceAccess = async (req, res) => {
             renderPage(user, account, errorsArray)
           } else return true
         } catch (error) {
-          logger.error('requestBusinessServiceAccess.validateFormInput', error)
+          logger.error('Error in requestBusinessServiceAccess.validateFormInput', { error, userId: user?.id })
         }
       }
 
@@ -222,7 +222,7 @@ export const requestBusinessServiceAccess = async (req, res) => {
             form_values: req.body,
           })
         } catch (error) {
-          logger.error('requestBusinessServiceAccess.renderPage', error)
+          logger.error('Error in requestBusinessServiceAccess.renderPage', { error, userId: user?.id })
         }
       }
 
@@ -234,12 +234,12 @@ export const requestBusinessServiceAccess = async (req, res) => {
           )
           return res.redirect(`${envVariables.applicationServiceURL}select-service`)
         } catch (error) {
-          logger.error('requestBusinessServiceAccess.redirectToSelectServicePage', error)
+          logger.error('Error in requestBusinessServiceAccess.redirectToSelectServicePage', { error, userId: user?.id })
         }
       }
     }
   } catch (error) {
-    logger.error('requestBusinessAccessController.requestBusinessServiceAccess', error)
+    logger.error('Error in requestBusinessAccessController.requestBusinessServiceAccess', { error })
   }
 }
 
@@ -280,7 +280,7 @@ export const approve = async (req, res) => {
           },
         })
       } catch (error) {
-        logger.error('approve.findAccountMatchingToken', error)
+        logger.error('Error in requestBusinessAccessController.findAccountMatchingToken', { error })
       }
     }
 
@@ -292,7 +292,7 @@ export const approve = async (req, res) => {
           },
         })
       } catch (error) {
-        logger.error('approve.findAccountDetails', error)
+        logger.error('Error in requestBusinessAccessController.findAccountDetails', { error, userId: id })
       }
     }
 
@@ -310,12 +310,14 @@ export const approve = async (req, res) => {
           },
         )
       } catch (error) {
-        logger.error('approve.grantPermissionsToUserAccount', error)
+        logger.error('Error in requestBusinessAccessController.grantPermissionsToUserAccount', {
+          error,
+          userId: userAccountMatchingToken?.id,
+        })
       }
     }
 
     async function sendAccountUpdateToOrbit(userAccountMatchingToken, userAccountDetails) {
-      const startTime = new Date()
       try {
         const edmsManagePortalCustomerUrl = `${config.edmsHost}/api/v1/managePortalCustomer`
         const edmsBearerToken = await HelperService.getEdmsAccessToken()
@@ -339,6 +341,7 @@ export const approve = async (req, res) => {
         }
 
         try {
+          const profiler = logger.startTimer()
           const response = await axios.post(edmsManagePortalCustomerUrl, accountManagementObject, {
             headers: {
               'Content-Type': 'application/json',
@@ -346,8 +349,11 @@ export const approve = async (req, res) => {
             },
           })
 
-          const endTime = new Date()
-          const elapsedTime = endTime - startTime
+          profiler.done({
+            message: `Orbit account management request response time for user ID ${userAccountMatchingToken.id}`,
+            userId: userAccountMatchingToken.id,
+            ...logger.defaultMeta,
+          })
 
           if (response.status === 200) {
             logger.info(
@@ -357,27 +363,21 @@ export const approve = async (req, res) => {
           } else {
             logger.error(
               `[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ${userAccountMatchingToken.id}`,
+              { responseStatus: response.status, responseData: response.data },
             )
-            logger.error(`response code: ${response.status}`)
-            logger.error(response.data)
           }
-
-          logger.info(`Orbit account management request response time: ${elapsedTime}ms`)
         } catch (error) {
-          const endTime = new Date()
-          const elapsedTime = endTime - startTime
           logger.error(
             `[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ${userAccountMatchingToken.id}`,
+            { error },
           )
-          logger.error(error.response ? error.response.data : error.message)
-          logger.info(`Orbit account management request response time: ${elapsedTime}ms`)
         }
       } catch (error) {
-        logger.error('approve.sendAccountUpdateToOrbit', error)
+        logger.error('Error in requestBusinessAccessController.approve.sendAccountUpdateToOrbit', { error })
       }
     }
   } catch (error) {
-    logger.error('requestBusinessAccessController.approve', error)
+    logger.error('requestBusinessAccessController.approve', { error })
   }
 }
 
@@ -397,7 +397,7 @@ export const reject = async (req, res) => {
           },
         })
       } catch (error) {
-        logger.error('reject.findAccountMatchingToken', error)
+        logger.error('Error in requestBusinessAccessController.findAccountMatchingToken', { error, token })
       }
     }
 
@@ -415,7 +415,7 @@ export const reject = async (req, res) => {
           },
         )
       } catch (error) {
-        logger.error('reject.rejectPermissionsToUserAccount', error)
+        logger.error('Error in requestBusinessAccessController.reject.rejectPermissionsToUserAccount', { error })
       }
     }
 
@@ -432,12 +432,11 @@ export const reject = async (req, res) => {
           },
         )
       } catch (error) {
-        logger.error('reject.clearCompanyName', error)
+        logger.error('Error in requestBusinessAccessController.reject.clearCompanyName', { error })
       }
     }
 
     async function sendAccountUpdateToOrbit(userAccountMatchingToken, userAccountDetails) {
-      const startTime = new Date()
       try {
         const edmsManagePortalCustomerUrl = `${config.edmsHost}/api/v1/managePortalCustomer`
         const edmsBearerToken = await HelperService.getEdmsAccessToken()
@@ -460,6 +459,7 @@ export const reject = async (req, res) => {
           },
         }
 
+        const profiler = logger.startTimer()
         const response = await axios.post(edmsManagePortalCustomerUrl, accountManagementObject, {
           headers: {
             'Content-Type': 'application/json',
@@ -467,8 +467,11 @@ export const reject = async (req, res) => {
           },
         })
 
-        const endTime = new Date()
-        const elapsedTime = endTime - startTime
+        profiler.done({
+          message: `Orbit account management request response time for user ID ${userAccountMatchingToken.id}`,
+          userId: userAccountMatchingToken.id,
+          ...logger.defaultMeta,
+        })
 
         if (response.status === 200) {
           logger.info(
@@ -477,21 +480,14 @@ export const reject = async (req, res) => {
         } else {
           logger.error(
             `[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ${userAccountMatchingToken.id}`,
+            { responseStatus: response.status, responseData: response.data },
           )
-          logger.error(`response code: ${response.status}`)
-          logger.error(response.data)
         }
-
-        logger.info(`Orbit account management request response time: ${elapsedTime}ms`)
       } catch (error) {
-        const endTime = new Date()
-        const elapsedTime = endTime - startTime
         logger.error(
           `[ACCOUNT MANAGEMENT] ACCOUNT UPDATE FAILED SENDING TO ORBIT FOR USER_ID ${userAccountMatchingToken.id}`,
+          { error },
         )
-        logger.error(error.response ? error.response.data : error.message)
-        logger.info(`Orbit account management request response time: ${elapsedTime}ms`)
-        logger.error('reject.sendAccountUpdateToOrbit', error)
       }
     }
 
@@ -503,7 +499,7 @@ export const reject = async (req, res) => {
           },
         })
       } catch (error) {
-        logger.error('reject.findAccountDetails', error)
+        logger.error('Error in requestBusinessAccessController.reject.findAccountDetails', { error })
       }
     }
 
@@ -529,7 +525,7 @@ export const reject = async (req, res) => {
       })
     }
   } catch (error) {
-    logger.error('requestBusinessAccessController.reject', error)
+    logger.error('Error in requestBusinessAccessController.reject', { error })
   }
 }
 

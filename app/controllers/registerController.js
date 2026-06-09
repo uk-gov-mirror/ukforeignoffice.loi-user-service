@@ -23,6 +23,7 @@ async function sendToOrbit(accountManagementObject, user) {
     const edmsBearerToken = await HelperService.getEdmsAccessToken()
     const startTime = new Date()
 
+    const profiler = logger.startTimer()
     const response = await axios.post(edmsManagePortalCustomerUrl, accountManagementObject, {
       headers: {
         'Content-Type': 'application/json',
@@ -30,25 +31,23 @@ async function sendToOrbit(accountManagementObject, user) {
       },
     })
 
-    const endTime = new Date()
-    const elapsedTime = endTime - startTime
+    profiler.done({ message: 'EDMS managePortalCustomer request completed', userId: user.id, status: response.status })
 
     if (response.status === 200) {
-      logger.info(`[ACCOUNT MANAGEMENT] ACCOUNT CREATION SENT TO ORBIT SUCCESSFULLY FOR USER_ID ${user.id}`)
+      logger.info(`[ACCOUNT MANAGEMENT] ACCOUNT CREATION SENT TO ORBIT SUCCESSFULLY FOR USER_ID ${user.id}`, {
+        userId: user.id,
+        response,
+      })
     } else {
-      logger.error(`[ACCOUNT MANAGEMENT] ACCOUNT CREATION FAILED SENDING TO ORBIT FOR USER_ID ${user.id}`)
-      logger.error(`response code: ${response.status}`)
-      logger.error(response.data)
+      logger.error(`[ACCOUNT MANAGEMENT] ACCOUNT CREATION FAILED SENDING TO ORBIT FOR USER_ID ${user.id}`, {
+        userId: user.id,
+        response,
+      })
     }
-
-    logger.info(`Orbit account management request response time: ${elapsedTime}ms`)
   } catch (error) {
     const endTime = new Date()
     const elapsedTime = endTime - startTime
-    logger.error(`[ACCOUNT MANAGEMENT] ACCOUNT CREATION FAILED SENDING TO ORBIT FOR USER_ID ${user.id}`)
-    logger.error(error.response ? error.response.data : error.message)
-    logger.info(`Orbit account management request response time: ${elapsedTime}ms`)
-    logger.error(`sendToOrbit: ${error}`)
+    logger.error(`[ACCOUNT MANAGEMENT] ACCOUNT CREATION FAILED SENDING TO ORBIT FOR USER_ID ${user.id}`, { error })
   }
 }
 
@@ -367,7 +366,7 @@ export const register = (req, res) => {
               logger.error('Caught error:', error)
 
               if (error.name === 'SequelizeValidationError') {
-                logger.error('Validation errors:')
+                logger.error('Validation errors:', { errors: error.errors })
                 error.errors.forEach((err, index) => {
                   logger.error(`  ${index + 1}. Field: ${err.path}, Message: ${JSON.stringify(err.message)}`)
                 })
@@ -391,7 +390,7 @@ export const register = (req, res) => {
           }
         })
         .catch((error) => {
-          logger.error(error)
+          logger.error('Error getting payment reference:', { error })
         })
     }
   })
@@ -444,7 +443,7 @@ export const completeRegistration = (req, res) => {
             sendToOrbit(accountManagementObject, user)
           })
           .catch((error) => {
-            logger.error(error)
+            logger.error('Error updating account details:', { error })
 
             // Custom error array builder for email match confirmation
             const erroneousFields = []
@@ -511,6 +510,7 @@ export const completeRegistration = (req, res) => {
             return res.redirect('/api/user/account')
           })
           .catch((error) => {
+            logger.error('Error creating account details:', { error })
             // Custom error array builder for email match confirmation
             const erroneousFields = []
 
@@ -585,7 +585,7 @@ export const resendActivationEmail = async (req, res) => {
     req.flash('info', `If an account matches ${req.body.email} we'll send you another confirmation email.`)
     return res.redirect('/api/user/sign-in')
   } catch (error) {
-    logger.error(error)
+    logger.error('Error resending activation email:', { error })
     req.flash('info', `If an account matches ${req.body.email} we'll send you another confirmation email.`)
     return res.redirect('/api/user/sign-in')
   }
@@ -628,7 +628,7 @@ export const activate = async (req, res) => {
     req.flash('info', "You've successfully confirmed your email address. Now you can sign in to your account")
     return res.redirect('/api/user/sign-in')
   } catch (error) {
-    logger.error(error)
+    logger.error('Error activating account:', { error, email: user?.email, userId: user?.id })
   }
 }
 

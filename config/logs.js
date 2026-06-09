@@ -1,32 +1,19 @@
 import { createLogger, format, transports } from 'winston'
 
+const { combine, timestamp, simple, logstash, colorize } = format
+
+const nonProductionLogFormat = format.combine(colorize({ level: true }), format.splat(), simple())
+
+const productionLogstashFormat = combine(timestamp(), logstash())
+
+const customFormat = process.env.NODE_ENV === 'production' ? productionLogstashFormat : nonProductionLogFormat
+
 export const logger = createLogger({
-  transports: [
-    // Log info to console
-    new transports.Console({
-      format: format.combine(
-        format.timestamp(),
-        format.printf((info) => {
-          return `${info.level.toUpperCase()}: ${info.message}`
-        }),
-      ),
-      level: 'info',
-      handleExceptions: true,
-      humanReadableUnhandledException: true,
-    }),
-    // Log errors to console
-    new transports.Console({
-      format: format.combine(
-        format.timestamp(),
-        format.printf((info) => {
-          return `${info.level.toUpperCase()}: ${info.message}`
-        }),
-      ),
-      level: 'error',
-      handleExceptions: true,
-      humanReadableUnhandledException: true,
-    }),
-  ],
+  level: process.env.LOG_LEVEL || 'info',
+  format: customFormat,
+  defaultMeta: { service: 'loi-user-service' },
+  transports: [new transports.Console({ level: 'info', handleExceptions: true, handleRejections: true })],
+  exitOnError: false,
 })
 
-export default { logger }
+logger.info(process.env.NODE_ENV === 'production' ? 'Production logging enabled' : 'Development logging enabled')

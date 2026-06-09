@@ -42,7 +42,7 @@ export const forgotPassword = async (req, res) => {
     }
 
     if (!user) {
-      logger.info('Password reset requested. Email not found.')
+      logger.info('Password reset requested. Email not found.', { email })
       return res.redirect('/api/user/sign-in')
     }
 
@@ -64,14 +64,14 @@ export const forgotPassword = async (req, res) => {
       },
     )
 
-    logger.info('Password reset requested.')
+    logger.info('Password reset requested.', { email, userId: user?.id })
 
     // Send reset password email
     await emailService.resetPassword(email, token)
 
     return res.redirect('/api/user/sign-in')
   } catch (error) {
-    logger.error('An error occurred in the forgotPassword function:', error)
+    logger.error('An error occurred in the forgotPassword function:', { error, email })
     return res.redirect('/api/user/sign-in')
   }
 }
@@ -197,12 +197,12 @@ export const resetPassword = async (req, res) => {
         },
       )
 
-      logger.info('Password reset requested. Change successful.')
+      logger.info('Password reset requested. Change successful.', { email: user?.email, userId: user?.id })
       emailService.confirmPasswordChange(user.first_name, user.email)
 
       return res.redirect(reset ? '/api/user/sign-in' : '/api/user/dashboard')
     } catch (error) {
-      logger.error('An error occurred while resetting the password:', error)
+      logger.error('An error occurred while resetting the password:', { error, email: user?.email, userId: user?.id })
       return res.status(500).send({ message: 'An error occurred while resetting the password.' })
     }
   }

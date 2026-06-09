@@ -36,7 +36,7 @@ export const HelperService = {
       logger.info('Returning access token from EDMS')
       return access_token
     } catch (error) {
-      logger.error('Error fetching access token from EDMS:', error)
+      logger.error('Error fetching access token from EDMS', { error })
     }
   },
 }

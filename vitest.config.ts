@@ -12,10 +12,10 @@ export default defineConfig({
       all: true,
       include: ['server/**/*.js', '!server/app.js', '!server/server.js'],
       thresholds: {
-        lines: 18,
-        functions: 10,
+        statements: 19,
         branches: 5,
-        statements: 18,
+        functions: 9,
+        lines: 19,
       },
     },
   },

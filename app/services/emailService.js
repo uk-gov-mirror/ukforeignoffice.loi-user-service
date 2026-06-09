@@ -13,8 +13,8 @@ export const emailService = {
     try {
       const response = await axios.post(options.url, options.body, { headers: options.headers })
       logger.info(`${response.status} - One time passcode email sent for user ${userId}`)
-    } catch (err) {
-      logger.error(err)
+    } catch (error) {
+      logger.error('Error in emailService.sendOneTimePasscodeEmail', { error })
     }
   },
   sendOneTimePasscodeSMS: async (oneTimePasscode, phoneNumber, userId) => {
@@ -25,8 +25,8 @@ export const emailService = {
     try {
       const response = await axios.post(options.url, options.body, { headers: options.headers })
       logger.info(`${response.status} - One time passcode SMS sent for user ${userId}`)
-    } catch (err) {
-      logger.error(err)
+    } catch (error) {
+      logger.error('Error in emailService.sendOneTimePasscodeSMS', { error })
     }
   },
   lockedOut: async (name, email) => {
@@ -37,8 +37,8 @@ export const emailService = {
     try {
       const response = await axios.post(options.url, options.body, { headers: options.headers })
       logger.info(`${response.status} - lockedOut email sent`)
-    } catch (err) {
-      logger.error(err)
+    } catch (error) {
+      logger.error('Error in emailService.lockedOut', { error })
     }
   },
   resetPassword: async (email, token) => {
@@ -49,8 +49,8 @@ export const emailService = {
     try {
       const response = await axios.post(options.url, options.body, { headers: options.headers })
       logger.info(`${response.status} - reset password email sent`)
-    } catch (err) {
-      logger.error(err)
+    } catch (error) {
+      logger.error('Error in emailService.resetPassword', { error })
     }
   },
   confirmPasswordChange: async (name, email) => {
@@ -61,8 +61,8 @@ export const emailService = {
     try {
       const response = await axios.post(options.url, options.body, { headers: options.headers })
       logger.info(`${response.status} - confirm password email sent`)
-    } catch (err) {
-      logger.error(err)
+    } catch (error) {
+      logger.error('Error in emailService.confirmPasswordChange', { error })
     }
   },
   emailConfirmation: async (email, token) => {
@@ -73,8 +73,8 @@ export const emailService = {
     try {
       const response = await axios.post(options.url, options.body, { headers: options.headers })
       logger.info(`${response.status} - activation email sent`)
-    } catch (err) {
-      logger.error(err)
+    } catch (error) {
+      logger.error('Error in emailService.emailConfirmation', { error })
     }
   },
   expiryWarning: async (email, accountExpiryDateText, dayAndMonthText, userID) => {
@@ -85,8 +85,8 @@ export const emailService = {
     try {
       const _response = await axios.post(options.url, options.body, { headers: options.headers })
       logger.info(`[USER CLEANUP JOB] WARNING EMAIL SENT SUCCESSFULLY FOR USER ${userID}`)
-    } catch (err) {
-      logger.error(err)
+    } catch (error) {
+      logger.error('Error in emailService.expiryWarning', { error })
     }
   },
   expiryConfirmation: async (email, userID) => {
@@ -97,8 +97,8 @@ export const emailService = {
     try {
       const _response = await axios.post(options.url, options.body, { headers: options.headers })
       logger.info(`[USER CLEANUP JOB] EXPIRY EMAIL SENT SUCCESSFULLY FOR USER ${userID}`)
-    } catch (err) {
-      logger.error(err)
+    } catch (error) {
+      logger.error('Error in emailService.expiryConfirmation', { error })
     }
   },
   requestBusinessAccess: async (emailData) => {
@@ -108,8 +108,8 @@ export const emailService = {
     try {
       const _response = await axios.post(options.url, options.body, { headers: options.headers })
       logger.info(`BUSINESS SERVICE APPLICATION REQUEST SENT SUCCESSFULLY FOR USER ${emailData.userID}`)
-    } catch (err) {
-      logger.error(err)
+    } catch (error) {
+      logger.error('Error in emailService.requestBusinessAccess', { error })
     }
   },
   businessServiceDecision: async (emailData, decision) => {
@@ -124,8 +124,8 @@ export const emailService = {
       } else {
         logger.info(`BUSINESS SERVICE ACCESS REJECTION EMAIL SENT SUCCESSFULLY FOR USER ${emailData.id}`)
       }
-    } catch (err) {
-      logger.error(err)
+    } catch (error) {
+      logger.error('Error in emailService.businessServiceDecision', { error })
     }
   },
 }

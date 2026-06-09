@@ -25,7 +25,7 @@ export const jobs = {
 
       stop()
     } catch (error) {
-      logger.error(error)
+      logger.error('Error in jobs.accountExpiryCheck', { error })
     }
 
     function start() {
@@ -50,7 +50,7 @@ export const jobs = {
           },
         })
       } catch (error) {
-        logger.error(error)
+        logger.error('Error in jobs.findAccountsNearingExpiry', { error })
       }
     }
 
@@ -67,7 +67,7 @@ export const jobs = {
           },
         )
       } catch (error) {
-        logger.error(error)
+        logger.error('Error in jobs.updateWarningEmailField', { error })
       }
     }
 
@@ -84,7 +84,7 @@ export const jobs = {
           },
         )
       } catch (error) {
-        logger.error(error)
+        logger.error('Error in jobs.updateExpiryEmailField', { error })
       }
     }
 
@@ -96,7 +96,7 @@ export const jobs = {
           },
         })
       } catch (error) {
-        logger.error(error)
+        logger.error('Error in jobs.deleteAccountDetailsForUser', { error })
       }
     }
 
@@ -108,7 +108,7 @@ export const jobs = {
           },
         })
       } catch (error) {
-        logger.error(error)
+        logger.error('Error in jobs.deleteSavedAddressForUser', { error })
       }
     }
 
@@ -120,7 +120,7 @@ export const jobs = {
           },
         })
       } catch (error) {
-        logger.error(error)
+        logger.error('Error in jobs.deleteUserDetailsForUser', { error })
       }
     }
 
@@ -161,7 +161,7 @@ export const jobs = {
           }
         }
       } catch (error) {
-        logger.error(error)
+        logger.error('Error in jobs.processAccountsNearingExpiry', { error })
       }
     }
   },
