@@ -65,7 +65,7 @@ export const showAccount = async (req, res) => {
       company_info: req.flash('company_info'),
     })
   } catch (error) {
-    logger.error(`Error in showAccount`, { error, userId: req?.session?.user?.id || user?.id || 'unknown' })
+    logger.error(`Error in showAccount`, { error, userId: req?.session?.user?.id || 'unknown' })
     return res.render('generic-error.ejs', {
       backLink: '#',
       error,
@@ -478,7 +478,7 @@ export const showChangeMfa = async (req, res) => {
       mobileNo: account.mobileNo,
     })
   } catch (error) {
-    logger.error(`Error in showChangeMfa`, { error, userId: req?.session?.user?.id || user?.id || 'unknown' })
+    logger.error(`Error in showChangeMfa`, { error, userId: req?.session?.user?.id || 'unknown' })
     return res.render('generic-error.ejs', {
       backLink: '/api/user/account',
       error,
@@ -560,7 +560,7 @@ export const changeMfa = async (req, res) => {
       }
     }
   } catch (error) {
-    logger.error(`Error in changeMfa`, { error, userId: req?.session?.user?.id || user?.id || 'unknown' })
+    logger.error(`Error in changeMfa`, { error, userId: req?.session?.user?.id || 'unknown' })
     return res.render('generic-error.ejs', {
       backLink: '/api/user/change-mfa',
       error,
@@ -674,7 +674,7 @@ export const showChangeCompanyDetails = async (req, res) => {
   } catch (error) {
     logger.error(`Error in showChangeCompanyDetails`, {
       error,
-      userId: req?.session?.user?.id || user?.id || 'unknown',
+      userId: req?.session?.user?.id || 'unknown',
     })
     return res.render('generic-error.ejs', {
       backLink: '/api/user/account',

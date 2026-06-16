@@ -12,6 +12,7 @@ import emailService from '../services/emailService.js'
 const envVariables = config()
 
 export const forgotPassword = async (req, res) => {
+  let email
   try {
     // Create random reset token
     const token = await new Promise((resolve, reject) => {
@@ -26,7 +27,7 @@ export const forgotPassword = async (req, res) => {
     })
 
     // Find User
-    const email = req.body.email.toLowerCase()
+    email = req.body.email.toLowerCase()
     const user = await Model.User.findOne({ where: { email } })
     const emailValid = validations.emailRegex.test(email)
 
@@ -133,6 +134,7 @@ export const resetPassword = async (req, res) => {
       resetPasswordToken: req.params.token,
     })
   } else {
+    let user
     try {
       //Find User with the password token which has not expired
       const where = reset
@@ -150,7 +152,7 @@ export const resetPassword = async (req, res) => {
             },
           }
 
-      const user = await Model.User.findOne(where)
+      user = await Model.User.findOne(where)
       if (!user && reset) {
         req.flash('error', 'Password reset token is invalid or has expired.')
         return res.redirect(req.get('Referrer') || '/')

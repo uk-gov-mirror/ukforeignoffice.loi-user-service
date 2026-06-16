@@ -13,8 +13,9 @@ export default (app, passport) => {
 
   passport.use(
     new LocalStrategy(async (email, password, done) => {
+      let user
       try {
-        const user = await Model.User.findOne({ where: { email: email } })
+        user = await Model.User.findOne({ where: { email: email } })
 
         if (user === null) {
           return done(null, false, { message: 'There was a problem signing in' })
@@ -73,7 +74,7 @@ export default (app, passport) => {
           }
         }
       } catch (error) {
-        logger.error('Error during authentication process:', { error, userId: user.id })
+        logger.error('Error during authentication process:', { error, userId: user?.id })
         return done(error)
       }
     }),

@@ -19,9 +19,8 @@ const phonePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){5,14}$/
 
 async function sendToOrbit(accountManagementObject, user) {
   try {
-    const edmsManagePortalCustomerUrl = `${config.edmsHost}/api/v1/managePortalCustomer`
+    const edmsManagePortalCustomerUrl = `${envVariables.edmsHost}/api/v1/managePortalCustomer`
     const edmsBearerToken = await HelperService.getEdmsAccessToken()
-    const startTime = new Date()
 
     const profiler = logger.startTimer()
     const response = await axios.post(edmsManagePortalCustomerUrl, accountManagementObject, {
@@ -45,8 +44,6 @@ async function sendToOrbit(accountManagementObject, user) {
       })
     }
   } catch (error) {
-    const endTime = new Date()
-    const elapsedTime = endTime - startTime
     logger.error(`[ACCOUNT MANAGEMENT] ACCOUNT CREATION FAILED SENDING TO ORBIT FOR USER_ID ${user.id}`, { error })
   }
 }
