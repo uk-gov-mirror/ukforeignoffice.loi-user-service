@@ -1,0 +1,22 @@
+import { configDefaults, defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    env: {
+      NODE_ENV: 'test',
+      PORT: 6009,
+    },
+    exclude: [...configDefaults.exclude],
+    coverage: {
+      provider: 'v8',
+      all: true,
+      include: ['server/**/*.js', '!server/app.js', '!server/server.js'],
+      thresholds: {
+        statements: 19,
+        branches: 5,
+        functions: 9,
+        lines: 19,
+      },
+    },
+  },
+})

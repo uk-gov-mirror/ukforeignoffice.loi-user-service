@@ -1,109 +1,88 @@
-let expect;
-let Postcode;
+import Postcode from 'postcode'
+import { describe, expect, it } from 'vitest'
 
-before("Setup", async function () {
-    const chai = await import("chai");
-    expect = chai.expect;
-    Postcode = require('postcode');
-});
+describe('Postcode Validation', () => {
+  describe('Valid UK Postcodes', () => {
+    it('should normalise a valid postcode with space', () => {
+      const result = Postcode.toNormalised('SW1A 1AA')
+      expect(result).toBe('SW1A 1AA')
+    })
 
-describe('Postcode Validation', function() {
+    it('should normalise a valid postcode without space', () => {
+      const result = Postcode.toNormalised('SW1A1AA')
+      expect(result).toBe('SW1A 1AA')
+    })
 
-    // Testing the postcode validation used in addressController
+    it('should normalise lowercase postcode', () => {
+      const result = Postcode.toNormalised('sw1a 1aa')
+      expect(result).toBe('SW1A 1AA')
+    })
 
-    describe('Valid UK Postcodes', function() {
+    it('should handle extra spaces', () => {
+      const result = Postcode.toNormalised('SW1A  1AA')
+      expect(result).toBe('SW1A 1AA')
+    })
 
-        it('should normalise a valid postcode with space', function() {
-            const result = Postcode.toNormalised('SW1A 1AA');
-            expect(result).to.equal('SW1A 1AA');
-        });
+    it('should normalise various valid formats', () => {
+      expect(Postcode.toNormalised('EC1A 1BB')).toBe('EC1A 1BB')
+      expect(Postcode.toNormalised('W1A 0AX')).toBe('W1A 0AX')
+      expect(Postcode.toNormalised('M1 1AE')).toBe('M1 1AE')
+      expect(Postcode.toNormalised('B33 8TH')).toBe('B33 8TH')
+      expect(Postcode.toNormalised('CR2 6XH')).toBe('CR2 6XH')
+      expect(Postcode.toNormalised('DN55 1PT')).toBe('DN55 1PT')
+    })
+  })
 
-        it('should normalise a valid postcode without space', function() {
-            const result = Postcode.toNormalised('SW1A1AA');
-            expect(result).to.equal('SW1A 1AA');
-        });
+  describe('Invalid UK Postcodes', () => {
+    it('should return null for invalid postcode', () => {
+      const result = Postcode.toNormalised('INVALID')
+      expect(result).toBeNull()
+    })
 
-        it('should normalise lowercase postcode', function() {
-            const result = Postcode.toNormalised('sw1a 1aa');
-            expect(result).to.equal('SW1A 1AA');
-        });
+    it('should return null for empty string', () => {
+      const result = Postcode.toNormalised('')
+      expect(result).toBeNull()
+    })
 
-        it('should handle extra spaces', function() {
-            const result = Postcode.toNormalised('SW1A  1AA');
-            expect(result).to.equal('SW1A 1AA');
-        });
+    it('should return null for numeric only', () => {
+      const result = Postcode.toNormalised('12345')
+      expect(result).toBeNull()
+    })
 
-        it('should normalise various valid formats', function() {
-            expect(Postcode.toNormalised('EC1A 1BB')).to.equal('EC1A 1BB');
-            expect(Postcode.toNormalised('W1A 0AX')).to.equal('W1A 0AX');
-            expect(Postcode.toNormalised('M1 1AE')).to.equal('M1 1AE');
-            expect(Postcode.toNormalised('B33 8TH')).to.equal('B33 8TH');
-            expect(Postcode.toNormalised('CR2 6XH')).to.equal('CR2 6XH');
-            expect(Postcode.toNormalised('DN55 1PT')).to.equal('DN55 1PT');
-        });
+    it('should return null for too short postcode', () => {
+      const result = Postcode.toNormalised('SW1')
+      expect(result).toBeNull()
+    })
+  })
 
-    });
+  describe('Postcode Validation Function', () => {
+    it('should validate a valid postcode', () => {
+      expect(Postcode.isValid('SW1A 1AA')).toBe(true)
+    })
 
-    describe('Invalid UK Postcodes', function() {
+    it('should invalidate an invalid postcode', () => {
+      expect(Postcode.isValid('INVALID')).toBe(false)
+    })
 
-        it('should return null for invalid postcode', function() {
-            const result = Postcode.toNormalised('INVALID');
-            expect(result).to.be.null;
-        });
+    it('should invalidate empty string', () => {
+      expect(Postcode.isValid('')).toBe(false)
+    })
+  })
 
-        it('should return null for empty string', function() {
-            const result = Postcode.toNormalised('');
-            expect(result).to.be.null;
-        });
+  describe('Edge Cases', () => {
+    it('should return null for postcode with leading/trailing spaces (requires trim)', () => {
+      const result = Postcode.toNormalised('  SW1A 1AA  ')
+      expect(result).toBeNull()
+    })
 
-        it('should return null for numeric only', function() {
-            const result = Postcode.toNormalised('12345');
-            expect(result).to.be.null;
-        });
+    it('should handle trimmed postcode correctly', () => {
+      const result = Postcode.toNormalised('  SW1A 1AA  '.trim())
+      expect(result).toBe('SW1A 1AA')
+    })
 
-        it('should return null for too short postcode', function() {
-            const result = Postcode.toNormalised('SW1');
-            expect(result).to.be.null;
-        });
-
-    });
-
-    describe('Postcode Validation Function', function() {
-
-        it('should validate a valid postcode', function() {
-            expect(Postcode.isValid('SW1A 1AA')).to.be.true;
-        });
-
-        it('should invalidate an invalid postcode', function() {
-            expect(Postcode.isValid('INVALID')).to.be.false;
-        });
-
-        it('should invalidate empty string', function() {
-            expect(Postcode.isValid('')).to.be.false;
-        });
-
-    });
-
-    describe('Edge Cases', function() {
-
-        it('should return null for postcode with leading/trailing spaces (requires trim)', function() {
-            // The postcode library doesn't auto-trim, so this returns null
-            const result = Postcode.toNormalised('  SW1A 1AA  ');
-            expect(result).to.be.null;
-        });
-
-        it('should handle trimmed postcode correctly', function() {
-            const result = Postcode.toNormalised('  SW1A 1AA  '.trim());
-            expect(result).to.equal('SW1A 1AA');
-        });
-
-        it('should handle mixed case postcode', function() {
-            const result = Postcode.toNormalised('Sw1A 1aA');
-            expect(result).to.equal('SW1A 1AA');
-        });
-
-    });
-
-});
-
-
+    it('should handle mixed case postcode', () => {
+      const result = Postcode.toNormalised('Sw1A 1aA')
+      expect(result).toBe('SW1A 1AA')
+    })
+  })
+})

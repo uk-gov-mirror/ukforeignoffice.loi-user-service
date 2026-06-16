@@ -1,52 +1,38 @@
-let expect;
-let oneTimePasscodeService;
+import { describe, expect, it } from 'vitest'
+import oneTimePasscodeService from '../../app/services/oneTimePasscodeService.js'
 
-before("Setup", async function () {
-    const chai = await import("chai");
-    expect = chai.expect;
-    oneTimePasscodeService = require('../../app/services/oneTimePasscodeService');
-});
+describe('OneTimePasscodeService', () => {
+  describe('generateOneTimePasscode', () => {
+    it('should generate a 6 digit passcode', async () => {
+      const passcode = await oneTimePasscodeService.generateOneTimePasscode()
 
-describe('OneTimePasscodeService', function() {
+      expect(passcode).toBeTypeOf('number')
+      expect(passcode.toString().length).toBe(6)
+    })
 
-    describe('generateOneTimePasscode', function() {
+    it('should generate a passcode between 100000 and 999999', async () => {
+      const passcode = await oneTimePasscodeService.generateOneTimePasscode()
 
-        it('should generate a 6 digit passcode', async function() {
-            const passcode = await oneTimePasscodeService.generateOneTimePasscode();
+      expect(passcode).toBeGreaterThanOrEqual(100000)
+      expect(passcode).toBeLessThanOrEqual(999999)
+    })
 
-            expect(passcode).to.be.a('number');
-            expect(passcode.toString().length).to.equal(6);
-        });
+    it('should generate different passcodes on multiple calls', async () => {
+      const passcodes = new Set()
 
-        it('should generate a passcode between 100000 and 999999', async function() {
-            const passcode = await oneTimePasscodeService.generateOneTimePasscode();
+      for (let i = 0; i < 10; i++) {
+        const passcode = await oneTimePasscodeService.generateOneTimePasscode()
+        passcodes.add(passcode)
+      }
 
-            expect(passcode).to.be.at.least(100000);
-            expect(passcode).to.be.at.most(999999);
-        });
+      expect(passcodes.size).toBeGreaterThanOrEqual(2)
+    })
 
-        it('should generate different passcodes on multiple calls', async function() {
-            const passcodes = new Set();
+    it('should only generate numeric passcodes', async () => {
+      const passcode = await oneTimePasscodeService.generateOneTimePasscode()
 
-            // Generate 10 passcodes
-            for (let i = 0; i < 10; i++) {
-                const passcode = await oneTimePasscodeService.generateOneTimePasscode();
-                passcodes.add(passcode);
-            }
-
-            // With random generation, we should get at least some unique values
-            // (statistically very likely to get at least 2 unique out of 10)
-            expect(passcodes.size).to.be.at.least(2);
-        });
-
-        it('should only generate numeric passcodes', async function() {
-            const passcode = await oneTimePasscodeService.generateOneTimePasscode();
-
-            expect(Number.isInteger(passcode)).to.be.true;
-            expect(passcode).to.not.be.NaN;
-        });
-
-    });
-
-});
-
+      expect(Number.isInteger(passcode)).toBe(true)
+      expect(Number.isNaN(passcode)).toBe(false)
+    })
+  })
+})

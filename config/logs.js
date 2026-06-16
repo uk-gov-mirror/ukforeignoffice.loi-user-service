@@ -1,37 +1,19 @@
-const { createLogger, transports, format } = require('winston');
+import { createLogger, format, transports } from 'winston'
 
-const logger = createLogger({
-    transports: [
-        // Log info to console
-        new transports.Console({
-            format: format.combine(
-                format.timestamp(),
-                format.printf(info => {
-                    return `${info.level.toUpperCase()}: ${info.message}`;
-                }),
-            ),
-            level: 'info',
-            handleExceptions: true,
-            humanReadableUnhandledException: true
-        }),
-        // Log errors to console
-        new transports.Console({
-            format: format.combine(
-                format.timestamp(),
-                format.printf(info => {
-                    return `${info.level.toUpperCase()}: ${info.message}`;
-                }),
-            ),
-            level: 'error',
-            handleExceptions: true,
-            humanReadableUnhandledException: true
-        })
-    ]
-});
+const { combine, timestamp, simple, logstash, colorize } = format
 
-// Overwrite some of the build-in console functions
-console.error = logger.error.bind();
-console.log = logger.info.bind();
-console.info = logger.info.bind();
-console.debug = logger.debug.bind();
-console.warn = logger.warn.bind();
+const nonProductionLogFormat = format.combine(colorize({ level: true }), format.splat(), simple())
+
+const productionLogstashFormat = combine(timestamp(), logstash())
+
+const customFormat = process.env.NODE_ENV === 'production' ? productionLogstashFormat : nonProductionLogFormat
+
+export const logger = createLogger({
+  level: process.env.LOG_LEVEL || 'info',
+  format: customFormat,
+  defaultMeta: { service: 'loi-user-service' },
+  transports: [new transports.Console({ level: 'info', handleExceptions: true, handleRejections: true })],
+  exitOnError: false,
+})
+
+logger.info(process.env.NODE_ENV === 'production' ? 'Production logging enabled' : 'Development logging enabled')
