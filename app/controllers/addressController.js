@@ -544,7 +544,7 @@ async function postcodeLookup(normalisedPostcode) {
 }
 
 function getCountries() {
-  countriesSQL = 'SELECT  name FROM "country" ORDER BY name ASC '
+  const countriesSQL = 'SELECT  name FROM "country" ORDER BY name ASC '
   return envVariables.serviceSequelize.query(countriesSQL)
 }
 

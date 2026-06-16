@@ -124,7 +124,7 @@ app.use(
     rolling: true,
     cookie: {
       domain: sessionSettings.domain,
-      maxAge: sessionSettings.maxAge,
+      maxAge: sessionSettings.cookieMaxAge,
       secure: process.env.NODE_ENV !== 'development',
       sameSite: 'Lax',
     },

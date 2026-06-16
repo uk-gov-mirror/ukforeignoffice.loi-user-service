@@ -22,17 +22,17 @@ async function sendToOrbit(accountManagementObject, user) {
     const edmsManagePortalCustomerUrl = `${config.edmsHost}/api/v1/managePortalCustomer`
     const edmsBearerToken = await HelperService.getEdmsAccessToken()
 
-    const profiler = logger.startTimer('Orbit account management request')
+    const requestStartedAt = Date.now()
     const response = await axios.post(edmsManagePortalCustomerUrl, accountManagementObject, {
       headers: {
         'content-type': 'application/json',
         Authorization: `Bearer ${edmsBearerToken}`,
       },
     })
-
-    profiler.done({
-      message: `Orbit account management request response time for ${user?.id}:`,
+    const durationMs = Date.now() - requestStartedAt
+    logger.info(`Orbit account management request response time for ${user?.id}: ${durationMs}ms`, {
       userId: user?.id,
+      durationMs,
       ...logger.defaultMeta,
     })
 
