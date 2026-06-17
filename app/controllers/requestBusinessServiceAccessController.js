@@ -341,19 +341,22 @@ export const approve = async (req, res) => {
         }
 
         try {
-          const profiler = logger.startTimer()
+          const requestStartedAt = Date.now()
           const response = await axios.post(edmsManagePortalCustomerUrl, accountManagementObject, {
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${edmsBearerToken}`,
             },
           })
-
-          profiler.done({
-            message: `Orbit account management request response time for user ID ${userAccountMatchingToken.id}`,
-            userId: userAccountMatchingToken.id,
-            ...logger.defaultMeta,
-          })
+          const durationMs = Date.now() - requestStartedAt
+          logger.info(
+            `Orbit account management request response time for user ID ${userAccountMatchingToken.id}: ${durationMs}ms`,
+            {
+              userId: userAccountMatchingToken.id,
+              durationMs,
+              ...logger.defaultMeta,
+            },
+          )
 
           if (response.status === 200) {
             logger.info(
@@ -459,19 +462,22 @@ export const reject = async (req, res) => {
           },
         }
 
-        const profiler = logger.startTimer()
+        const requestStartedAt = Date.now()
         const response = await axios.post(edmsManagePortalCustomerUrl, accountManagementObject, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${edmsBearerToken}`,
           },
         })
-
-        profiler.done({
-          message: `Orbit account management request response time for user ID ${userAccountMatchingToken.id}`,
-          userId: userAccountMatchingToken.id,
-          ...logger.defaultMeta,
-        })
+        const durationMs = Date.now() - requestStartedAt
+        logger.info(
+          `Orbit account management request response time for user ID ${userAccountMatchingToken.id}: ${durationMs}ms`,
+          {
+            userId: userAccountMatchingToken.id,
+            durationMs,
+            ...logger.defaultMeta,
+          },
+        )
 
         if (response.status === 200) {
           logger.info(
