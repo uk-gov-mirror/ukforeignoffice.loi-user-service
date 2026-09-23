@@ -43,7 +43,7 @@
     "start": "NODE_ENV=development node server.js 3001",
     "dev": "NODE_ENV=development node server.js 3001",
     "test": "vitest run --coverage",
-    "prepare": "husky"
+    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi"
   },
   "overrides": {
     "cookie": "0.7.0",
